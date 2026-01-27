@@ -260,7 +260,7 @@ export function computeMomentum(history: PointRecord[]): MomentumPoint[] {
 // Magia Stats
 // ============================================================
 
-const MAGIA_TYPES: MagiaType[] = ["x3", "x4", "dejada", "dormilona", "salida-de-pista"];
+const MAGIA_TYPES: MagiaType[] = ["x3", "x4", "dejada", "dormilona"];
 
 export interface PlayerMagiaStats {
   playerId: string;

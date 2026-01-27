@@ -51,7 +51,7 @@ export interface PointRecord {
   scoreBefore: ScoreSnapshot;
 }
 
-export type MagiaType = "x3" | "x4" | "dejada" | "dormilona" | "salida-de-pista";
+export type MagiaType = "x3" | "x4" | "dejada" | "dormilona";
 
 export interface MagiaRecord {
   id: string;

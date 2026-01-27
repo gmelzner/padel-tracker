@@ -12,7 +12,6 @@ const MAGIA_STYLES: Record<MagiaType, string> = {
   x4: "bg-indigo-500 text-white active:bg-indigo-600",
   dejada: "bg-pink-500 text-white active:bg-pink-600",
   dormilona: "bg-cyan-500 text-white active:bg-cyan-600",
-  "salida-de-pista": "bg-teal-500 text-white active:bg-teal-600",
 };
 
 export function MagiaRecorder() {
@@ -74,7 +73,7 @@ export function MagiaRecorder() {
         <p className="text-center text-slate-500 text-sm font-medium">
           ¿Qué magia fue?
         </p>
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-2 gap-2">
           {(Object.keys(MAGIA_TYPE_LABELS) as MagiaType[]).map((type) => (
             <button
               key={type}

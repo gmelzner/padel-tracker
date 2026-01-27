@@ -39,9 +39,9 @@ export function ResultsScreen() {
   const [teamMagia1, teamMagia2] = computeTeamMagiaStats(magias, players);
   const hasMagias = magias.length > 0;
 
-  const magiaTypes: MagiaType[] = ["x3", "x4", "dejada", "dormilona", "salida-de-pista"];
+  const magiaTypes: MagiaType[] = ["x3", "x4", "dejada", "dormilona"];
   const magiaShortLabels: Record<MagiaType, string> = {
-    x3: "x3", x4: "x4", dejada: "Dej", dormilona: "Dor", "salida-de-pista": "SdP",
+    x3: "x3", x4: "x4", dejada: "Dej", dormilona: "Dor",
   };
 
   const team1Players = players.filter((p) => p.team === 1);

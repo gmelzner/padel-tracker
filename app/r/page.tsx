@@ -57,9 +57,9 @@ export default function SharedResultsPage() {
 
   const { players, completedSets, winningTeam, playerStats, teamStats, streaks, breaks, distribution, teamDistribution, magiaPlayerStats, magiaTeamStats } = data;
 
-  const magiaTypes: MagiaType[] = ["x3", "x4", "dejada", "dormilona", "salida-de-pista"];
+  const magiaTypes: MagiaType[] = ["x3", "x4", "dejada", "dormilona"];
   const magiaShortLabels: Record<MagiaType, string> = {
-    x3: "x3", x4: "x4", dejada: "Dej", dormilona: "Dor", "salida-de-pista": "SdP",
+    x3: "x3", x4: "x4", dejada: "Dej", dormilona: "Dor",
   };
 
   const team1Players = players.filter((p) => p.team === 1);
