@@ -10,7 +10,7 @@ type Step = "type" | "player";
 const ACTION_STYLES: Record<PointType, string> = {
   winner: "bg-winner text-white active:bg-green-600",
   "unforced-error": "bg-unforced text-white active:bg-red-600",
-  "forced-error": "bg-forced text-white active:bg-emerald-600",
+  "forced-error": "bg-forced text-white active:bg-green-500",
 };
 
 const PLAYER_PROMPT: Record<PointType, string> = {
@@ -54,20 +54,7 @@ export function PointRecorder() {
   if (step === "type") {
     return (
       <div className="space-y-3 animate-fade-in" key="step-type">
-        <p className="text-center text-slate-500 text-sm font-medium">
-          ¿Qué pasó?
-        </p>
-        {(Object.keys(POINT_TYPE_LABELS) as PointType[]).map((type) => (
-          <button
-            key={type}
-            onClick={() => handleTypeSelect(type)}
-            className={`w-full h-16 rounded-xl text-lg font-bold transition-all active:scale-95 ${ACTION_STYLES[type]}`}
-          >
-            {POINT_TYPE_LABELS[type]}
-          </button>
-        ))}
-
-        <div className="flex items-center gap-2 pt-1">
+        <div className="flex items-center gap-2">
           <div className="flex-1 h-px bg-slate-200" />
           <span className="text-xs text-slate-400 font-medium">Punto directo</span>
           <div className="flex-1 h-px bg-slate-200" />
@@ -86,6 +73,21 @@ export function PointRecorder() {
             +1 Eq. 2
           </button>
         </div>
+
+        <div className="flex items-center gap-2 pt-1">
+          <div className="flex-1 h-px bg-slate-200" />
+          <span className="text-xs text-slate-400 font-medium">¿Qué pasó?</span>
+          <div className="flex-1 h-px bg-slate-200" />
+        </div>
+        {(Object.keys(POINT_TYPE_LABELS) as PointType[]).map((type) => (
+          <button
+            key={type}
+            onClick={() => handleTypeSelect(type)}
+            className={`w-full h-16 rounded-xl text-lg font-bold transition-all active:scale-95 ${ACTION_STYLES[type]}`}
+          >
+            {POINT_TYPE_LABELS[type]}
+          </button>
+        ))}
       </div>
     );
   }

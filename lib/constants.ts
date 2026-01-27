@@ -2,8 +2,8 @@ import type { MagiaType, ScoreSnapshot } from "./types";
 
 export const POINT_TYPE_LABELS = {
   winner: "Winner",
-  "unforced-error": "Error No Forzado",
   "forced-error": "Error Forzado Generado",
+  "unforced-error": "Error No Forzado",
 } as const;
 
 export const MAGIA_TYPE_LABELS: Record<MagiaType, string> = {
