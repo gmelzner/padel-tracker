@@ -41,7 +41,7 @@ export interface SharedMatchData {
   mt?: number[][];
 }
 
-const MAGIA_ORDER: MagiaType[] = ["x3", "x4", "dejada", "dormilona", "vibora", "salida-de-pista"];
+const MAGIA_ORDER: MagiaType[] = ["x3", "x4", "dejada", "dormilona", "salida-de-pista"];
 
 export function encodeMatchResults(state: MatchState): string {
   const { score, players, history, magias, winningTeam } = state;

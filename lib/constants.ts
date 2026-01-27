@@ -11,7 +11,6 @@ export const MAGIA_TYPE_LABELS: Record<MagiaType, string> = {
   x4: "x4",
   dejada: "Dejada",
   dormilona: "Dormilona",
-  vibora: "Víbora",
   "salida-de-pista": "Salida de Pista",
 } as const;
 

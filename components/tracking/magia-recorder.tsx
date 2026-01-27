@@ -12,7 +12,6 @@ const MAGIA_STYLES: Record<MagiaType, string> = {
   x4: "bg-indigo-500 text-white active:bg-indigo-600",
   dejada: "bg-pink-500 text-white active:bg-pink-600",
   dormilona: "bg-cyan-500 text-white active:bg-cyan-600",
-  vibora: "bg-yellow-500 text-white active:bg-yellow-600",
   "salida-de-pista": "bg-teal-500 text-white active:bg-teal-600",
 };
 
@@ -55,9 +54,10 @@ export function MagiaRecorder() {
       <div className="space-y-2">
         <button
           onClick={() => setStep("type")}
-          className="w-full h-11 rounded-xl border-2 border-dashed border-purple-300 text-purple-600 text-sm font-semibold active:bg-purple-50 transition-colors"
+          className="w-full h-14 rounded-xl border-2 border-dashed border-purple-300 text-purple-600 text-sm font-semibold active:bg-purple-50 transition-colors flex flex-col items-center justify-center"
         >
-          Magias{magiaCount > 0 ? ` (${magiaCount})` : ""}
+          <span>🪄 Magias{magiaCount > 0 ? ` (${magiaCount})` : ""}</span>
+          <span className="text-xs font-normal text-purple-400">Golpes especiales</span>
         </button>
         {flash && (
           <div className="text-center text-sm text-purple-600 font-medium animate-fade-in">

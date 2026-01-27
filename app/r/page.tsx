@@ -57,9 +57,9 @@ export default function SharedResultsPage() {
 
   const { players, completedSets, winningTeam, playerStats, teamStats, streaks, breaks, distribution, teamDistribution, magiaPlayerStats, magiaTeamStats } = data;
 
-  const magiaTypes: MagiaType[] = ["x3", "x4", "dejada", "dormilona", "vibora", "salida-de-pista"];
+  const magiaTypes: MagiaType[] = ["x3", "x4", "dejada", "dormilona", "salida-de-pista"];
   const magiaShortLabels: Record<MagiaType, string> = {
-    x3: "x3", x4: "x4", dejada: "Dej", dormilona: "Dor", vibora: "Víb", "salida-de-pista": "SdP",
+    x3: "x3", x4: "x4", dejada: "Dej", dormilona: "Dor", "salida-de-pista": "SdP",
   };
 
   const team1Players = players.filter((p) => p.team === 1);
@@ -273,9 +273,9 @@ export default function SharedResultsPage() {
               {teamDistribution.map((td) => (
                 <div key={td.team} className="space-y-2">
                   <div className={`text-sm font-bold ${td.team === 1 ? "text-team1" : "text-team2"}`}>
-                    Equipo {td.team} — {td.totalPointsWon} pts
+                    {td.team === 1 ? team1Label : team2Label} — {td.totalPointsWon} pts
                   </div>
-                  <div className="flex rounded-lg overflow-hidden h-6">
+                  <div className="flex rounded-lg overflow-hidden h-8">
                     {td.winnerPct > 0 && (
                       <div
                         className="bg-winner flex items-center justify-center text-white text-[10px] font-bold"
