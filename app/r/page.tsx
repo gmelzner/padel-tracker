@@ -55,7 +55,7 @@ export default function SharedResultsPage() {
     );
   }
 
-  const { players, completedSets, winningTeam, playerStats, teamStats, streaks, breaks, distribution, magiaPlayerStats, magiaTeamStats } = data;
+  const { players, completedSets, winningTeam, playerStats, teamStats, streaks, breaks, distribution, teamDistribution, magiaPlayerStats, magiaTeamStats } = data;
 
   const magiaTypes: MagiaType[] = ["x3", "x4", "dejada", "dormilona", "vibora", "salida-de-pista"];
   const magiaShortLabels: Record<MagiaType, string> = {
@@ -259,7 +259,7 @@ export default function SharedResultsPage() {
           </p>
         </div>
 
-        {/* Point Distribution */}
+        {/* Point Distribution by Team */}
         <div className="rounded-xl border border-slate-200 bg-white p-4 space-y-3">
           <h2 className="font-semibold text-slate-800">
             Distribución de Puntos
@@ -268,7 +268,57 @@ export default function SharedResultsPage() {
             {distribution.totalPoints} puntos jugados
           </div>
 
-          {distribution.totalPoints > 0 && (
+          {distribution.totalPoints > 0 && teamDistribution ? (
+            <div className="grid grid-cols-2 gap-3">
+              {teamDistribution.map((td) => (
+                <div key={td.team} className="space-y-2">
+                  <div className={`text-sm font-bold ${td.team === 1 ? "text-team1" : "text-team2"}`}>
+                    Equipo {td.team} — {td.totalPointsWon} pts
+                  </div>
+                  <div className="flex rounded-lg overflow-hidden h-6">
+                    {td.winnerPct > 0 && (
+                      <div
+                        className="bg-winner flex items-center justify-center text-white text-[10px] font-bold"
+                        style={{ width: `${td.winnerPct}%` }}
+                      >
+                        {td.winnerPct}%
+                      </div>
+                    )}
+                    {td.unforcedPct > 0 && (
+                      <div
+                        className="bg-unforced flex items-center justify-center text-white text-[10px] font-bold"
+                        style={{ width: `${td.unforcedPct}%` }}
+                      >
+                        {td.unforcedPct}%
+                      </div>
+                    )}
+                    {td.forcedPct > 0 && (
+                      <div
+                        className="bg-forced flex items-center justify-center text-white text-[10px] font-bold"
+                        style={{ width: `${td.forcedPct}%` }}
+                      >
+                        {td.forcedPct}%
+                      </div>
+                    )}
+                  </div>
+                  <div className="text-[10px] text-slate-500 space-y-0.5">
+                    <div className="flex items-center gap-1">
+                      <span className="w-2 h-2 rounded bg-winner inline-block" />
+                      W: {td.byWinner}
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <span className="w-2 h-2 rounded bg-unforced inline-block" />
+                      ENF: {td.byUnforcedError}
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <span className="w-2 h-2 rounded bg-forced inline-block" />
+                      EFG: {td.byForcedError}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : distribution.totalPoints > 0 ? (
             <div className="space-y-2">
               <div className="flex rounded-lg overflow-hidden h-8">
                 {distribution.winnerPct > 0 && (
@@ -311,7 +361,7 @@ export default function SharedResultsPage() {
                 </div>
               </div>
             </div>
-          )}
+          ) : null}
         </div>
 
         {/* Magias / Highlights */}

@@ -197,6 +197,45 @@ export function computePointDistribution(history: PointRecord[]): PointDistribut
 }
 
 // ============================================================
+// Per-Team Point Distribution
+// ============================================================
+
+export interface TeamPointDistribution {
+  team: Team;
+  totalPointsWon: number;
+  byWinner: number;
+  byUnforcedError: number;
+  byForcedError: number;
+  winnerPct: number;
+  unforcedPct: number;
+  forcedPct: number;
+}
+
+export function computeTeamPointDistribution(
+  history: PointRecord[]
+): [TeamPointDistribution, TeamPointDistribution] {
+  function distForTeam(team: Team): TeamPointDistribution {
+    const teamPoints = history.filter((r) => r.pointWonByTeam === team);
+    const categorized = teamPoints.filter((r) => r.pointType !== null);
+    const catTotal = categorized.length;
+    const byWinner = categorized.filter((r) => r.pointType === "winner").length;
+    const byUnforcedError = categorized.filter((r) => r.pointType === "unforced-error").length;
+    const byForcedError = categorized.filter((r) => r.pointType === "forced-error").length;
+    return {
+      team,
+      totalPointsWon: teamPoints.length,
+      byWinner,
+      byUnforcedError,
+      byForcedError,
+      winnerPct: catTotal > 0 ? Math.round((byWinner / catTotal) * 100) : 0,
+      unforcedPct: catTotal > 0 ? Math.round((byUnforcedError / catTotal) * 100) : 0,
+      forcedPct: catTotal > 0 ? Math.round((byForcedError / catTotal) * 100) : 0,
+    };
+  }
+  return [distForTeam(1), distForTeam(2)];
+}
+
+// ============================================================
 // Momentum Data (for chart)
 // ============================================================
 

@@ -8,6 +8,7 @@ import {
   computeStreaks,
   computeBreakPoints,
   computePointDistribution,
+  computeTeamPointDistribution,
   computeMomentum,
   computePlayerMagiaStats,
   computeTeamMagiaStats,
@@ -32,6 +33,7 @@ export function ResultsScreen() {
   const [streak1, streak2] = computeStreaks(history);
   const [break1, break2] = computeBreakPoints(history, score);
   const distribution = computePointDistribution(history);
+  const [teamDist1, teamDist2] = computeTeamPointDistribution(history);
   const momentum = computeMomentum(history);
   const playerMagiaStats = computePlayerMagiaStats(magias, players);
   const [teamMagia1, teamMagia2] = computeTeamMagiaStats(magias, players);
@@ -257,7 +259,7 @@ export function ResultsScreen() {
           </p>
         </div>
 
-        {/* Point Distribution */}
+        {/* Point Distribution by Team */}
         <div className="rounded-xl border border-slate-200 bg-white p-4 space-y-3">
           <h2 className="font-semibold text-slate-800">
             Distribución de Puntos
@@ -266,51 +268,60 @@ export function ResultsScreen() {
             {distribution.totalPoints} puntos jugados
           </div>
 
-          {/* Distribution bar */}
           {distribution.totalPoints > 0 && (
-            <div className="space-y-2">
-              <div className="flex rounded-lg overflow-hidden h-8">
-                {distribution.winnerPct > 0 && (
-                  <div
-                    className="bg-winner flex items-center justify-center text-white text-xs font-bold"
-                    style={{ width: `${distribution.winnerPct}%` }}
-                  >
-                    {distribution.winnerPct}%
+            <div className="grid grid-cols-2 gap-3">
+              {[teamDist1, teamDist2].map((td) => (
+                <div key={td.team} className="space-y-2">
+                  <div className={`text-sm font-bold ${td.team === 1 ? "text-team1" : "text-team2"}`}>
+                    Equipo {td.team} — {td.totalPointsWon} pts
                   </div>
-                )}
-                {distribution.unforcedPct > 0 && (
-                  <div
-                    className="bg-unforced flex items-center justify-center text-white text-xs font-bold"
-                    style={{ width: `${distribution.unforcedPct}%` }}
-                  >
-                    {distribution.unforcedPct}%
+                  <div className="flex rounded-lg overflow-hidden h-6">
+                    {td.winnerPct > 0 && (
+                      <div
+                        className="bg-winner flex items-center justify-center text-white text-[10px] font-bold"
+                        style={{ width: `${td.winnerPct}%` }}
+                      >
+                        {td.winnerPct}%
+                      </div>
+                    )}
+                    {td.unforcedPct > 0 && (
+                      <div
+                        className="bg-unforced flex items-center justify-center text-white text-[10px] font-bold"
+                        style={{ width: `${td.unforcedPct}%` }}
+                      >
+                        {td.unforcedPct}%
+                      </div>
+                    )}
+                    {td.forcedPct > 0 && (
+                      <div
+                        className="bg-forced flex items-center justify-center text-white text-[10px] font-bold"
+                        style={{ width: `${td.forcedPct}%` }}
+                      >
+                        {td.forcedPct}%
+                      </div>
+                    )}
                   </div>
-                )}
-                {distribution.forcedPct > 0 && (
-                  <div
-                    className="bg-forced flex items-center justify-center text-white text-xs font-bold"
-                    style={{ width: `${distribution.forcedPct}%` }}
-                  >
-                    {distribution.forcedPct}%
+                  <div className="text-[10px] text-slate-500 space-y-0.5">
+                    <div className="flex items-center gap-1">
+                      <span className="w-2 h-2 rounded bg-winner inline-block" />
+                      W: {td.byWinner}
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <span className="w-2 h-2 rounded bg-unforced inline-block" />
+                      ENF: {td.byUnforcedError}
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <span className="w-2 h-2 rounded bg-forced inline-block" />
+                      EFG: {td.byForcedError}
+                    </div>
                   </div>
-                )}
-              </div>
-              <div className="flex justify-between text-xs text-slate-500">
-                <div className="flex items-center gap-1">
-                  <span className="w-2.5 h-2.5 rounded bg-winner inline-block" />
-                  Winners ({distribution.decidedByWinner})
                 </div>
-                <div className="flex items-center gap-1">
-                  <span className="w-2.5 h-2.5 rounded bg-unforced inline-block" />
-                  ENF ({distribution.decidedByUnforcedError})
-                </div>
-                <div className="flex items-center gap-1">
-                  <span className="w-2.5 h-2.5 rounded bg-forced inline-block" />
-                  EFG ({distribution.decidedByForcedError})
-                </div>
-              </div>
+              ))}
             </div>
           )}
+          <div className="text-xs text-slate-400">
+            W = Winners · ENF = Err. No Forzados · EFG = Err. Forz. Gen.
+          </div>
         </div>
 
         {/* Magias / Highlights */}

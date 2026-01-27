@@ -5,6 +5,7 @@ import {
   computeStreaks,
   computeBreakPoints,
   computePointDistribution,
+  computeTeamPointDistribution,
   computePlayerMagiaStats,
   computeTeamMagiaStats,
 } from "./analytics";
@@ -32,6 +33,8 @@ export interface SharedMatchData {
   bp: number[];
   /** Distribution: [total, winPct, unfPct, forPct, decW, decU, decF] */
   d: number[];
+  /** Optional per-team distribution: [[totalWon, byW, byUE, byFE], [totalWon, byW, byUE, byFE]] */
+  dt?: number[][];
   /** Optional per-player magia stats: [[x3,x4,dej,dor,vib,sdp], ...] same order as p */
   mg?: number[][];
   /** Optional per-team magia totals: [[x3,x4,dej,dor,vib,sdp], [x3,x4,dej,dor,vib,sdp]] */
@@ -85,6 +88,13 @@ export function encodeMatchResults(state: MatchState): string {
       dist.decidedByForcedError,
     ],
   };
+
+  // Per-team distribution
+  const [td1, td2] = computeTeamPointDistribution(history);
+  data.dt = [
+    [td1.totalPointsWon, td1.byWinner, td1.byUnforcedError, td1.byForcedError],
+    [td2.totalPointsWon, td2.byWinner, td2.byUnforcedError, td2.byForcedError],
+  ];
 
   // Include magias only if there are any (backward compatible)
   if (magias.length > 0) {
@@ -141,6 +151,16 @@ export interface DecodedMatchResults {
     decidedByUnforcedError: number;
     decidedByForcedError: number;
   };
+  teamDistribution: {
+    team: Team;
+    totalPointsWon: number;
+    byWinner: number;
+    byUnforcedError: number;
+    byForcedError: number;
+    winnerPct: number;
+    unforcedPct: number;
+    forcedPct: number;
+  }[] | null;
   magiaPlayerStats: {
     playerName: string;
     team: 1 | 2;
@@ -207,6 +227,28 @@ export function decodeMatchResults(encoded: string): DecodedMatchResults | null 
       },
     ];
 
+    // Decode optional per-team distribution
+    let teamDistribution: DecodedMatchResults["teamDistribution"] = null;
+    if (data.dt) {
+      teamDistribution = data.dt.map((row, idx) => {
+        const total = row[0];
+        const byW = row[1];
+        const byUE = row[2];
+        const byFE = row[3];
+        const catTotal = byW + byUE + byFE;
+        return {
+          team: (idx + 1) as Team,
+          totalPointsWon: total,
+          byWinner: byW,
+          byUnforcedError: byUE,
+          byForcedError: byFE,
+          winnerPct: catTotal > 0 ? Math.round((byW / catTotal) * 100) : 0,
+          unforcedPct: catTotal > 0 ? Math.round((byUE / catTotal) * 100) : 0,
+          forcedPct: catTotal > 0 ? Math.round((byFE / catTotal) * 100) : 0,
+        };
+      });
+    }
+
     // Decode optional magia data
     let magiaPlayerStats: DecodedMatchResults["magiaPlayerStats"] = null;
     let magiaTeamStats: DecodedMatchResults["magiaTeamStats"] = null;
@@ -257,6 +299,7 @@ export function decodeMatchResults(encoded: string): DecodedMatchResults | null 
         decidedByUnforcedError: data.d[5],
         decidedByForcedError: data.d[6],
       },
+      teamDistribution,
       magiaPlayerStats,
       magiaTeamStats,
     };
