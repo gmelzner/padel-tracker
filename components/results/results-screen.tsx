@@ -9,7 +9,11 @@ import {
   computeBreakPoints,
   computePointDistribution,
   computeMomentum,
+  computePlayerMagiaStats,
+  computeTeamMagiaStats,
 } from "@/lib/analytics";
+import { MAGIA_TYPE_LABELS } from "@/lib/constants";
+import type { MagiaType } from "@/lib/types";
 import { MomentumChart } from "./momentum-chart";
 import {
   generateMatchSummary,
@@ -20,7 +24,7 @@ import {
 
 export function ResultsScreen() {
   const { state, dispatch } = useMatch();
-  const { score, players, history, winningTeam } = state;
+  const { score, players, history, magias, winningTeam } = state;
   const [copied, setCopied] = useState(false);
 
   const playerStats = computePlayerStats(history, players);
@@ -29,6 +33,14 @@ export function ResultsScreen() {
   const [break1, break2] = computeBreakPoints(history, score);
   const distribution = computePointDistribution(history);
   const momentum = computeMomentum(history);
+  const playerMagiaStats = computePlayerMagiaStats(magias, players);
+  const [teamMagia1, teamMagia2] = computeTeamMagiaStats(magias, players);
+  const hasMagias = magias.length > 0;
+
+  const magiaTypes: MagiaType[] = ["x3", "x4", "dejada", "dormilona", "vibora", "salida-de-pista"];
+  const magiaShortLabels: Record<MagiaType, string> = {
+    x3: "x3", x4: "x4", dejada: "Dej", dormilona: "Dor", vibora: "Víb", "salida-de-pista": "SdP",
+  };
 
   const team1Players = players.filter((p) => p.team === 1);
   const team2Players = players.filter((p) => p.team === 2);
@@ -117,7 +129,7 @@ export function ResultsScreen() {
                   <th className="text-left py-2 pr-2">Jugador</th>
                   <th className="text-center py-2 px-1">W</th>
                   <th className="text-center py-2 px-1">ENF</th>
-                  <th className="text-center py-2 px-1">EF</th>
+                  <th className="text-center py-2 px-1">EFG</th>
                   <th className="text-center py-2 px-1">Efect.</th>
                 </tr>
               </thead>
@@ -152,8 +164,8 @@ export function ResultsScreen() {
             </table>
           </div>
           <div className="text-xs text-slate-400">
-            W = Winners · ENF = Errores No Forzados · EF = Errores Forzados ·
-            Efect. = W / (W + ENF)
+            W = Winners · ENF = Errores No Forzados · EFG = Errores Forzados Gen. ·
+            Efect. = (W + EFG) / (W + EFG + ENF)
           </div>
         </div>
 
@@ -195,7 +207,7 @@ export function ResultsScreen() {
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-600">Err. Forzados</span>
+                    <span className="text-slate-600">Err. Forz. Gen.</span>
                     <span className="font-bold text-forced">
                       {ts.totalForcedErrors}
                     </span>
@@ -294,12 +306,75 @@ export function ResultsScreen() {
                 </div>
                 <div className="flex items-center gap-1">
                   <span className="w-2.5 h-2.5 rounded bg-forced inline-block" />
-                  EF ({distribution.decidedByForcedError})
+                  EFG ({distribution.decidedByForcedError})
                 </div>
               </div>
             </div>
           )}
         </div>
+
+        {/* Magias / Highlights */}
+        {hasMagias && (
+          <div className="rounded-xl border border-slate-200 bg-white p-4 space-y-3">
+            <h2 className="font-semibold text-slate-800">Highlights</h2>
+            <div className="grid grid-cols-2 gap-3">
+              {[teamMagia1, teamMagia2].map((tm) => (
+                <div
+                  key={tm.team}
+                  className={`rounded-lg p-3 ${
+                    tm.team === 1 ? "bg-team1-light" : "bg-team2-light"
+                  }`}
+                >
+                  <div
+                    className={`font-bold text-sm mb-2 ${
+                      tm.team === 1 ? "text-team1" : "text-team2"
+                    }`}
+                  >
+                    Equipo {tm.team}: {tm.total}
+                  </div>
+                  <div className="space-y-0.5 text-sm">
+                    {magiaTypes.filter((t) => tm.byType[t] > 0).map((t) => (
+                      <div key={t} className="flex justify-between">
+                        <span className="text-slate-600">{MAGIA_TYPE_LABELS[t]}</span>
+                        <span className="font-bold">{tm.byType[t]}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="text-slate-500 text-xs">
+                    <th className="text-left py-2 pr-2">Jugador</th>
+                    {magiaTypes.map((t) => (
+                      <th key={t} className="text-center py-2 px-1">{magiaShortLabels[t]}</th>
+                    ))}
+                    <th className="text-center py-2 px-1">Tot</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {playerMagiaStats.filter((ps) => ps.total > 0).map((ps) => (
+                    <tr key={ps.playerId} className="border-t border-slate-100">
+                      <td className="py-2 pr-2">
+                        <span className={`font-medium ${ps.team === 1 ? "text-team1" : "text-team2"}`}>
+                          {ps.playerName}
+                        </span>
+                      </td>
+                      {magiaTypes.map((t) => (
+                        <td key={t} className="text-center text-purple-600 font-semibold">
+                          {ps.byType[t] || ""}
+                        </td>
+                      ))}
+                      <td className="text-center font-bold">{ps.total}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
 
         {/* Share buttons */}
         <div className="rounded-xl border border-slate-200 bg-white p-4 space-y-3">

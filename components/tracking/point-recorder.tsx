@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { PointType } from "@/lib/types";
+import type { PointType, Team } from "@/lib/types";
 import { useMatch } from "@/lib/match-context";
 import { POINT_TYPE_LABELS } from "@/lib/constants";
 
@@ -10,13 +10,13 @@ type Step = "type" | "player";
 const ACTION_STYLES: Record<PointType, string> = {
   winner: "bg-winner text-white active:bg-green-600",
   "unforced-error": "bg-unforced text-white active:bg-red-600",
-  "forced-error": "bg-forced text-white active:bg-amber-600",
+  "forced-error": "bg-forced text-white active:bg-emerald-600",
 };
 
 const PLAYER_PROMPT: Record<PointType, string> = {
   winner: "¿Quién hizo el Winner?",
   "unforced-error": "¿Quién cometió el Error?",
-  "forced-error": "¿Quién cometió el Error?",
+  "forced-error": "¿Quién generó el error forzado?",
 };
 
 export function PointRecorder() {
@@ -42,6 +42,10 @@ export function PointRecorder() {
     setSelectedType(null);
   }
 
+  function handleQuickPoint(team: Team) {
+    dispatch({ type: "RECORD_QUICK_POINT", payload: { team } });
+  }
+
   function handleCancel() {
     setStep("type");
     setSelectedType(null);
@@ -62,6 +66,26 @@ export function PointRecorder() {
             {POINT_TYPE_LABELS[type]}
           </button>
         ))}
+
+        <div className="flex items-center gap-2 pt-1">
+          <div className="flex-1 h-px bg-slate-200" />
+          <span className="text-xs text-slate-400 font-medium">Punto directo</span>
+          <div className="flex-1 h-px bg-slate-200" />
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          <button
+            onClick={() => handleQuickPoint(1)}
+            className="h-10 rounded-lg bg-team1/20 text-team1 text-sm font-semibold transition-all active:scale-95 active:bg-team1/30"
+          >
+            +1 Eq. 1
+          </button>
+          <button
+            onClick={() => handleQuickPoint(2)}
+            className="h-10 rounded-lg bg-team2/20 text-team2 text-sm font-semibold transition-all active:scale-95 active:bg-team2/30"
+          >
+            +1 Eq. 2
+          </button>
+        </div>
       </div>
     );
   }

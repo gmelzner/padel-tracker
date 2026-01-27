@@ -1,4 +1,4 @@
-import type { Player, PointRecord, Position, ScoreSnapshot, Team } from "./types";
+import type { MagiaRecord, MagiaType, Player, PointRecord, Position, ScoreSnapshot, Team } from "./types";
 
 // ============================================================
 // Player Stats
@@ -13,7 +13,7 @@ export interface PlayerStats {
   unforcedErrors: number;
   forcedErrors: number;
   totalActions: number;
-  effectiveness: number; // winners / (winners + unforcedErrors), 0-100
+  effectiveness: number; // (winners + forcedErrors) / (winners + forcedErrors + unforcedErrors), 0-100
 }
 
 export function computePlayerStats(
@@ -25,7 +25,8 @@ export function computePlayerStats(
     const winners = actions.filter((r) => r.pointType === "winner").length;
     const unforcedErrors = actions.filter((r) => r.pointType === "unforced-error").length;
     const forcedErrors = actions.filter((r) => r.pointType === "forced-error").length;
-    const denominator = winners + unforcedErrors;
+    const positiveActions = winners + forcedErrors;
+    const denominator = positiveActions + unforcedErrors;
     return {
       playerId: player.id,
       playerName: player.name,
@@ -35,7 +36,7 @@ export function computePlayerStats(
       unforcedErrors,
       forcedErrors,
       totalActions: actions.length,
-      effectiveness: denominator > 0 ? Math.round((winners / denominator) * 100) : 0,
+      effectiveness: denominator > 0 ? Math.round((positiveActions / denominator) * 100) : 0,
     };
   });
 }
@@ -63,7 +64,7 @@ export function computeTeamStats(
 
   function statsForTeam(team: Team): TeamStats {
     const ids = new Set(teamIds[team]);
-    const teamActions = history.filter((r) => ids.has(r.playerId));
+    const teamActions = history.filter((r) => r.playerId !== null && ids.has(r.playerId));
     return {
       team,
       totalPointsWon: history.filter((r) => r.pointWonByTeam === team).length,
@@ -179,12 +180,13 @@ export interface PointDistribution {
 }
 
 export function computePointDistribution(history: PointRecord[]): PointDistribution {
-  const total = history.length;
-  const winners = history.filter((r) => r.pointType === "winner").length;
-  const unforced = history.filter((r) => r.pointType === "unforced-error").length;
-  const forced = history.filter((r) => r.pointType === "forced-error").length;
+  const categorized = history.filter((r) => r.pointType !== null);
+  const total = categorized.length;
+  const winners = categorized.filter((r) => r.pointType === "winner").length;
+  const unforced = categorized.filter((r) => r.pointType === "unforced-error").length;
+  const forced = categorized.filter((r) => r.pointType === "forced-error").length;
   return {
-    totalPoints: total,
+    totalPoints: history.length,
     decidedByWinner: winners,
     decidedByUnforcedError: unforced,
     decidedByForcedError: forced,
@@ -213,4 +215,60 @@ export function computeMomentum(history: PointRecord[]): MomentumPoint[] {
   }
 
   return points;
+}
+
+// ============================================================
+// Magia Stats
+// ============================================================
+
+const MAGIA_TYPES: MagiaType[] = ["x3", "x4", "dejada", "dormilona", "vibora", "salida-de-pista"];
+
+export interface PlayerMagiaStats {
+  playerId: string;
+  playerName: string;
+  team: Team;
+  total: number;
+  byType: Record<MagiaType, number>;
+}
+
+export function computePlayerMagiaStats(
+  magias: MagiaRecord[],
+  players: Player[]
+): PlayerMagiaStats[] {
+  return players.map((player) => {
+    const mine = magias.filter((m) => m.playerId === player.id);
+    const byType = {} as Record<MagiaType, number>;
+    for (const t of MAGIA_TYPES) {
+      byType[t] = mine.filter((m) => m.magiaType === t).length;
+    }
+    return {
+      playerId: player.id,
+      playerName: player.name,
+      team: player.team,
+      total: mine.length,
+      byType,
+    };
+  });
+}
+
+export interface TeamMagiaStats {
+  team: Team;
+  total: number;
+  byType: Record<MagiaType, number>;
+}
+
+export function computeTeamMagiaStats(
+  magias: MagiaRecord[],
+  players: Player[]
+): [TeamMagiaStats, TeamMagiaStats] {
+  function statsForTeam(team: Team): TeamMagiaStats {
+    const ids = new Set(players.filter((p) => p.team === team).map((p) => p.id));
+    const teamMagias = magias.filter((m) => ids.has(m.playerId));
+    const byType = {} as Record<MagiaType, number>;
+    for (const t of MAGIA_TYPES) {
+      byType[t] = teamMagias.filter((m) => m.magiaType === t).length;
+    }
+    return { team, total: teamMagias.length, byType };
+  }
+  return [statsForTeam(1), statsForTeam(2)];
 }

@@ -1,10 +1,12 @@
-import type { MatchState, Team, Position } from "./types";
+import type { MagiaType, MatchState, Team, Position } from "./types";
 import {
   computePlayerStats,
   computeTeamStats,
   computeStreaks,
   computeBreakPoints,
   computePointDistribution,
+  computePlayerMagiaStats,
+  computeTeamMagiaStats,
 } from "./analytics";
 
 /**
@@ -30,10 +32,16 @@ export interface SharedMatchData {
   bp: number[];
   /** Distribution: [total, winPct, unfPct, forPct, decW, decU, decF] */
   d: number[];
+  /** Optional per-player magia stats: [[x3,x4,dej,dor,vib,sdp], ...] same order as p */
+  mg?: number[][];
+  /** Optional per-team magia totals: [[x3,x4,dej,dor,vib,sdp], [x3,x4,dej,dor,vib,sdp]] */
+  mt?: number[][];
 }
 
+const MAGIA_ORDER: MagiaType[] = ["x3", "x4", "dejada", "dormilona", "vibora", "salida-de-pista"];
+
 export function encodeMatchResults(state: MatchState): string {
-  const { score, players, history, winningTeam } = state;
+  const { score, players, history, magias, winningTeam } = state;
 
   const t1d = players.find((p) => p.team === 1 && p.position === "drive");
   const t1r = players.find((p) => p.team === 1 && p.position === "reves");
@@ -77,6 +85,17 @@ export function encodeMatchResults(state: MatchState): string {
       dist.decidedByForcedError,
     ],
   };
+
+  // Include magias only if there are any (backward compatible)
+  if (magias.length > 0) {
+    const pMagias = computePlayerMagiaStats(magias, players);
+    const [tM1, tM2] = computeTeamMagiaStats(magias, players);
+    data.mg = pMagias.map((pm) => MAGIA_ORDER.map((t) => pm.byType[t]));
+    data.mt = [
+      MAGIA_ORDER.map((t) => tM1.byType[t]),
+      MAGIA_ORDER.map((t) => tM2.byType[t]),
+    ];
+  }
 
   const json = JSON.stringify(data);
   // Use base64url encoding (URL-safe)
@@ -122,6 +141,17 @@ export interface DecodedMatchResults {
     decidedByUnforcedError: number;
     decidedByForcedError: number;
   };
+  magiaPlayerStats: {
+    playerName: string;
+    team: 1 | 2;
+    total: number;
+    byType: Record<MagiaType, number>;
+  }[] | null;
+  magiaTeamStats: {
+    team: Team;
+    total: number;
+    byType: Record<MagiaType, number>;
+  }[] | null;
 }
 
 export function decodeMatchResults(encoded: string): DecodedMatchResults | null {
@@ -177,6 +207,33 @@ export function decodeMatchResults(encoded: string): DecodedMatchResults | null 
       },
     ];
 
+    // Decode optional magia data
+    let magiaPlayerStats: DecodedMatchResults["magiaPlayerStats"] = null;
+    let magiaTeamStats: DecodedMatchResults["magiaTeamStats"] = null;
+
+    if (data.mg && data.mt) {
+      magiaPlayerStats = data.mg.map((row, i) => {
+        const byType = {} as Record<MagiaType, number>;
+        MAGIA_ORDER.forEach((t, j) => { byType[t] = row[j]; });
+        return {
+          playerName: data.p[i],
+          team: teams[i],
+          total: row.reduce((a, b) => a + b, 0),
+          byType,
+        };
+      });
+
+      magiaTeamStats = data.mt.map((row, idx) => {
+        const byType = {} as Record<MagiaType, number>;
+        MAGIA_ORDER.forEach((t, j) => { byType[t] = row[j]; });
+        return {
+          team: (idx + 1) as Team,
+          total: row.reduce((a, b) => a + b, 0),
+          byType,
+        };
+      });
+    }
+
     return {
       players,
       completedSets,
@@ -200,6 +257,8 @@ export function decodeMatchResults(encoded: string): DecodedMatchResults | null 
         decidedByUnforcedError: data.d[5],
         decidedByForcedError: data.d[6],
       },
+      magiaPlayerStats,
+      magiaTeamStats,
     };
   } catch {
     return null;

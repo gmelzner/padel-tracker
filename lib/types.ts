@@ -45,10 +45,19 @@ export interface ScoreSnapshot {
 export interface PointRecord {
   id: string;
   timestamp: number;
-  pointType: PointType;
-  playerId: string;
+  pointType: PointType | null;
+  playerId: string | null;
   pointWonByTeam: Team;
   scoreBefore: ScoreSnapshot;
+}
+
+export type MagiaType = "x3" | "x4" | "dejada" | "dormilona" | "vibora" | "salida-de-pista";
+
+export interface MagiaRecord {
+  id: string;
+  timestamp: number;
+  magiaType: MagiaType;
+  playerId: string;
 }
 
 export interface MatchState {
@@ -57,6 +66,7 @@ export interface MatchState {
   players: Player[];
   score: ScoreSnapshot;
   history: PointRecord[];
+  magias: MagiaRecord[];
   matchOver: boolean;
   winningTeam: Team | null;
 }
@@ -64,7 +74,10 @@ export interface MatchState {
 export type MatchAction =
   | { type: "INITIALIZE_MATCH"; payload: { players: Player[]; config: MatchConfig } }
   | { type: "RECORD_POINT"; payload: { pointType: PointType; playerId: string } }
+  | { type: "RECORD_QUICK_POINT"; payload: { team: Team } }
   | { type: "UNDO_POINT" }
   | { type: "END_MATCH" }
   | { type: "RESET_MATCH" }
-  | { type: "SET_SCORE"; payload: { score: ScoreSnapshot } };
+  | { type: "SET_SCORE"; payload: { score: ScoreSnapshot } }
+  | { type: "RECORD_MAGIA"; payload: { magiaType: MagiaType; playerId: string } }
+  | { type: "UNDO_MAGIA" };

@@ -1,9 +1,18 @@
-import type { ScoreSnapshot } from "./types";
+import type { MagiaType, ScoreSnapshot } from "./types";
 
 export const POINT_TYPE_LABELS = {
   winner: "Winner",
   "unforced-error": "Error No Forzado",
-  "forced-error": "Error Forzado",
+  "forced-error": "Error Forzado Generado",
+} as const;
+
+export const MAGIA_TYPE_LABELS: Record<MagiaType, string> = {
+  x3: "x3",
+  x4: "x4",
+  dejada: "Dejada",
+  dormilona: "Dormilona",
+  vibora: "Víbora",
+  "salida-de-pista": "Salida de Pista",
 } as const;
 
 export function getInitialScore(): ScoreSnapshot {

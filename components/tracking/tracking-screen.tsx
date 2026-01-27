@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useMatch } from "@/lib/match-context";
 import { Scoreboard } from "./scoreboard";
 import { PointRecorder } from "./point-recorder";
+import { MagiaRecorder } from "./magia-recorder";
 import { UndoButton } from "./undo-button";
 import { ScoreEditor } from "./score-editor";
 
@@ -27,6 +28,7 @@ export function TrackingScreen() {
       {/* Point recorder */}
       <div className="flex-1 p-4 space-y-4">
         <PointRecorder />
+        <MagiaRecorder />
         <UndoButton />
       </div>
 

@@ -1,4 +1,4 @@
-import type { MatchAction, MatchState, PointRecord, Team } from "./types";
+import type { MagiaRecord, MatchAction, MatchState, PointRecord, Team } from "./types";
 import { getInitialScore } from "./constants";
 import { advanceScore } from "./scoring-engine";
 
@@ -14,12 +14,14 @@ export function getInitialState(): MatchState {
     players: [],
     score: getInitialScore(),
     history: [],
+    magias: [],
     matchOver: false,
     winningTeam: null,
   };
 }
 
 let pointCounter = 0;
+let magiaCounter = 0;
 
 export function matchReducer(
   state: MatchState,
@@ -44,13 +46,12 @@ export function matchReducer(
       const player = state.players.find((p) => p.id === playerId);
       if (!player) return state;
 
-      // Winner = point for player's team. Error = point for opposing team.
+      // Winner + Forced Error Generated = point for player's team.
+      // Unforced Error = point for opposing team.
       const pointWonByTeam: Team =
-        pointType === "winner"
-          ? player.team
-          : player.team === 1
-          ? 2
-          : 1;
+        pointType === "unforced-error"
+          ? (player.team === 1 ? 2 : 1)
+          : player.team;
 
       // Snapshot current score for undo
       const scoreBefore = JSON.parse(JSON.stringify(state.score));
@@ -67,6 +68,37 @@ export function matchReducer(
         pointType,
         playerId,
         pointWonByTeam,
+        scoreBefore,
+      };
+
+      return {
+        ...state,
+        score: newScore,
+        history: [...state.history, record],
+        matchOver,
+        winningTeam,
+        screen: matchOver ? "results" : "tracking",
+      };
+    }
+
+    case "RECORD_QUICK_POINT": {
+      if (state.matchOver) return state;
+
+      const { team } = action.payload;
+      const scoreBefore = JSON.parse(JSON.stringify(state.score));
+
+      const { newScore, matchOver, winningTeam } = advanceScore(
+        state.score,
+        state.config,
+        team
+      );
+
+      const record: PointRecord = {
+        id: `point-${++pointCounter}`,
+        timestamp: Date.now(),
+        pointType: null,
+        playerId: null,
+        pointWonByTeam: team,
         scoreBefore,
       };
 
@@ -104,8 +136,31 @@ export function matchReducer(
       };
     }
 
+    case "RECORD_MAGIA": {
+      const { magiaType, playerId } = action.payload;
+      const record: MagiaRecord = {
+        id: `magia-${++magiaCounter}`,
+        timestamp: Date.now(),
+        magiaType,
+        playerId,
+      };
+      return {
+        ...state,
+        magias: [...state.magias, record],
+      };
+    }
+
+    case "UNDO_MAGIA": {
+      if (state.magias.length === 0) return state;
+      return {
+        ...state,
+        magias: state.magias.slice(0, -1),
+      };
+    }
+
     case "RESET_MATCH": {
       pointCounter = 0;
+      magiaCounter = 0;
       return getInitialState();
     }
 
