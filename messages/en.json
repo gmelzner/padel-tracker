@@ -12,7 +12,10 @@
     "errorTeam1": "Fill in the names for Team 1",
     "errorTeam2": "Fill in the names for Team 2",
     "startMatch": "Start Match",
-    "vs": "VS"
+    "vs": "VS",
+    "or": "or",
+    "signInWithGoogle": "Sign in with Google",
+    "signInHint": "To save your match history"
   },
   "config": {
     "matchFormat": "Match format",

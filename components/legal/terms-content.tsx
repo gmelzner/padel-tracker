@@ -53,10 +53,10 @@ export function TermsContent() {
           <p className="text-slate-700 text-sm">
             {t("section8Text")}{" "}
             <a
-              href="mailto:contacto@padeltracker.pro"
+              href="mailto:padeltrackerpro@gmail.com"
               className="text-blue-600 underline"
             >
-              contacto@padeltracker.pro
+              padeltrackerpro@gmail.com
             </a>
           </p>
         </section>

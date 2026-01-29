@@ -12,7 +12,10 @@
     "errorTeam1": "Completá los nombres del Equipo 1",
     "errorTeam2": "Completá los nombres del Equipo 2",
     "startMatch": "Iniciar Partido",
-    "vs": "VS"
+    "vs": "VS",
+    "or": "o",
+    "signInWithGoogle": "Iniciar sesión con Google",
+    "signInHint": "Para guardar tu historial de partidos"
   },
   "config": {
     "matchFormat": "Formato del partido",
