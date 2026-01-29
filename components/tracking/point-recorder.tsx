@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import type { PointType, Team } from "@/lib/types";
 import { useMatch } from "@/lib/match-context";
-import { POINT_TYPE_LABELS } from "@/lib/constants";
 
 type Step = "type" | "player";
 
@@ -13,13 +13,20 @@ const ACTION_STYLES: Record<PointType, string> = {
   "forced-error": "bg-forced text-white active:bg-green-500",
 };
 
-const PLAYER_PROMPT: Record<PointType, string> = {
-  winner: "¿Quién hizo el Winner?",
-  "unforced-error": "¿Quién cometió el Error?",
-  "forced-error": "¿Quién generó el error forzado?",
+const POINT_TYPE_KEYS: Record<PointType, string> = {
+  winner: "pointTypes.winner",
+  "forced-error": "pointTypes.forcedError",
+  "unforced-error": "pointTypes.unforcedError",
+};
+
+const PLAYER_PROMPT_KEYS: Record<PointType, string> = {
+  winner: "playerPrompt.winner",
+  "unforced-error": "playerPrompt.unforcedError",
+  "forced-error": "playerPrompt.forcedError",
 };
 
 export function PointRecorder() {
+  const t = useTranslations();
   const { state, dispatch } = useMatch();
   const [step, setStep] = useState<Step>("type");
   const [selectedType, setSelectedType] = useState<PointType | null>(null);
@@ -56,36 +63,36 @@ export function PointRecorder() {
       <div className="space-y-3 animate-fade-in" key="step-type">
         <div className="flex items-center gap-2">
           <div className="flex-1 h-px bg-slate-200" />
-          <span className="text-xs text-slate-400 font-medium">Punto directo</span>
+          <span className="text-xs text-slate-400 font-medium">{t("pointRecorder.directPoint")}</span>
           <div className="flex-1 h-px bg-slate-200" />
         </div>
         <div className="grid grid-cols-2 gap-3">
           <button
             onClick={() => handleQuickPoint(1)}
-            className="h-10 rounded-lg bg-team1/20 text-team1 text-sm font-semibold transition-all active:scale-95 active:bg-team1/30"
+            className="h-10 rounded-lg bg-team1/20 text-team1 text-sm font-semibold transition-all active:scale-95 active:bg-team1/30 truncate px-2"
           >
-            +1 Eq. 1
+            {team1Players.map((p) => p.name).join(" / ")}
           </button>
           <button
             onClick={() => handleQuickPoint(2)}
-            className="h-10 rounded-lg bg-team2/20 text-team2 text-sm font-semibold transition-all active:scale-95 active:bg-team2/30"
+            className="h-10 rounded-lg bg-team2/20 text-team2 text-sm font-semibold transition-all active:scale-95 active:bg-team2/30 truncate px-2"
           >
-            +1 Eq. 2
+            {team2Players.map((p) => p.name).join(" / ")}
           </button>
         </div>
 
         <div className="flex items-center gap-2 pt-1">
           <div className="flex-1 h-px bg-slate-200" />
-          <span className="text-xs text-slate-400 font-medium">¿Qué pasó?</span>
+          <span className="text-xs text-slate-400 font-medium">{t("pointRecorder.whatHappened")}</span>
           <div className="flex-1 h-px bg-slate-200" />
         </div>
-        {(Object.keys(POINT_TYPE_LABELS) as PointType[]).map((type) => (
+        {(Object.keys(POINT_TYPE_KEYS) as PointType[]).map((type) => (
           <button
             key={type}
             onClick={() => handleTypeSelect(type)}
             className={`w-full h-16 rounded-xl text-lg font-bold transition-all active:scale-95 ${ACTION_STYLES[type]}`}
           >
-            {POINT_TYPE_LABELS[type]}
+            {t(POINT_TYPE_KEYS[type])}
           </button>
         ))}
       </div>
@@ -95,7 +102,7 @@ export function PointRecorder() {
   return (
     <div className="space-y-3 animate-fade-in-scale" key="step-player">
       <p className="text-center text-slate-500 text-sm font-medium">
-        {selectedType ? PLAYER_PROMPT[selectedType] : ""}
+        {selectedType ? t(PLAYER_PROMPT_KEYS[selectedType]) : ""}
       </p>
 
       {/* Court-view layout: top-down view of the court
@@ -153,8 +160,8 @@ export function PointRecorder() {
 
         {/* Court labels */}
         <div className="flex justify-between mt-2 text-xs text-slate-400 font-medium px-1">
-          <span>Equipo 1</span>
-          <span>Equipo 2</span>
+          <span>{t("pointRecorder.team1")}</span>
+          <span>{t("pointRecorder.team2")}</span>
         </div>
       </div>
 
@@ -162,7 +169,7 @@ export function PointRecorder() {
         onClick={handleCancel}
         className="w-full h-11 rounded-lg text-slate-500 text-sm font-medium active:bg-slate-100 transition-colors"
       >
-        Cancelar
+        {t("pointRecorder.cancel")}
       </button>
     </div>
   );

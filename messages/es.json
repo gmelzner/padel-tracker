@@ -1,0 +1,166 @@
+{
+  "metadata": {
+    "title": "Padel Tracker",
+    "description": "Seguimiento de partidos de pádel en tiempo real"
+  },
+  "setup": {
+    "title": "Padel Tracker",
+    "subtitle": "Configurá el partido para empezar",
+    "team1": "Equipo 1",
+    "team2": "Equipo 2",
+    "namePlaceholder": "Nombre",
+    "errorTeam1": "Completá los nombres del Equipo 1",
+    "errorTeam2": "Completá los nombres del Equipo 2",
+    "startMatch": "Iniciar Partido",
+    "vs": "VS"
+  },
+  "config": {
+    "matchFormat": "Formato del partido",
+    "gamesPerSet": "Games por set",
+    "sets": "Sets",
+    "deuce": "Deuce",
+    "goldenPoint": "Punto de Oro",
+    "advantage": "Ventaja",
+    "tiebreak": "Tiebreak",
+    "yes": "Sí",
+    "no": "No"
+  },
+  "tracking": {
+    "adjustScore": "Ajustar marcador",
+    "endMatch": "Terminar partido",
+    "confirmEnd": "¿Terminar el partido? Se mostrarán las estadísticas acumuladas."
+  },
+  "pointTypes": {
+    "winner": "Winner",
+    "forcedError": "Error Forzado Generado",
+    "unforcedError": "Error No Forzado"
+  },
+  "playerPrompt": {
+    "winner": "¿Quién hizo el Winner?",
+    "unforcedError": "¿Quién cometió el Error?",
+    "forcedError": "¿Quién generó el error forzado?"
+  },
+  "pointRecorder": {
+    "directPoint": "Punto directo",
+    "whatHappened": "¿Qué pasó?",
+    "cancel": "Cancelar",
+    "team1": "Equipo 1",
+    "team2": "Equipo 2"
+  },
+  "scoreboard": {
+    "vs": "vs",
+    "sets": "SETS",
+    "tiebreak": "TIEBREAK",
+    "games": "GAMES",
+    "points": "PUNTOS",
+    "serve": "Saque"
+  },
+  "scoreEditor": {
+    "title": "Ajustar Marcador",
+    "cancel": "Cancelar",
+    "sets": "Sets",
+    "gamesCurrentSet": "Games (set actual)",
+    "pointsCurrentGame": "Puntos (game actual)",
+    "serve": "Saque",
+    "team1Short": "Eq. 1",
+    "team2Short": "Eq. 2",
+    "team1": "Equipo 1",
+    "team2": "Equipo 2",
+    "apply": "Aplicar marcador"
+  },
+  "magia": {
+    "title": "Magias",
+    "specialShots": "Golpes especiales",
+    "whatMagia": "¿Qué magia fue?",
+    "whoMagia": "¿Quién hizo la {type}?",
+    "close": "Cerrar",
+    "back": "Volver"
+  },
+  "undo": {
+    "undo": "Deshacer",
+    "directPoint": "Punto directo",
+    "teamLabel": "Eq. {team}"
+  },
+  "results": {
+    "title": "Resultado",
+    "winner": "Ganador:",
+    "matchEndedEarly": "Partido terminado anticipadamente",
+    "summary": "Resumen",
+    "set": "Set",
+    "inProgress": "(en curso)",
+    "playerStats": "Estadísticas por Jugador",
+    "player": "Jugador",
+    "effectiveness": "Efect.",
+    "statsLegend": "W = Winners · ENF = Errores No Forzados · EFG = Errores Forzados Gen. · Efect. = (W + EFG) / (W + EFG + ENF)",
+    "teamStats": "Estadísticas por Equipo",
+    "team": "Equipo {num}",
+    "pointsWon": "Puntos ganados",
+    "winners": "Winners",
+    "unforcedErrors": "Err. No Forzados",
+    "forcedErrorsGen": "Err. Forz. Gen.",
+    "streaksAndBreaks": "Rachas y Breaks",
+    "bestStreak": "Mejor racha",
+    "breaksWon": "Breaks ganados",
+    "breakExplanation": "Break = game ganado cuando sacaba el otro equipo",
+    "pointDistribution": "Distribución de Puntos",
+    "pointsPlayed": "{count} puntos jugados",
+    "distLegend": "W = Winners · ENF = Err. No Forzados · EFG = Err. Forz. Gen.",
+    "highlights": "Highlights",
+    "share": "Compartir",
+    "shareButton": "Compartir",
+    "copyButton": "Copiar",
+    "copiedButton": "Copiado!",
+    "newMatch": "Nuevo Partido",
+    "previewTitle": "Estadísticas",
+    "backToMatch": "Volver al Partido",
+    "createMyMatch": "Crear mi partido"
+  },
+  "momentum": {
+    "title": "Momentum del Partido",
+    "explanation": "Arriba = domina Eq. 1 · Abajo = domina Eq. 2"
+  },
+  "shareText": {
+    "greatMatch": "¡Partidazo jugado!",
+    "matchEnded": "¡Partido terminado!",
+    "congratulations": "Felicitaciones a los ganadores: {backhand} en el Revés y {forehand} en el Drive.",
+    "viewStats": "Mirá las estadísticas completas acá"
+  },
+  "sharedResults": {
+    "notFound": "Resultado no encontrado",
+    "invalidLink": "El link no es válido o expiró.",
+    "goToApp": "Ir a Padel Tracker",
+    "loading": "Cargando..."
+  },
+  "auth": {
+    "saveYourResults": "Guardá tus resultados",
+    "saveDescription": "Iniciá sesión con Google para guardar un historial de tus partidos y estadísticas.",
+    "signInWithGoogle": "Iniciar sesión con Google",
+    "skip": "Omitir",
+    "signedInAs": "Sesión iniciada como {name}",
+    "signOut": "Cerrar sesión",
+    "whichPlayer": "¿Qué jugador sos?",
+    "saving": "Guardando...",
+    "saved": "¡Partido guardado!",
+    "saveError": "No se pudo guardar. Intentá de nuevo.",
+    "retry": "Reintentar",
+    "viewProfile": "Ver perfil"
+  },
+  "profile": {
+    "title": "Mi Perfil",
+    "matchesPlayed": "Jugados",
+    "matchesWon": "Ganados",
+    "matchesLost": "Perdidos",
+    "winRate": "Efectividad",
+    "matchHistory": "Historial de Partidos",
+    "noMatches": "No hay partidos guardados. ¡Jugá un partido y guardalo desde la pantalla de resultados!",
+    "won": "G",
+    "lost": "P",
+    "pointsPlayed": "{count} pts",
+    "deleteMatch": "Eliminar",
+    "confirmDelete": "¿Eliminar este partido?",
+    "goBack": "Volver a la app",
+    "signOutButton": "Cerrar sesión",
+    "notLoggedIn": "Iniciá sesión para ver tu perfil",
+    "signInWithGoogle": "Iniciar sesión con Google"
+  }
+}

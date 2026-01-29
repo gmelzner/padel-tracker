@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import type { MomentumPoint } from "@/lib/analytics";
 
 interface MomentumChartProps {
@@ -9,6 +10,7 @@ interface MomentumChartProps {
 }
 
 export function MomentumChart({ data, team1Label, team2Label }: MomentumChartProps) {
+  const t = useTranslations();
   if (data.length < 2) return null;
 
   const width = 320;
@@ -43,7 +45,7 @@ export function MomentumChart({ data, team1Label, team2Label }: MomentumChartPro
 
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-4 space-y-2">
-      <h2 className="font-semibold text-slate-800">Momentum del Partido</h2>
+      <h2 className="font-semibold text-slate-800">{t("momentum.title")}</h2>
       <div className="flex justify-between text-xs text-slate-400 px-1">
         <span className="text-team1 font-medium">{team1Label}</span>
         <span className="text-team2 font-medium">{team2Label}</span>
@@ -90,7 +92,7 @@ export function MomentumChart({ data, team1Label, team2Label }: MomentumChartPro
         />
       </svg>
       <p className="text-xs text-slate-400 text-center">
-        Arriba = domina Eq. 1 · Abajo = domina Eq. 2
+        {t("momentum.explanation")}
       </p>
     </div>
   );

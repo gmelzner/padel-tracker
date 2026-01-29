@@ -1,0 +1,166 @@
+{
+  "metadata": {
+    "title": "Padel Tracker",
+    "description": "Real-time padel match tracking"
+  },
+  "setup": {
+    "title": "Padel Tracker",
+    "subtitle": "Set up your match to get started",
+    "team1": "Team 1",
+    "team2": "Team 2",
+    "namePlaceholder": "Name",
+    "errorTeam1": "Fill in the names for Team 1",
+    "errorTeam2": "Fill in the names for Team 2",
+    "startMatch": "Start Match",
+    "vs": "VS"
+  },
+  "config": {
+    "matchFormat": "Match format",
+    "gamesPerSet": "Games per set",
+    "sets": "Sets",
+    "deuce": "Deuce",
+    "goldenPoint": "Golden Point",
+    "advantage": "Advantage",
+    "tiebreak": "Tiebreak",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "tracking": {
+    "adjustScore": "Adjust score",
+    "endMatch": "End match",
+    "confirmEnd": "End the match? Accumulated stats will be shown."
+  },
+  "pointTypes": {
+    "winner": "Winner",
+    "forcedError": "Forced Error Generated",
+    "unforcedError": "Unforced Error"
+  },
+  "playerPrompt": {
+    "winner": "Who hit the Winner?",
+    "unforcedError": "Who made the Error?",
+    "forcedError": "Who generated the forced error?"
+  },
+  "pointRecorder": {
+    "directPoint": "Direct point",
+    "whatHappened": "What happened?",
+    "cancel": "Cancel",
+    "team1": "Team 1",
+    "team2": "Team 2"
+  },
+  "scoreboard": {
+    "vs": "vs",
+    "sets": "SETS",
+    "tiebreak": "TIEBREAK",
+    "games": "GAMES",
+    "points": "POINTS",
+    "serve": "Serve"
+  },
+  "scoreEditor": {
+    "title": "Adjust Score",
+    "cancel": "Cancel",
+    "sets": "Sets",
+    "gamesCurrentSet": "Games (current set)",
+    "pointsCurrentGame": "Points (current game)",
+    "serve": "Serve",
+    "team1Short": "Tm. 1",
+    "team2Short": "Tm. 2",
+    "team1": "Team 1",
+    "team2": "Team 2",
+    "apply": "Apply score"
+  },
+  "magia": {
+    "title": "Magias",
+    "specialShots": "Special shots",
+    "whatMagia": "What highlight was it?",
+    "whoMagia": "Who made the {type}?",
+    "close": "Close",
+    "back": "Back"
+  },
+  "undo": {
+    "undo": "Undo",
+    "directPoint": "Direct point",
+    "teamLabel": "Tm. {team}"
+  },
+  "results": {
+    "title": "Results",
+    "winner": "Winner:",
+    "matchEndedEarly": "Match ended early",
+    "summary": "Summary",
+    "set": "Set",
+    "inProgress": "(in progress)",
+    "playerStats": "Player Stats",
+    "player": "Player",
+    "effectiveness": "Effect.",
+    "statsLegend": "W = Winners · UE = Unforced Errors · FEG = Forced Errors Gen. · Effect. = (W + FEG) / (W + FEG + UE)",
+    "teamStats": "Team Stats",
+    "team": "Team {num}",
+    "pointsWon": "Points won",
+    "winners": "Winners",
+    "unforcedErrors": "Unf. Errors",
+    "forcedErrorsGen": "Forced Err. Gen.",
+    "streaksAndBreaks": "Streaks & Breaks",
+    "bestStreak": "Best streak",
+    "breaksWon": "Breaks won",
+    "breakExplanation": "Break = game won when the other team was serving",
+    "pointDistribution": "Point Distribution",
+    "pointsPlayed": "{count} points played",
+    "distLegend": "W = Winners · UE = Unf. Errors · FEG = Forced Err. Gen.",
+    "highlights": "Highlights",
+    "share": "Share",
+    "shareButton": "Share",
+    "copyButton": "Copy",
+    "copiedButton": "Copied!",
+    "newMatch": "New Match",
+    "previewTitle": "Match Stats",
+    "backToMatch": "Back to Match",
+    "createMyMatch": "Create my match"
+  },
+  "momentum": {
+    "title": "Match Momentum",
+    "explanation": "Above = Team 1 leads · Below = Team 2 leads"
+  },
+  "shareText": {
+    "greatMatch": "Great match played!",
+    "matchEnded": "Match ended!",
+    "congratulations": "Congratulations to the winners: {backhand} on Revés and {forehand} on Drive.",
+    "viewStats": "See the full stats here"
+  },
+  "sharedResults": {
+    "notFound": "Result not found",
+    "invalidLink": "The link is not valid or has expired.",
+    "goToApp": "Go to Padel Tracker",
+    "loading": "Loading..."
+  },
+  "auth": {
+    "saveYourResults": "Save your results",
+    "saveDescription": "Sign in with Google to keep a history of your matches and stats.",
+    "signInWithGoogle": "Sign in with Google",
+    "skip": "Skip",
+    "signedInAs": "Signed in as {name}",
+    "signOut": "Sign out",
+    "whichPlayer": "Which player are you?",
+    "saving": "Saving...",
+    "saved": "Match saved!",
+    "saveError": "Could not save. Try again.",
+    "retry": "Retry",
+    "viewProfile": "View profile"
+  },
+  "profile": {
+    "title": "My Profile",
+    "matchesPlayed": "Played",
+    "matchesWon": "Won",
+    "matchesLost": "Lost",
+    "winRate": "Win rate",
+    "matchHistory": "Match History",
+    "noMatches": "No matches saved yet. Play a match and save it from the results screen!",
+    "won": "W",
+    "lost": "L",
+    "pointsPlayed": "{count} pts",
+    "deleteMatch": "Delete",
+    "confirmDelete": "Delete this match?",
+    "goBack": "Back to app",
+    "signOutButton": "Sign out",
+    "notLoggedIn": "Sign in to see your profile",
+    "signInWithGoogle": "Sign in with Google"
+  }
+}

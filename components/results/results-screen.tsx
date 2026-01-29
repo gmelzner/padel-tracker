@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { useMatch } from "@/lib/match-context";
 import {
   computePlayerStats,
@@ -16,8 +17,10 @@ import {
 import { MAGIA_TYPE_LABELS } from "@/lib/constants";
 import type { MagiaType } from "@/lib/types";
 import { MomentumChart } from "./momentum-chart";
+import { SaveResultsPrompt } from "./save-results-prompt";
 import {
-  generateMatchSummary,
+  generateMatchSummaryAsync,
+  buildShareTextWithUrl,
   shareViaWhatsApp,
   shareNative,
   copyToClipboard,
@@ -27,6 +30,23 @@ export function ResultsScreen() {
   const { state, dispatch } = useMatch();
   const { score, players, history, magias, winningTeam } = state;
   const [copied, setCopied] = useState(false);
+  const [sharing, setSharing] = useState(false);
+  const [shareUrl, setShareUrl] = useState<string | null>(null);
+  const t = useTranslations();
+
+  async function getOrCreateShareText(): Promise<string> {
+    if (shareUrl) {
+      return buildShareTextWithUrl(state, t, shareUrl);
+    }
+    setSharing(true);
+    try {
+      const { text, url } = await generateMatchSummaryAsync(state, t);
+      setShareUrl(url);
+      return text;
+    } finally {
+      setSharing(false);
+    }
+  }
 
   const playerStats = computePlayerStats(history, players);
   const [team1Stats, team2Stats] = computeTeamStats(history, players);
@@ -49,12 +69,23 @@ export function ResultsScreen() {
   const team1Label = team1Players.map((p) => p.name).join(" / ");
   const team2Label = team2Players.map((p) => p.name).join(" / ");
 
+  const isPreview = !state.matchOver;
+
   return (
     <div className="min-h-dvh bg-slate-50 p-4 pb-8">
       <div className="max-w-lg mx-auto space-y-4">
         <h1 className="text-2xl font-bold text-slate-800 text-center pt-4">
-          Resultado
+          {isPreview ? t("results.previewTitle") : t("results.title")}
         </h1>
+
+        {isPreview && (
+          <button
+            onClick={() => dispatch({ type: "RESUME_TRACKING" })}
+            className="w-full h-14 rounded-2xl bg-slate-900 text-white font-bold text-lg active:scale-[0.98] transition-all"
+          >
+            {t("results.backToMatch")}
+          </button>
+        )}
 
         {/* Winner */}
         {winningTeam ? (
@@ -65,7 +96,7 @@ export function ResultsScreen() {
                 : "bg-team2-light text-team2"
             }`}
           >
-            Ganador:{" "}
+            {t("results.winner")}{" "}
             {players
               .filter((p) => p.team === winningTeam)
               .map((p) => p.name)
@@ -73,13 +104,13 @@ export function ResultsScreen() {
           </div>
         ) : (
           <div className="rounded-xl p-4 text-center font-medium text-slate-500 bg-slate-100">
-            Partido terminado anticipadamente
+            {t("results.matchEndedEarly")}
           </div>
         )}
 
         {/* Score summary */}
         <div className="rounded-xl border border-slate-200 bg-white p-4 space-y-3">
-          <h2 className="font-semibold text-slate-800">Resumen</h2>
+          <h2 className="font-semibold text-slate-800">{t("results.summary")}</h2>
           <div className="grid grid-cols-3 text-center text-sm text-slate-500">
             <div className="font-medium text-team1 truncate">{team1Label}</div>
             <div></div>
@@ -89,7 +120,7 @@ export function ResultsScreen() {
             <div key={i} className="grid grid-cols-3 text-center">
               <div className="text-xl font-bold">{set.games[0]}</div>
               <div className="text-slate-400 text-xs self-center">
-                Set {i + 1}
+                {t("results.set")} {i + 1}
                 {set.tiebreakPlayed && set.tiebreakScore
                   ? ` (${set.tiebreakScore[0]}-${set.tiebreakScore[1]})`
                   : ""}
@@ -97,13 +128,13 @@ export function ResultsScreen() {
               <div className="text-xl font-bold">{set.games[1]}</div>
             </div>
           ))}
-          {!winningTeam && (score.games[0] > 0 || score.games[1] > 0) && (
+          {!winningTeam && (
             <div className="grid grid-cols-3 text-center">
               <div className="text-xl font-bold text-slate-400">
                 {score.games[0]}
               </div>
               <div className="text-slate-400 text-xs self-center">
-                Set {score.currentSetIndex + 1} (en curso)
+                {t("results.set")} {score.currentSetIndex + 1} {t("results.inProgress")}
               </div>
               <div className="text-xl font-bold text-slate-400">
                 {score.games[1]}
@@ -122,17 +153,17 @@ export function ResultsScreen() {
         {/* Player stats with effectiveness */}
         <div className="rounded-xl border border-slate-200 bg-white p-4 space-y-3">
           <h2 className="font-semibold text-slate-800">
-            Estadísticas por Jugador
+            {t("results.playerStats")}
           </h2>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="text-slate-500 text-xs">
-                  <th className="text-left py-2 pr-2">Jugador</th>
+                  <th className="text-left py-2 pr-2">{t("results.player")}</th>
                   <th className="text-center py-2 px-1">W</th>
                   <th className="text-center py-2 px-1">ENF</th>
                   <th className="text-center py-2 px-1">EFG</th>
-                  <th className="text-center py-2 px-1">Efect.</th>
+                  <th className="text-center py-2 px-1">{t("results.effectiveness")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -166,15 +197,14 @@ export function ResultsScreen() {
             </table>
           </div>
           <div className="text-xs text-slate-400">
-            W = Winners · ENF = Errores No Forzados · EFG = Errores Forzados Gen. ·
-            Efect. = (W + EFG) / (W + EFG + ENF)
+            {t("results.statsLegend")}
           </div>
         </div>
 
         {/* Team stats */}
         <div className="rounded-xl border border-slate-200 bg-white p-4 space-y-3">
           <h2 className="font-semibold text-slate-800">
-            Estadísticas por Equipo
+            {t("results.teamStats")}
           </h2>
           <div className="grid grid-cols-2 gap-3">
             {[team1Stats, team2Stats].map((ts) => (
@@ -189,27 +219,27 @@ export function ResultsScreen() {
                     ts.team === 1 ? "text-team1" : "text-team2"
                   }`}
                 >
-                  Equipo {ts.team}
+                  {t("results.team", { num: String(ts.team) })}
                 </div>
                 <div className="space-y-1 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-slate-600">Puntos ganados</span>
+                    <span className="text-slate-600">{t("results.pointsWon")}</span>
                     <span className="font-bold">{ts.totalPointsWon}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-600">Winners</span>
+                    <span className="text-slate-600">{t("results.winners")}</span>
                     <span className="font-bold text-winner">
                       {ts.totalWinners}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-600">Err. No Forzados</span>
+                    <span className="text-slate-600">{t("results.unforcedErrors")}</span>
                     <span className="font-bold text-unforced">
                       {ts.totalUnforcedErrors}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-600">Err. Forz. Gen.</span>
+                    <span className="text-slate-600">{t("results.forcedErrorsGen")}</span>
                     <span className="font-bold text-forced">
                       {ts.totalForcedErrors}
                     </span>
@@ -222,9 +252,8 @@ export function ResultsScreen() {
 
         {/* Rachas + Break Points */}
         <div className="rounded-xl border border-slate-200 bg-white p-4 space-y-3">
-          <h2 className="font-semibold text-slate-800">Rachas y Breaks</h2>
+          <h2 className="font-semibold text-slate-800">{t("results.streaksAndBreaks")}</h2>
           <div className="grid grid-cols-2 gap-3">
-            {/* Streaks */}
             {[streak1, streak2].map((s) => (
               <div
                 key={s.team}
@@ -237,15 +266,15 @@ export function ResultsScreen() {
                     s.team === 1 ? "text-team1" : "text-team2"
                   }`}
                 >
-                  Equipo {s.team}
+                  {t("results.team", { num: String(s.team) })}
                 </div>
                 <div className="text-sm space-y-1">
                   <div className="flex justify-between">
-                    <span className="text-slate-600">Mejor racha</span>
+                    <span className="text-slate-600">{t("results.bestStreak")}</span>
                     <span className="font-bold">{s.longestStreak} pts</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-600">Breaks ganados</span>
+                    <span className="text-slate-600">{t("results.breaksWon")}</span>
                     <span className="font-bold">
                       {s.team === 1 ? break1.breakPointsWon : break2.breakPointsWon}
                     </span>
@@ -255,17 +284,17 @@ export function ResultsScreen() {
             ))}
           </div>
           <p className="text-xs text-slate-400">
-            Break = game ganado cuando sacaba el otro equipo
+            {t("results.breakExplanation")}
           </p>
         </div>
 
         {/* Point Distribution by Team */}
         <div className="rounded-xl border border-slate-200 bg-white p-4 space-y-3">
           <h2 className="font-semibold text-slate-800">
-            Distribución de Puntos
+            {t("results.pointDistribution")}
           </h2>
           <div className="text-sm text-slate-600">
-            {distribution.totalPoints} puntos jugados
+            {t("results.pointsPlayed", { count: String(distribution.totalPoints) })}
           </div>
 
           {distribution.totalPoints > 0 && (
@@ -320,14 +349,14 @@ export function ResultsScreen() {
             </div>
           )}
           <div className="text-xs text-slate-400">
-            W = Winners · ENF = Err. No Forzados · EFG = Err. Forz. Gen.
+            {t("results.distLegend")}
           </div>
         </div>
 
         {/* Magias / Highlights */}
         {hasMagias && (
           <div className="rounded-xl border border-slate-200 bg-white p-4 space-y-3">
-            <h2 className="font-semibold text-slate-800">Highlights</h2>
+            <h2 className="font-semibold text-slate-800">{t("results.highlights")}</h2>
             <div className="grid grid-cols-2 gap-3">
               {[teamMagia1, teamMagia2].map((tm) => (
                 <div
@@ -341,13 +370,13 @@ export function ResultsScreen() {
                       tm.team === 1 ? "text-team1" : "text-team2"
                     }`}
                   >
-                    Equipo {tm.team}: {tm.total}
+                    {t("results.team", { num: String(tm.team) })}: {tm.total}
                   </div>
                   <div className="space-y-0.5 text-sm">
-                    {magiaTypes.filter((t) => tm.byType[t] > 0).map((t) => (
-                      <div key={t} className="flex justify-between">
-                        <span className="text-slate-600">{MAGIA_TYPE_LABELS[t]}</span>
-                        <span className="font-bold">{tm.byType[t]}</span>
+                    {magiaTypes.filter((mt) => tm.byType[mt] > 0).map((mt) => (
+                      <div key={mt} className="flex justify-between">
+                        <span className="text-slate-600">{MAGIA_TYPE_LABELS[mt]}</span>
+                        <span className="font-bold">{tm.byType[mt]}</span>
                       </div>
                     ))}
                   </div>
@@ -358,9 +387,9 @@ export function ResultsScreen() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="text-slate-500 text-xs">
-                    <th className="text-left py-2 pr-2">Jugador</th>
-                    {magiaTypes.map((t) => (
-                      <th key={t} className="text-center py-2 px-1">{magiaShortLabels[t]}</th>
+                    <th className="text-left py-2 pr-2">{t("results.player")}</th>
+                    {magiaTypes.map((mt) => (
+                      <th key={mt} className="text-center py-2 px-1">{magiaShortLabels[mt]}</th>
                     ))}
                     <th className="text-center py-2 px-1">Tot</th>
                   </tr>
@@ -373,9 +402,9 @@ export function ResultsScreen() {
                           {ps.playerName}
                         </span>
                       </td>
-                      {magiaTypes.map((t) => (
-                        <td key={t} className="text-center text-purple-600 font-semibold">
-                          {ps.byType[t] || ""}
+                      {magiaTypes.map((mt) => (
+                        <td key={mt} className="text-center text-purple-600 font-semibold">
+                          {ps.byType[mt] || ""}
                         </td>
                       ))}
                       <td className="text-center font-bold">{ps.total}</td>
@@ -387,54 +416,68 @@ export function ResultsScreen() {
           </div>
         )}
 
-        {/* Share buttons */}
-        <div className="rounded-xl border border-slate-200 bg-white p-4 space-y-3">
-          <h2 className="font-semibold text-slate-800">Compartir</h2>
-          <div className="grid grid-cols-3 gap-2">
-            <button
-              onClick={() => shareViaWhatsApp(generateMatchSummary(state))}
-              className="h-12 rounded-xl bg-[#25D366] text-white font-semibold text-sm active:scale-95 transition-all"
-            >
-              WhatsApp
-            </button>
-            <button
-              onClick={async () => {
-                const text = generateMatchSummary(state);
-                const shared = await shareNative(text);
-                if (!shared) {
-                  const ok = await copyToClipboard(text);
-                  if (ok) {
-                    setCopied(true);
-                    setTimeout(() => setCopied(false), 2000);
-                  }
-                }
-              }}
-              className="h-12 rounded-xl bg-slate-700 text-white font-semibold text-sm active:scale-95 transition-all"
-            >
-              Compartir
-            </button>
-            <button
-              onClick={async () => {
-                const ok = await copyToClipboard(generateMatchSummary(state));
-                if (ok) {
-                  setCopied(true);
-                  setTimeout(() => setCopied(false), 2000);
-                }
-              }}
-              className="h-12 rounded-xl bg-slate-200 text-slate-700 font-semibold text-sm active:scale-95 transition-all"
-            >
-              {copied ? "Copiado!" : "Copiar"}
-            </button>
-          </div>
-        </div>
+        {!isPreview && (
+          <>
+            {/* Share buttons */}
+            <div className="rounded-xl border border-slate-200 bg-white p-4 space-y-3">
+              <h2 className="font-semibold text-slate-800">{t("results.share")}</h2>
+              <div className="grid grid-cols-3 gap-2">
+                <button
+                  disabled={sharing}
+                  onClick={async () => {
+                    const text = await getOrCreateShareText();
+                    shareViaWhatsApp(text);
+                  }}
+                  className="h-12 rounded-xl bg-[#25D366] text-white font-semibold text-sm active:scale-95 transition-all disabled:opacity-60"
+                >
+                  {sharing ? "..." : "WhatsApp"}
+                </button>
+                <button
+                  disabled={sharing}
+                  onClick={async () => {
+                    const text = await getOrCreateShareText();
+                    const shared = await shareNative(text);
+                    if (!shared) {
+                      const ok = await copyToClipboard(text);
+                      if (ok) {
+                        setCopied(true);
+                        setTimeout(() => setCopied(false), 2000);
+                      }
+                    }
+                  }}
+                  className="h-12 rounded-xl bg-slate-700 text-white font-semibold text-sm active:scale-95 transition-all disabled:opacity-60"
+                >
+                  {sharing ? "..." : t("results.shareButton")}
+                </button>
+                <button
+                  disabled={sharing}
+                  onClick={async () => {
+                    const text = await getOrCreateShareText();
+                    const ok = await copyToClipboard(text);
+                    if (ok) {
+                      setCopied(true);
+                      setTimeout(() => setCopied(false), 2000);
+                    }
+                  }}
+                  className="h-12 rounded-xl bg-slate-200 text-slate-700 font-semibold text-sm active:scale-95 transition-all disabled:opacity-60"
+                >
+                  {sharing ? "..." : copied ? t("results.copiedButton") : t("results.copyButton")}
+                </button>
+              </div>
+            </div>
 
-        {/* New match button */}
-        <button
-          onClick={() => dispatch({ type: "RESET_MATCH" })}
-          className="w-full h-14 rounded-2xl bg-slate-900 text-white font-bold text-lg active:scale-[0.98] transition-all"
-        >
-          Nuevo Partido
-        </button>
+            {/* Save results prompt (auth) */}
+            <SaveResultsPrompt />
+
+            {/* New match button */}
+            <button
+              onClick={() => dispatch({ type: "RESET_MATCH" })}
+              className="w-full h-14 rounded-2xl bg-slate-900 text-white font-bold text-lg active:scale-[0.98] transition-all"
+            >
+              {t("results.newMatch")}
+            </button>
+          </>
+        )}
       </div>
     </div>
   );

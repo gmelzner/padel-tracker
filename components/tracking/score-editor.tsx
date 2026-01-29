@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import type { CompletedSet, GamePoint, ScoreSnapshot, Team } from "@/lib/types";
 import { useMatch } from "@/lib/match-context";
 
@@ -46,6 +47,7 @@ function NumberStepper({
 }
 
 export function ScoreEditor({ onClose }: ScoreEditorProps) {
+  const t = useTranslations();
   const { state, dispatch } = useMatch();
   const { score, config } = state;
 
@@ -91,41 +93,41 @@ export function ScoreEditor({ onClose }: ScoreEditorProps) {
     <div className="fixed inset-0 z-50 bg-black/50 flex items-end justify-center">
       <div className="bg-white rounded-t-2xl w-full max-w-lg p-5 pb-8 space-y-5 animate-slide-up">
         <div className="flex justify-between items-center">
-          <h2 className="text-lg font-bold text-slate-800">Ajustar Marcador</h2>
+          <h2 className="text-lg font-bold text-slate-800">{t("scoreEditor.title")}</h2>
           <button
             onClick={onClose}
             className="text-slate-400 text-sm font-medium"
           >
-            Cancelar
+            {t("scoreEditor.cancel")}
           </button>
         </div>
 
         {/* Sets */}
         {config.numberOfSets > 1 && (
           <div className="space-y-2">
-            <h3 className="text-sm font-semibold text-slate-500">Sets</h3>
+            <h3 className="text-sm font-semibold text-slate-500">{t("scoreEditor.sets")}</h3>
             <div className="grid grid-cols-2 gap-4">
-              <NumberStepper label="Eq. 1" value={sets1} onChange={setSets1} max={Math.ceil(config.numberOfSets / 2)} />
-              <NumberStepper label="Eq. 2" value={sets2} onChange={setSets2} max={Math.ceil(config.numberOfSets / 2)} />
+              <NumberStepper label={t("scoreEditor.team1Short")} value={sets1} onChange={setSets1} max={Math.ceil(config.numberOfSets / 2)} />
+              <NumberStepper label={t("scoreEditor.team2Short")} value={sets2} onChange={setSets2} max={Math.ceil(config.numberOfSets / 2)} />
             </div>
           </div>
         )}
 
         {/* Games */}
         <div className="space-y-2">
-          <h3 className="text-sm font-semibold text-slate-500">Games (set actual)</h3>
+          <h3 className="text-sm font-semibold text-slate-500">{t("scoreEditor.gamesCurrentSet")}</h3>
           <div className="grid grid-cols-2 gap-4">
-            <NumberStepper label="Eq. 1" value={games1} onChange={setGames1} max={config.gamesPerSet + 2} />
-            <NumberStepper label="Eq. 2" value={games2} onChange={setGames2} max={config.gamesPerSet + 2} />
+            <NumberStepper label={t("scoreEditor.team1Short")} value={games1} onChange={setGames1} max={config.gamesPerSet + 2} />
+            <NumberStepper label={t("scoreEditor.team2Short")} value={games2} onChange={setGames2} max={config.gamesPerSet + 2} />
           </div>
         </div>
 
         {/* Points */}
         <div className="space-y-2">
-          <h3 className="text-sm font-semibold text-slate-500">Puntos (game actual)</h3>
+          <h3 className="text-sm font-semibold text-slate-500">{t("scoreEditor.pointsCurrentGame")}</h3>
           <div className="grid grid-cols-2 gap-4">
             <div className="flex items-center gap-2">
-              <span className="text-sm text-slate-600 w-16 shrink-0">Eq. 1</span>
+              <span className="text-sm text-slate-600 w-16 shrink-0">{t("scoreEditor.team1Short")}</span>
               <div className="flex gap-1 flex-1">
                 {GAME_POINTS.map((pt) => (
                   <button
@@ -144,7 +146,7 @@ export function ScoreEditor({ onClose }: ScoreEditorProps) {
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-sm text-slate-600 w-16 shrink-0">Eq. 2</span>
+              <span className="text-sm text-slate-600 w-16 shrink-0">{t("scoreEditor.team2Short")}</span>
               <div className="flex gap-1 flex-1">
                 {GAME_POINTS.map((pt) => (
                   <button
@@ -167,7 +169,7 @@ export function ScoreEditor({ onClose }: ScoreEditorProps) {
 
         {/* Serving team */}
         <div className="space-y-2">
-          <h3 className="text-sm font-semibold text-slate-500">Saque</h3>
+          <h3 className="text-sm font-semibold text-slate-500">{t("scoreEditor.serve")}</h3>
           <div className="flex gap-2">
             <button
               type="button"
@@ -178,7 +180,7 @@ export function ScoreEditor({ onClose }: ScoreEditorProps) {
                   : "bg-slate-100 text-slate-600"
               }`}
             >
-              Equipo 1
+              {t("scoreEditor.team1")}
             </button>
             <button
               type="button"
@@ -189,7 +191,7 @@ export function ScoreEditor({ onClose }: ScoreEditorProps) {
                   : "bg-slate-100 text-slate-600"
               }`}
             >
-              Equipo 2
+              {t("scoreEditor.team2")}
             </button>
           </div>
         </div>
@@ -198,7 +200,7 @@ export function ScoreEditor({ onClose }: ScoreEditorProps) {
           onClick={handleApply}
           className="w-full h-14 rounded-xl bg-slate-900 text-white font-bold text-lg active:bg-slate-700 transition-colors"
         >
-          Aplicar marcador
+          {t("scoreEditor.apply")}
         </button>
       </div>
     </div>

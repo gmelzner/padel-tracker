@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import type { MagiaType } from "@/lib/types";
 import { useMatch } from "@/lib/match-context";
 import { MAGIA_TYPE_LABELS } from "@/lib/constants";
@@ -15,6 +16,7 @@ const MAGIA_STYLES: Record<MagiaType, string> = {
 };
 
 export function MagiaRecorder() {
+  const t = useTranslations();
   const { state, dispatch } = useMatch();
   const [step, setStep] = useState<Step>("closed");
   const [selectedType, setSelectedType] = useState<MagiaType | null>(null);
@@ -55,8 +57,8 @@ export function MagiaRecorder() {
           onClick={() => setStep("type")}
           className="w-full h-14 rounded-xl border-2 border-dashed border-purple-300 text-purple-600 text-sm font-semibold active:bg-purple-50 transition-colors flex flex-col items-center justify-center"
         >
-          <span>🪄 Magias{magiaCount > 0 ? ` (${magiaCount})` : ""}</span>
-          <span className="text-xs font-normal text-purple-400">Golpes especiales</span>
+          <span>{"🪄 " + t("magia.title")}{magiaCount > 0 ? ` (${magiaCount})` : ""}</span>
+          <span className="text-xs font-normal text-purple-400">{t("magia.specialShots")}</span>
         </button>
         {flash && (
           <div className="text-center text-sm text-purple-600 font-medium animate-fade-in">
@@ -71,7 +73,7 @@ export function MagiaRecorder() {
     return (
       <div className="space-y-3 animate-fade-in">
         <p className="text-center text-slate-500 text-sm font-medium">
-          ¿Qué magia fue?
+          {t("magia.whatMagia")}
         </p>
         <div className="grid grid-cols-2 gap-2">
           {(Object.keys(MAGIA_TYPE_LABELS) as MagiaType[]).map((type) => (
@@ -88,7 +90,7 @@ export function MagiaRecorder() {
           onClick={handleCancel}
           className="w-full h-10 rounded-lg text-slate-500 text-sm font-medium active:bg-slate-100 transition-colors"
         >
-          Cerrar
+          {t("magia.close")}
         </button>
       </div>
     );
@@ -98,7 +100,7 @@ export function MagiaRecorder() {
   return (
     <div className="space-y-3 animate-fade-in-scale">
       <p className="text-center text-slate-500 text-sm font-medium">
-        ¿Quién hizo la {selectedType ? MAGIA_TYPE_LABELS[selectedType] : ""}?
+        {selectedType ? t("magia.whoMagia", { type: MAGIA_TYPE_LABELS[selectedType] }) : ""}
       </p>
 
       <div className="relative rounded-2xl border-2 border-slate-300 bg-slate-100 p-3 overflow-hidden">
@@ -147,8 +149,8 @@ export function MagiaRecorder() {
         </div>
 
         <div className="flex justify-between mt-2 text-xs text-slate-400 font-medium px-1">
-          <span>Equipo 1</span>
-          <span>Equipo 2</span>
+          <span>{t("pointRecorder.team1")}</span>
+          <span>{t("pointRecorder.team2")}</span>
         </div>
       </div>
 
@@ -156,7 +158,7 @@ export function MagiaRecorder() {
         onClick={handleCancel}
         className="w-full h-10 rounded-lg text-slate-500 text-sm font-medium active:bg-slate-100 transition-colors"
       >
-        Volver
+        {t("magia.back")}
       </button>
     </div>
   );

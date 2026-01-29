@@ -1,11 +1,13 @@
-import type { MagiaType, ScoreSnapshot } from "./types";
+import type { MagiaType, PointType, ScoreSnapshot } from "./types";
 
-export const POINT_TYPE_LABELS = {
-  winner: "Winner",
-  "forced-error": "Error Forzado Generado",
-  "unforced-error": "Error No Forzado",
-} as const;
+// Translation keys for point types — use with t() from next-intl
+export const POINT_TYPE_KEYS: Record<PointType, string> = {
+  winner: "pointTypes.winner",
+  "forced-error": "pointTypes.forcedError",
+  "unforced-error": "pointTypes.unforcedError",
+};
 
+// Magia labels are padel terms — same in all languages
 export const MAGIA_TYPE_LABELS: Record<MagiaType, string> = {
   x3: "x3",
   x4: "x4",

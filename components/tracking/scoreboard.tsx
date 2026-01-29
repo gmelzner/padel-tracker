@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import { useMatch } from "@/lib/match-context";
 import { getPointDisplay } from "@/lib/scoring-engine";
 
 export function Scoreboard() {
+  const t = useTranslations();
   const { state } = useMatch();
   const { score, players, config, history } = state;
 
@@ -39,7 +41,7 @@ export function Scoreboard() {
         <div className="text-team1-light font-medium truncate">
           {team1Players.map((p) => p.name).join(" / ")}
         </div>
-        <div className="text-slate-500 text-xs self-center">vs</div>
+        <div className="text-slate-500 text-xs self-center">{t("scoreboard.vs")}</div>
         <div className="text-team2-light font-medium truncate">
           {team2Players.map((p) => p.name).join(" / ")}
         </div>
@@ -49,7 +51,7 @@ export function Scoreboard() {
       {config.numberOfSets > 1 && (
         <div className="grid grid-cols-3 text-center">
           <div className="text-2xl font-bold">{score.sets[0]}</div>
-          <div className="text-slate-500 text-xs self-center">SETS</div>
+          <div className="text-slate-500 text-xs self-center">{t("scoreboard.sets")}</div>
           <div className="text-2xl font-bold">{score.sets[1]}</div>
         </div>
       )}
@@ -72,7 +74,7 @@ export function Scoreboard() {
       <div className="grid grid-cols-3 text-center">
         <div className="text-3xl font-bold">{score.games[0]}</div>
         <div className="text-slate-500 text-xs self-center">
-          {score.isTiebreak ? "TIEBREAK" : "GAMES"}
+          {score.isTiebreak ? t("scoreboard.tiebreak") : t("scoreboard.games")}
         </div>
         <div className="text-3xl font-bold">{score.games[1]}</div>
       </div>
@@ -86,7 +88,7 @@ export function Scoreboard() {
           {pt1}
         </div>
         <div className="text-slate-500 text-xs self-center">
-          {score.isTiebreak ? "PUNTOS" : ""}
+          {score.isTiebreak ? t("scoreboard.points") : ""}
         </div>
         <div
           key={`pt2-${scorePopKey}`}
@@ -98,9 +100,9 @@ export function Scoreboard() {
 
       {/* Serve indicator */}
       <div className="grid grid-cols-3 text-center text-xs text-slate-400">
-        <div>{score.servingTeam === 1 ? "● Saque" : ""}</div>
+        <div>{score.servingTeam === 1 ? "● " + t("scoreboard.serve") : ""}</div>
         <div></div>
-        <div>{score.servingTeam === 2 ? "Saque ●" : ""}</div>
+        <div>{score.servingTeam === 2 ? t("scoreboard.serve") + " ●" : ""}</div>
       </div>
     </div>
   );

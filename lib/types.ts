@@ -80,4 +80,6 @@ export type MatchAction =
   | { type: "RESET_MATCH" }
   | { type: "SET_SCORE"; payload: { score: ScoreSnapshot } }
   | { type: "RECORD_MAGIA"; payload: { magiaType: MagiaType; playerId: string } }
-  | { type: "UNDO_MAGIA" };
+  | { type: "UNDO_MAGIA" }
+  | { type: "RESTORE_STATE"; payload: MatchState }
+  | { type: "RESUME_TRACKING" };

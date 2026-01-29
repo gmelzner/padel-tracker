@@ -1,6 +1,9 @@
 import type { MatchState } from "./types";
 import { encodeMatchResults } from "./share-codec";
 
+type TranslateFn = (key: string, values?: Record<string, string>) => string;
+
+// Legacy sync URL (hash-based, used as fallback)
 export function generateResultsUrl(state: MatchState): string {
   const encoded = encodeMatchResults(state);
   const origin =
@@ -8,10 +11,37 @@ export function generateResultsUrl(state: MatchState): string {
   return `${origin}/r#${encoded}`;
 }
 
-export function generateMatchSummary(state: MatchState): string {
-  const { players, winningTeam, score } = state;
-  const url = generateResultsUrl(state);
+// New async URL — saves to Supabase, returns short URL
+export async function createShareUrl(state: MatchState): Promise<string> {
+  const encoded = encodeMatchResults(state);
+  const origin =
+    typeof window !== "undefined" ? window.location.origin : "";
 
+  try {
+    const res = await fetch("/api/share", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ encodedData: encoded }),
+    });
+
+    if (!res.ok) {
+      return `${origin}/r#${encoded}`;
+    }
+
+    const { id } = await res.json();
+    return `${origin}/r/${id}`;
+  } catch {
+    return `${origin}/r#${encoded}`;
+  }
+}
+
+// Build share text with a known URL (for cached subsequent calls)
+export function buildShareTextWithUrl(
+  state: MatchState,
+  t: TranslateFn,
+  url: string
+): string {
+  const { players, winningTeam, score } = state;
   const lines: string[] = [];
 
   if (winningTeam) {
@@ -19,7 +49,6 @@ export function generateMatchSummary(state: MatchState): string {
     const drive = winners.find((p) => p.position === "drive");
     const reves = winners.find((p) => p.position === "reves");
 
-    // Score line: "6-3 / 4-6 / 7-5"
     const scoreLine = score.completedSets
       .map((set) => {
         let s = `${set.games[0]}-${set.games[1]}`;
@@ -30,22 +59,44 @@ export function generateMatchSummary(state: MatchState): string {
       })
       .join(" / ");
 
-    lines.push("🏆 ¡Partidazo jugado!");
+    lines.push(`🏆 ${t("shareText.greatMatch")}`);
     lines.push("");
     lines.push(
-      `Felicitaciones a los ganadores: ${reves?.name ?? ""} en el revés y ${drive?.name ?? ""} en el drive.`
+      t("shareText.congratulations", {
+        backhand: reves?.name ?? "",
+        forehand: drive?.name ?? "",
+      })
     );
     lines.push("");
     lines.push(scoreLine);
   } else {
-    lines.push("🎾 ¡Partido terminado!");
+    lines.push(`🎾 ${t("shareText.matchEnded")}`);
   }
 
   lines.push("");
-  lines.push(`Mirá las estadísticas completas acá 👇`);
+  lines.push(`${t("shareText.viewStats")} 👇`);
   lines.push(url);
 
   return lines.join("\n");
+}
+
+// Legacy sync version (kept for backward compat)
+export function generateMatchSummary(
+  state: MatchState,
+  t: TranslateFn
+): string {
+  const url = generateResultsUrl(state);
+  return buildShareTextWithUrl(state, t, url);
+}
+
+// Async version — creates short URL first
+export async function generateMatchSummaryAsync(
+  state: MatchState,
+  t: TranslateFn
+): Promise<{ text: string; url: string }> {
+  const url = await createShareUrl(state);
+  const text = buildShareTextWithUrl(state, t, url);
+  return { text, url };
 }
 
 export async function shareViaWhatsApp(text: string) {

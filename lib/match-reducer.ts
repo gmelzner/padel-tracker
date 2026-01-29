@@ -164,6 +164,16 @@ export function matchReducer(
       return getInitialState();
     }
 
+    case "RESTORE_STATE": {
+      pointCounter = action.payload.history.length;
+      magiaCounter = action.payload.magias.length;
+      return action.payload;
+    }
+
+    case "RESUME_TRACKING": {
+      return { ...state, screen: "tracking" };
+    }
+
     default:
       return state;
   }

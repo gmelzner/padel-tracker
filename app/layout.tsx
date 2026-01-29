@@ -1,9 +1,20 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import { LocaleProvider } from "@/components/locale-provider";
+import { AuthProvider } from "@/components/auth-provider";
+import { LanguageSelector } from "@/components/language-selector";
 
 export const metadata: Metadata = {
   title: "Padel Tracker",
-  description: "Seguimiento de partidos de pádel en tiempo real",
+  description: "Real-time padel match tracking",
+  metadataBase: new URL("https://padeltracker.pro"),
+  openGraph: {
+    title: "Padel Tracker",
+    description: "Real-time padel match tracking",
+    url: "https://padeltracker.pro",
+    siteName: "Padel Tracker",
+    type: "website",
+  },
 };
 
 export const viewport: Viewport = {
@@ -20,9 +31,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="es">
+    <html lang="en">
       <body className="bg-slate-50 text-slate-900 min-h-dvh">
-        {children}
+        <AuthProvider>
+          <LocaleProvider>
+            <LanguageSelector />
+            {children}
+          </LocaleProvider>
+        </AuthProvider>
       </body>
     </html>
   );

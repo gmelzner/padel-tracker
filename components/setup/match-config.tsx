@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import type { DeuceMode } from "@/lib/types";
 
 interface MatchConfigProps {
@@ -57,12 +58,13 @@ export function MatchConfigForm({
   onDeuceModeChange,
   onTiebreakChange,
 }: MatchConfigProps) {
+  const t = useTranslations();
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-4 space-y-4">
-      <h2 className="font-semibold text-slate-800">Formato del partido</h2>
+      <h2 className="font-semibold text-slate-800">{t("config.matchFormat")}</h2>
 
       <OptionGroup
-        label="Games por set"
+        label={t("config.gamesPerSet")}
         options={[
           { label: "4", value: 4 },
           { label: "6", value: 6 },
@@ -72,7 +74,7 @@ export function MatchConfigForm({
       />
 
       <OptionGroup
-        label="Sets"
+        label={t("config.sets")}
         options={[
           { label: "1", value: 1 },
           { label: "3", value: 3 },
@@ -82,20 +84,20 @@ export function MatchConfigForm({
       />
 
       <OptionGroup
-        label="Deuce"
+        label={t("config.deuce")}
         options={[
-          { label: "Punto de Oro", value: "golden-point" },
-          { label: "Ventaja", value: "advantage" },
+          { label: t("config.goldenPoint"), value: "golden-point" },
+          { label: t("config.advantage"), value: "advantage" },
         ]}
         value={deuceMode}
         onChange={(v) => onDeuceModeChange(v as DeuceMode)}
       />
 
       <OptionGroup
-        label="Tiebreak"
+        label={t("config.tiebreak")}
         options={[
-          { label: "Sí", value: "yes" },
-          { label: "No", value: "no" },
+          { label: t("config.yes"), value: "yes" },
+          { label: t("config.no"), value: "no" },
         ]}
         value={tiebreakEnabled ? "yes" : "no"}
         onChange={(v) => onTiebreakChange(v === "yes")}
