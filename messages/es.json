@@ -147,7 +147,10 @@
     "saved": "¡Partido guardado!",
     "saveError": "No se pudo guardar. Intentá de nuevo.",
     "retry": "Reintentar",
-    "viewProfile": "Ver perfil"
+    "viewProfile": "Ver perfil",
+    "coach": "Soy el coach",
+    "claimMatch": "Guardar en mi perfil",
+    "claimDescription": "Iniciá sesión con Google para guardar este partido en tu perfil."
   },
   "privacy": {
     "title": "Política de Privacidad",
@@ -212,6 +215,9 @@
     "deleteMatch": "Eliminar",
     "confirmDelete": "¿Eliminar este partido?",
     "goBack": "Volver a la app",
+    "newMatch": "Nuevo partido",
+    "coach": "Coach",
+    "matchesCoached": "Dirigidos",
     "signOutButton": "Cerrar sesión",
     "notLoggedIn": "Iniciá sesión para ver tu perfil",
     "signInWithGoogle": "Iniciar sesión con Google"

@@ -4,12 +4,14 @@ import { useTranslations } from "next-intl";
 import type { DecodedMatchResults } from "@/lib/share-codec";
 import { MAGIA_TYPE_LABELS } from "@/lib/constants";
 import type { MagiaType } from "@/lib/types";
+import { ClaimMatchPrompt } from "./claim-match-prompt";
 
 interface SharedResultsDisplayProps {
   data: DecodedMatchResults;
+  sourceSharedId?: string;
 }
 
-export function SharedResultsDisplay({ data }: SharedResultsDisplayProps) {
+export function SharedResultsDisplay({ data, sourceSharedId }: SharedResultsDisplayProps) {
   const t = useTranslations();
 
   const {
@@ -446,6 +448,9 @@ export function SharedResultsDisplay({ data }: SharedResultsDisplayProps) {
               </div>
             </div>
           )}
+
+        {/* Claim match */}
+        <ClaimMatchPrompt data={data} sourceSharedId={sourceSharedId} />
 
         {/* CTA */}
         <a

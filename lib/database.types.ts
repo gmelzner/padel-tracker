@@ -14,7 +14,7 @@ export interface Match {
   team1_players: string[];
   team2_players: string[];
   winning_team: number | null;
-  user_team: number;
+  user_team: number | null;
   user_player_name: string | null;
   sets_score: Array<{
     games: [number, number];
@@ -23,6 +23,7 @@ export interface Match {
   }>;
   total_points: number;
   match_data: Record<string, unknown>;
+  source_shared_id: string | null;
   created_at: string;
 }
 
@@ -32,8 +33,8 @@ export interface MatchInsert {
   team1_players: string[];
   team2_players: string[];
   winning_team: number | null;
-  user_team: number;
-  user_player_name: string;
+  user_team: number | null;
+  user_player_name: string | null;
   sets_score: Array<{
     games: [number, number];
     tiebreakPlayed: boolean;
@@ -41,6 +42,7 @@ export interface MatchInsert {
   }>;
   total_points: number;
   match_data: Record<string, unknown>;
+  source_shared_id?: string;
 }
 
 export interface SharedResult {

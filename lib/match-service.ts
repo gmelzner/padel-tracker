@@ -1,11 +1,12 @@
 import { createClient } from "./supabase";
 import type { Match, MatchInsert } from "./database.types";
 import type { MatchState, Player } from "./types";
+import type { DecodedMatchResults } from "./share-codec";
 
 export function buildMatchInsert(
   state: MatchState,
   userId: string,
-  selectedPlayer: Player
+  selectedPlayer: Player | null
 ): MatchInsert {
   const team1Players = state.players
     .filter((p) => p.team === 1)
@@ -19,8 +20,8 @@ export function buildMatchInsert(
     team1_players: team1Players,
     team2_players: team2Players,
     winning_team: state.winningTeam,
-    user_team: selectedPlayer.team,
-    user_player_name: selectedPlayer.name,
+    user_team: selectedPlayer?.team ?? null,
+    user_player_name: selectedPlayer?.name ?? null,
     sets_score: [
       ...state.score.completedSets.map((s) => ({
         games: s.games,
@@ -41,10 +42,59 @@ export function buildMatchInsert(
 export async function saveMatch(
   state: MatchState,
   userId: string,
-  selectedPlayer: Player
+  selectedPlayer: Player | null
 ): Promise<{ data: Match | null; error: string | null }> {
   const supabase = createClient();
   const insert = buildMatchInsert(state, userId, selectedPlayer);
+
+  const { data, error } = await supabase
+    .from("matches")
+    .insert(insert)
+    .select()
+    .single();
+
+  if (error) {
+    return { data: null, error: error.message };
+  }
+  return { data: data as Match, error: null };
+}
+
+export async function saveMatchFromShared(
+  decoded: DecodedMatchResults,
+  userId: string,
+  selectedPlayer: { name: string; team: 1 | 2 } | null,
+  sourceSharedId?: string
+): Promise<{ data: Match | null; error: string | null }> {
+  const supabase = createClient();
+
+  const team1Players = decoded.players
+    .filter((p) => p.team === 1)
+    .map((p) => p.name);
+  const team2Players = decoded.players
+    .filter((p) => p.team === 2)
+    .map((p) => p.name);
+
+  const totalPoints = decoded.teamStats.reduce(
+    (sum, ts) => sum + ts.totalPointsWon,
+    0
+  );
+
+  const insert: MatchInsert = {
+    user_id: userId,
+    team1_players: team1Players,
+    team2_players: team2Players,
+    winning_team: decoded.winningTeam,
+    user_team: selectedPlayer?.team ?? null,
+    user_player_name: selectedPlayer?.name ?? null,
+    sets_score: decoded.completedSets.map((s) => ({
+      games: s.games,
+      tiebreakPlayed: s.tiebreakPlayed,
+      ...(s.tiebreakScore ? { tiebreakScore: s.tiebreakScore } : {}),
+    })),
+    total_points: totalPoints,
+    match_data: decoded as unknown as Record<string, unknown>,
+    ...(sourceSharedId ? { source_shared_id: sourceSharedId } : {}),
+  };
 
   const { data, error } = await supabase
     .from("matches")

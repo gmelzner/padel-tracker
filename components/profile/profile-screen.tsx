@@ -125,7 +125,7 @@ export function ProfileScreen() {
             href="/"
             className="block w-full h-14 rounded-2xl bg-slate-900 text-white font-bold text-lg text-center leading-[3.5rem] active:scale-[0.98] transition-all"
           >
-            {t("profile.goBack")}
+            {t("profile.newMatch")}
           </a>
           <button
             onClick={() => signOut()}

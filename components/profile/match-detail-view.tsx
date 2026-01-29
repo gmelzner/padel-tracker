@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import type { Match } from "@/lib/database.types";
 import type { MatchState, MagiaType } from "@/lib/types";
+import type { DecodedMatchResults } from "@/lib/share-codec";
 import {
   computePlayerStats,
   computeTeamStats,
@@ -16,6 +17,7 @@ import {
 } from "@/lib/analytics";
 import { MAGIA_TYPE_LABELS } from "@/lib/constants";
 import { MomentumChart } from "@/components/results/momentum-chart";
+import { SharedResultsDisplay } from "@/components/results/shared-results-display";
 
 interface MatchDetailViewProps {
   match: Match;
@@ -24,7 +26,37 @@ interface MatchDetailViewProps {
 
 export function MatchDetailView({ match, onBack }: MatchDetailViewProps) {
   const t = useTranslations();
-  const state = match.match_data as unknown as MatchState;
+  const rawData = match.match_data as unknown as Record<string, unknown>;
+  const isFullState = Array.isArray(rawData.history);
+
+  // Claimed matches store DecodedMatchResults (no history/magias arrays)
+  if (!isFullState) {
+    const decoded = rawData as unknown as DecodedMatchResults;
+    const date = new Date(match.played_at).toLocaleDateString(undefined, {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+    return (
+      <div className="min-h-dvh bg-slate-50">
+        <div className="max-w-lg mx-auto px-4 pt-4 space-y-4">
+          <button
+            onClick={onBack}
+            className="flex items-center gap-1 text-sm text-slate-500"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+            {t("profile.goBack")}
+          </button>
+          <p className="text-sm text-slate-400 text-center">{date}</p>
+        </div>
+        <SharedResultsDisplay data={decoded} />
+      </div>
+    );
+  }
+
+  const state = rawData as unknown as MatchState;
 
   const { score, players, history, magias, winningTeam } = state;
 

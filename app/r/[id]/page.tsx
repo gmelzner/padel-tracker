@@ -77,5 +77,5 @@ export default async function SharedResultPage({ params }: PageProps) {
     notFound();
   }
 
-  return <SharedResultsView data={decoded} />;
+  return <SharedResultsView data={decoded} sharedId={id} />;
 }

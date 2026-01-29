@@ -12,10 +12,11 @@ interface MatchCardProps {
 export function MatchCard({ match, onDelete, onSelect }: MatchCardProps) {
   const t = useTranslations();
 
+  const isCoach = match.user_team === null;
   const userWon =
-    match.winning_team !== null && match.winning_team === match.user_team;
+    !isCoach && match.winning_team !== null && match.winning_team === match.user_team;
   const userLost =
-    match.winning_team !== null && match.winning_team !== match.user_team;
+    !isCoach && match.winning_team !== null && match.winning_team !== match.user_team;
 
   const scoreLine = match.sets_score
     .map((s) => {
@@ -56,6 +57,11 @@ export function MatchCard({ match, onDelete, onSelect }: MatchCardProps) {
               {t("profile.lost")}
             </span>
           )}
+          {isCoach && (
+            <span className="text-[10px] font-bold bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded">
+              {t("profile.coach")}
+            </span>
+          )}
         </div>
         <button
           onClick={(e) => {
@@ -72,13 +78,13 @@ export function MatchCard({ match, onDelete, onSelect }: MatchCardProps) {
         <div className="flex-1 min-w-0">
           <div className="text-sm">
             <span
-              className={`font-semibold ${match.user_team === 1 ? "text-team1" : "text-slate-700"}`}
+              className={`font-semibold ${!isCoach && match.user_team === 1 ? "text-team1" : "text-slate-700"}`}
             >
               {match.team1_players.join(" / ")}
             </span>
             <span className="text-slate-400 mx-2">vs</span>
             <span
-              className={`font-semibold ${match.user_team === 2 ? "text-team2" : "text-slate-700"}`}
+              className={`font-semibold ${!isCoach && match.user_team === 2 ? "text-team2" : "text-slate-700"}`}
             >
               {match.team2_players.join(" / ")}
             </span>

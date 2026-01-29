@@ -147,7 +147,10 @@
     "saved": "Match saved!",
     "saveError": "Could not save. Try again.",
     "retry": "Retry",
-    "viewProfile": "View profile"
+    "viewProfile": "View profile",
+    "coach": "I'm the coach",
+    "claimMatch": "Save to my profile",
+    "claimDescription": "Sign in with Google to save this match to your profile."
   },
   "privacy": {
     "title": "Privacy Policy",
@@ -212,6 +215,9 @@
     "deleteMatch": "Delete",
     "confirmDelete": "Delete this match?",
     "goBack": "Back to app",
+    "newMatch": "New Match",
+    "coach": "Coach",
+    "matchesCoached": "Coached",
     "signOutButton": "Sign out",
     "notLoggedIn": "Sign in to see your profile",
     "signInWithGoogle": "Sign in with Google"

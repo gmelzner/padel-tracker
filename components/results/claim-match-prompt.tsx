@@ -3,35 +3,35 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@/components/auth-provider";
-import { useMatch, PENDING_SAVE_KEY } from "@/lib/match-context";
-import { saveMatch } from "@/lib/match-service";
-import type { Player } from "@/lib/types";
+import { saveMatchFromShared } from "@/lib/match-service";
+import type { DecodedMatchResults } from "@/lib/share-codec";
 
-type FlowState = "idle" | "selectPlayer" | "saving" | "saved" | "error";
+type ClaimFlowState = "idle" | "selectPlayer" | "saving" | "saved" | "error";
 
-export function SaveResultsPrompt() {
+interface ClaimMatchPromptProps {
+  data: DecodedMatchResults;
+  sourceSharedId?: string;
+}
+
+export function ClaimMatchPrompt({ data, sourceSharedId }: ClaimMatchPromptProps) {
   const { user, loading, signInWithGoogle } = useAuth();
-  const { state } = useMatch();
   const [dismissed, setDismissed] = useState(false);
-  const [flow, setFlow] = useState<FlowState>("idle");
+  const [flow, setFlow] = useState<ClaimFlowState>("idle");
   const t = useTranslations();
 
   if (loading || dismissed) return null;
 
-  // Not logged in — show login prompt
+  // Not logged in
   if (!user) {
     return (
       <div className="rounded-xl border border-slate-200 bg-white p-4 space-y-3">
         <h2 className="font-semibold text-slate-800">
-          {t("auth.saveYourResults")}
+          {t("auth.claimMatch")}
         </h2>
-        <p className="text-sm text-slate-500">{t("auth.saveDescription")}</p>
+        <p className="text-sm text-slate-500">{t("auth.claimDescription")}</p>
         <div className="flex gap-2">
           <button
-            onClick={() => {
-              localStorage.setItem(PENDING_SAVE_KEY, JSON.stringify(state));
-              signInWithGoogle();
-            }}
+            onClick={() => signInWithGoogle()}
             className="flex-1 h-11 rounded-xl bg-white border border-slate-300 text-slate-700 font-semibold text-sm active:scale-95 transition-all flex items-center justify-center gap-2"
           >
             <GoogleIcon />
@@ -48,27 +48,18 @@ export function SaveResultsPrompt() {
     );
   }
 
-  // Logged in — saved state
+  // Saved
   if (flow === "saved") {
     return (
       <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 space-y-2">
         <div className="flex items-center gap-3">
           {user.user_metadata?.avatar_url && (
-            <img
-              src={user.user_metadata.avatar_url}
-              alt=""
-              className="w-8 h-8 rounded-full"
-            />
+            <img src={user.user_metadata.avatar_url} alt="" className="w-8 h-8 rounded-full" />
           )}
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-emerald-800">
-              {t("auth.saved")}
-            </p>
+            <p className="text-sm font-semibold text-emerald-800">{t("auth.saved")}</p>
           </div>
-          <a
-            href="/profile"
-            className="text-xs font-semibold text-emerald-700 underline"
-          >
+          <a href="/profile" className="text-xs font-semibold text-emerald-700 underline">
             {t("auth.viewProfile")}
           </a>
         </div>
@@ -76,7 +67,7 @@ export function SaveResultsPrompt() {
     );
   }
 
-  // Logged in — error state
+  // Error
   if (flow === "error") {
     return (
       <div className="rounded-xl border border-red-200 bg-red-50 p-4 space-y-2">
@@ -91,7 +82,7 @@ export function SaveResultsPrompt() {
     );
   }
 
-  // Logged in — saving state
+  // Saving
   if (flow === "saving") {
     return (
       <div className="rounded-xl border border-slate-200 bg-white p-4">
@@ -100,14 +91,14 @@ export function SaveResultsPrompt() {
     );
   }
 
-  // Logged in — select player
+  // Select player
   if (flow === "selectPlayer") {
-    const team1Players = state.players.filter((p) => p.team === 1);
-    const team2Players = state.players.filter((p) => p.team === 2);
+    const team1Players = data.players.filter((p) => p.team === 1);
+    const team2Players = data.players.filter((p) => p.team === 2);
 
-    async function handleSave(player: Player) {
+    async function handleClaim(player: { name: string; team: 1 | 2 } | null) {
       setFlow("saving");
-      const { error } = await saveMatch(state, user!.id, player);
+      const { error } = await saveMatchFromShared(data, user!.id, player, sourceSharedId);
       setFlow(error ? "error" : "saved");
     }
 
@@ -117,19 +108,19 @@ export function SaveResultsPrompt() {
           {t("auth.whichPlayer")}
         </h2>
         <div className="grid grid-cols-2 gap-2">
-          {team1Players.map((p) => (
+          {team1Players.map((p, i) => (
             <button
-              key={p.id}
-              onClick={() => handleSave(p)}
+              key={`t1-${i}`}
+              onClick={() => handleClaim({ name: p.name, team: p.team })}
               className="h-12 rounded-xl bg-team1 text-white font-semibold text-sm active:scale-95 transition-all"
             >
               {p.name}
             </button>
           ))}
-          {team2Players.map((p) => (
+          {team2Players.map((p, i) => (
             <button
-              key={p.id}
-              onClick={() => handleSave(p)}
+              key={`t2-${i}`}
+              onClick={() => handleClaim({ name: p.name, team: p.team })}
               className="h-12 rounded-xl bg-team2 text-white font-semibold text-sm active:scale-95 transition-all"
             >
               {p.name}
@@ -137,11 +128,7 @@ export function SaveResultsPrompt() {
           ))}
         </div>
         <button
-          onClick={async () => {
-            setFlow("saving");
-            const { error } = await saveMatch(state, user!.id, null);
-            setFlow(error ? "error" : "saved");
-          }}
+          onClick={() => handleClaim(null)}
           className="w-full h-12 rounded-xl border-2 border-dashed border-slate-300 text-slate-500 font-semibold text-sm active:scale-95 transition-all flex items-center justify-center gap-2"
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -159,16 +146,12 @@ export function SaveResultsPrompt() {
     );
   }
 
-  // Logged in — idle (initial prompt to save)
+  // Idle — show prompt
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-4 space-y-3">
       <div className="flex items-center gap-3">
         {user.user_metadata?.avatar_url && (
-          <img
-            src={user.user_metadata.avatar_url}
-            alt=""
-            className="w-8 h-8 rounded-full"
-          />
+          <img src={user.user_metadata.avatar_url} alt="" className="w-8 h-8 rounded-full" />
         )}
         <div className="flex-1 min-w-0">
           <p className="text-sm font-medium text-slate-800 truncate">
@@ -182,7 +165,7 @@ export function SaveResultsPrompt() {
         onClick={() => setFlow("selectPlayer")}
         className="w-full h-11 rounded-xl bg-emerald-600 text-white font-semibold text-sm active:scale-95 transition-all"
       >
-        {t("auth.saveYourResults")}
+        {t("auth.claimMatch")}
       </button>
       <button
         onClick={() => setDismissed(true)}

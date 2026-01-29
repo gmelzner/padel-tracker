@@ -10,11 +10,13 @@ interface StatsSummaryProps {
 export function StatsSummary({ matches }: StatsSummaryProps) {
   const t = useTranslations();
 
-  const played = matches.length;
-  const won = matches.filter(
+  const playerMatches = matches.filter((m) => m.user_team !== null);
+  const coached = matches.length - playerMatches.length;
+  const played = playerMatches.length;
+  const won = playerMatches.filter(
     (m) => m.winning_team !== null && m.winning_team === m.user_team
   ).length;
-  const lost = matches.filter(
+  const lost = playerMatches.filter(
     (m) => m.winning_team !== null && m.winning_team !== m.user_team
   ).length;
   const winRate = played > 0 ? Math.round((won / played) * 100) : 0;
@@ -24,10 +26,13 @@ export function StatsSummary({ matches }: StatsSummaryProps) {
     { label: t("profile.matchesWon"), value: String(won), color: "text-emerald-600" },
     { label: t("profile.matchesLost"), value: String(lost), color: "text-red-500" },
     { label: t("profile.winRate"), value: `${winRate}%` },
+    ...(coached > 0
+      ? [{ label: t("profile.matchesCoached"), value: String(coached), color: "text-slate-500" }]
+      : []),
   ];
 
   return (
-    <div className="grid grid-cols-4 gap-2">
+    <div className={`grid gap-2 ${coached > 0 ? "grid-cols-5" : "grid-cols-4"}`}>
       {stats.map((s) => (
         <div
           key={s.label}
