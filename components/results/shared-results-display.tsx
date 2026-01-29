@@ -9,9 +9,10 @@ import { ClaimMatchPrompt } from "./claim-match-prompt";
 interface SharedResultsDisplayProps {
   data: DecodedMatchResults;
   sourceSharedId?: string;
+  embedded?: boolean;
 }
 
-export function SharedResultsDisplay({ data, sourceSharedId }: SharedResultsDisplayProps) {
+export function SharedResultsDisplay({ data, sourceSharedId, embedded }: SharedResultsDisplayProps) {
   const t = useTranslations();
 
   const {
@@ -41,16 +42,8 @@ export function SharedResultsDisplay({ data, sourceSharedId }: SharedResultsDisp
   const team1Label = team1Players.map((p) => p.name).join(" / ");
   const team2Label = team2Players.map((p) => p.name).join(" / ");
 
-  return (
-    <div className="min-h-dvh bg-slate-50 p-4 pb-8">
-      <div className="max-w-lg mx-auto space-y-4">
-        <div className="text-center pt-4 space-y-1">
-          <h1 className="text-2xl font-bold text-slate-800">
-            {t("results.title")}
-          </h1>
-          <p className="text-slate-400 text-xs">Padel Tracker</p>
-        </div>
-
+  const content = (
+    <>
         {/* Winner */}
         {winningTeam ? (
           <div
@@ -448,6 +441,25 @@ export function SharedResultsDisplay({ data, sourceSharedId }: SharedResultsDisp
               </div>
             </div>
           )}
+
+    </>
+  );
+
+  if (embedded) {
+    return content;
+  }
+
+  return (
+    <div className="min-h-dvh bg-slate-50 p-4 pb-8">
+      <div className="max-w-lg mx-auto space-y-4">
+        <div className="text-center pt-4 space-y-1">
+          <h1 className="text-2xl font-bold text-slate-800">
+            {t("results.title")}
+          </h1>
+          <p className="text-slate-400 text-xs">Padel Tracker</p>
+        </div>
+
+        {content}
 
         {/* Claim match */}
         <ClaimMatchPrompt data={data} sourceSharedId={sourceSharedId} />
