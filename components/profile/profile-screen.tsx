@@ -7,11 +7,13 @@ import { getUserMatches, deleteMatch } from "@/lib/match-service";
 import type { Match } from "@/lib/database.types";
 import { StatsSummary } from "./stats-summary";
 import { MatchCard } from "./match-card";
+import { MatchDetailView } from "./match-detail-view";
 
 export function ProfileScreen() {
   const { user, loading, signInWithGoogle, signOut } = useAuth();
   const [matches, setMatches] = useState<Match[]>([]);
   const [loadingMatches, setLoadingMatches] = useState(true);
+  const [selectedMatch, setSelectedMatch] = useState<Match | null>(null);
   const t = useTranslations();
 
   useEffect(() => {
@@ -64,6 +66,15 @@ export function ProfileScreen() {
     }
   }
 
+  if (selectedMatch) {
+    return (
+      <MatchDetailView
+        match={selectedMatch}
+        onBack={() => setSelectedMatch(null)}
+      />
+    );
+  }
+
   return (
     <div className="min-h-dvh bg-slate-50 p-4 pb-8">
       <div className="max-w-lg mx-auto space-y-4">
@@ -103,7 +114,7 @@ export function ProfileScreen() {
             </div>
           ) : (
             matches.map((m) => (
-              <MatchCard key={m.id} match={m} onDelete={handleDelete} />
+              <MatchCard key={m.id} match={m} onDelete={handleDelete} onSelect={setSelectedMatch} />
             ))
           )}
         </div>

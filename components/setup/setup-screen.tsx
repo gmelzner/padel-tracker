@@ -70,7 +70,7 @@ export function SetupScreen() {
           {user && (
             <a
               href="/profile"
-              className="absolute top-10 right-0 flex items-center gap-1.5"
+              className="absolute top-8 right-0 flex items-center gap-1.5"
             >
               {user.user_metadata?.avatar_url ? (
                 <img
