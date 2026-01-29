@@ -150,7 +150,8 @@
     "viewProfile": "Ver perfil",
     "coach": "Soy el coach",
     "claimMatch": "Guardar en mi perfil",
-    "claimDescription": "Iniciá sesión con Google para guardar este partido en tu perfil."
+    "claimDescription": "Iniciá sesión con Google para guardar este partido en tu perfil.",
+    "alreadyClaimed": "Ya tenés este partido guardado."
   },
   "privacy": {
     "title": "Política de Privacidad",

@@ -150,7 +150,8 @@
     "viewProfile": "View profile",
     "coach": "I'm the coach",
     "claimMatch": "Save to my profile",
-    "claimDescription": "Sign in with Google to save this match to your profile."
+    "claimDescription": "Sign in with Google to save this match to your profile.",
+    "alreadyClaimed": "You already have this match saved."
   },
   "privacy": {
     "title": "Privacy Policy",

@@ -6,7 +6,7 @@ import { useAuth } from "@/components/auth-provider";
 import { saveMatchFromShared } from "@/lib/match-service";
 import type { DecodedMatchResults } from "@/lib/share-codec";
 
-type ClaimFlowState = "idle" | "selectPlayer" | "saving" | "saved" | "error";
+type ClaimFlowState = "idle" | "selectPlayer" | "saving" | "saved" | "alreadyClaimed" | "error";
 
 interface ClaimMatchPromptProps {
   data: DecodedMatchResults;
@@ -67,6 +67,25 @@ export function ClaimMatchPrompt({ data, sourceSharedId }: ClaimMatchPromptProps
     );
   }
 
+  // Already claimed
+  if (flow === "alreadyClaimed") {
+    return (
+      <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 space-y-2">
+        <div className="flex items-center gap-3">
+          {user.user_metadata?.avatar_url && (
+            <img src={user.user_metadata.avatar_url} alt="" className="w-8 h-8 rounded-full" />
+          )}
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-semibold text-amber-800">{t("auth.alreadyClaimed")}</p>
+          </div>
+          <a href="/profile" className="text-xs font-semibold text-amber-700 underline">
+            {t("auth.viewProfile")}
+          </a>
+        </div>
+      </div>
+    );
+  }
+
   // Error
   if (flow === "error") {
     return (
@@ -99,7 +118,13 @@ export function ClaimMatchPrompt({ data, sourceSharedId }: ClaimMatchPromptProps
     async function handleClaim(player: { name: string; team: 1 | 2 } | null) {
       setFlow("saving");
       const { error } = await saveMatchFromShared(data, user!.id, player, sourceSharedId);
-      setFlow(error ? "error" : "saved");
+      if (!error) {
+        setFlow("saved");
+      } else if (error === "ALREADY_CLAIMED") {
+        setFlow("alreadyClaimed");
+      } else {
+        setFlow("error");
+      }
     }
 
     return (

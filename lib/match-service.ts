@@ -103,6 +103,9 @@ export async function saveMatchFromShared(
     .single();
 
   if (error) {
+    if (error.code === "23505") {
+      return { data: null, error: "ALREADY_CLAIMED" };
+    }
     return { data: null, error: error.message };
   }
   return { data: data as Match, error: null };
