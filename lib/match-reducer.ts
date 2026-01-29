@@ -126,6 +126,10 @@ export function matchReducer(
     }
 
     case "END_MATCH": {
+      return { ...state, screen: "results", matchOver: true };
+    }
+
+    case "VIEW_STATS": {
       return { ...state, screen: "results" };
     }
 

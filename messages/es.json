@@ -28,7 +28,8 @@
   "tracking": {
     "adjustScore": "Ajustar marcador",
     "endMatch": "Terminar partido",
-    "confirmEnd": "¿Terminar el partido? Se mostrarán las estadísticas acumuladas."
+    "viewStats": "Ver estadísticas",
+    "confirmEnd": "¿Terminar el partido? No se podrá volver atrás."
   },
   "pointTypes": {
     "winner": "Winner",
@@ -41,7 +42,7 @@
     "forcedError": "¿Quién generó el error forzado?"
   },
   "pointRecorder": {
-    "directPoint": "Punto directo",
+    "directPoint": "Sumar punto directo",
     "whatHappened": "¿Qué pasó?",
     "cancel": "Cancelar",
     "team1": "Equipo 1",

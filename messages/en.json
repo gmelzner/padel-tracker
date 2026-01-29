@@ -28,7 +28,8 @@
   "tracking": {
     "adjustScore": "Adjust score",
     "endMatch": "End match",
-    "confirmEnd": "End the match? Accumulated stats will be shown."
+    "viewStats": "View stats",
+    "confirmEnd": "End the match? This cannot be undone."
   },
   "pointTypes": {
     "winner": "Winner",
@@ -41,7 +42,7 @@
     "forcedError": "Who generated the forced error?"
   },
   "pointRecorder": {
-    "directPoint": "Direct point",
+    "directPoint": "Add direct point",
     "whatHappened": "What happened?",
     "cancel": "Cancel",
     "team1": "Team 1",

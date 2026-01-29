@@ -82,4 +82,5 @@ export type MatchAction =
   | { type: "RECORD_MAGIA"; payload: { magiaType: MagiaType; playerId: string } }
   | { type: "UNDO_MAGIA" }
   | { type: "RESTORE_STATE"; payload: MatchState }
-  | { type: "RESUME_TRACKING" };
+  | { type: "RESUME_TRACKING" }
+  | { type: "VIEW_STATS" };
