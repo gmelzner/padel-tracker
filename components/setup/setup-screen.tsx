@@ -70,16 +70,16 @@ export function SetupScreen() {
           {user && (
             <a
               href="/profile"
-              className="absolute top-6 right-0 flex items-center gap-1.5"
+              className="absolute top-10 right-0 flex items-center gap-1.5"
             >
               {user.user_metadata?.avatar_url ? (
                 <img
                   src={user.user_metadata.avatar_url}
                   alt=""
-                  className="w-8 h-8 rounded-full border-2 border-slate-200"
+                  className="w-10 h-10 rounded-full border-2 border-slate-200"
                 />
               ) : (
-                <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-xs font-bold text-slate-500">
+                <div className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-sm font-bold text-slate-500">
                   {(user.user_metadata?.full_name ?? user.email ?? "?")[0].toUpperCase()}
                 </div>
               )}
