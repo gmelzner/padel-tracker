@@ -48,7 +48,7 @@ export function ProfileScreen() {
             {t("profile.signInWithGoogle")}
           </button>
           <div>
-            <a href="/" className="text-sm text-slate-400 underline">
+            <a href="/tracker" className="text-sm text-slate-400 underline">
               {t("profile.goBack")}
             </a>
           </div>
@@ -122,7 +122,7 @@ export function ProfileScreen() {
         {/* Actions */}
         <div className="space-y-2 pt-2">
           <a
-            href="/"
+            href="/tracker"
             className="block w-full h-14 rounded-2xl bg-slate-900 text-white font-bold text-lg text-center leading-[3.5rem] active:scale-[0.98] transition-all"
           >
             {t("profile.newMatch")}

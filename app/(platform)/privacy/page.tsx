@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { PrivacyContent } from "@/components/legal/privacy-content";
 
 export const metadata: Metadata = {
-  title: "Política de Privacidad / Privacy Policy",
+  title: "Politica de Privacidad / Privacy Policy",
   description:
-    "Política de privacidad de Padel Tracker. Conocé qué datos recopilamos y cómo los usamos. Padel Tracker privacy policy — learn what data we collect and how we use it.",
+    "Politica de privacidad de Padel Tracker. Padel Tracker privacy policy.",
   alternates: {
     canonical: "https://padeltracker.pro/privacy",
   },

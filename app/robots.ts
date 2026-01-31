@@ -6,7 +6,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/api/", "/auth/", "/profile"],
+        disallow: ["/api/", "/auth/", "/profile", "/admin"],
       },
     ],
     sitemap: "https://padeltracker.pro/sitemap.xml",

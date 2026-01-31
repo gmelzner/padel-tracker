@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "Padel Tracker",
     short_name: "Padel Tracker",
     description: "Real-time padel match tracking",
-    start_url: "/",
+    start_url: "/tracker",
     display: "standalone",
     background_color: "#f8fafc",
     theme_color: "#1e293b",

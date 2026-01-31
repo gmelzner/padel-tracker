@@ -181,7 +181,7 @@ export function SetupScreen() {
               <div className="flex-1 h-px bg-slate-200" />
             </div>
             <button
-              onClick={() => signInWithGoogle("/")}
+              onClick={() => signInWithGoogle("/tracker")}
               className="w-full h-11 rounded-xl bg-white border border-slate-300 text-slate-700 font-semibold text-sm active:scale-[0.98] transition-all flex items-center justify-center gap-2"
             >
               <GoogleIcon />

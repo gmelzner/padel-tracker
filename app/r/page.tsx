@@ -36,7 +36,7 @@ export default function SharedResultsPage() {
           </h1>
           <p className="text-slate-500">{t("sharedResults.invalidLink")}</p>
           <a
-            href="/"
+            href="/tracker"
             className="inline-block mt-4 px-6 py-3 rounded-xl bg-slate-900 text-white font-semibold"
           >
             {t("sharedResults.goToApp")}

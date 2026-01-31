@@ -3,15 +3,14 @@ import { GoogleAnalytics } from "@next/third-parties/google";
 import "./globals.css";
 import { LocaleProvider } from "@/components/locale-provider";
 import { AuthProvider } from "@/components/auth-provider";
-import { LanguageSelector } from "@/components/language-selector";
 
 export const metadata: Metadata = {
   title: {
-    default: "Padel Tracker — Seguimiento de partidos y estadísticas en vivo",
+    default: "Padel Tracker — La plataforma de padel",
     template: "%s - Padel Tracker",
   },
   description:
-    "Seguí tus partidos de pádel en tiempo real. Registrá puntos, winners, errores, magias y compartí estadísticas detalladas. Gratis, sin registro. Track your padel matches live with detailed stats.",
+    "Padel Tracker: seguimiento de partidos en tiempo real, estadisticas detalladas, blog y torneos. Track your padel matches live with detailed stats.",
   keywords: [
     "padel",
     "padel tracker",
@@ -19,21 +18,22 @@ export const metadata: Metadata = {
     "padel statistics",
     "padel stats",
     "seguimiento padel",
-    "estadísticas padel",
+    "estadisticas padel",
     "marcador padel",
     "score tracker",
     "match tracker",
-    "pádel en vivo",
+    "padel en vivo",
     "padel app",
+    "torneos padel",
   ],
   metadataBase: new URL("https://padeltracker.pro"),
   alternates: {
     canonical: "https://padeltracker.pro",
   },
   openGraph: {
-    title: "Padel Tracker — Seguimiento de partidos y estadísticas en vivo",
+    title: "Padel Tracker — La plataforma de padel",
     description:
-      "Seguí tus partidos de pádel en tiempo real. Registrá puntos, winners, errores y compartí estadísticas detalladas.",
+      "Seguimiento de partidos en tiempo real, estadisticas detalladas, blog y torneos de padel.",
     url: "https://padeltracker.pro",
     siteName: "Padel Tracker",
     type: "website",
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
     card: "summary",
     title: "Padel Tracker",
     description:
-      "Seguimiento de partidos de pádel en tiempo real con estadísticas detalladas.",
+      "La plataforma de padel: tracking en vivo, estadisticas, blog y torneos.",
   },
   robots: {
     index: true,
@@ -80,27 +80,17 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               "@context": "https://schema.org",
-              "@type": "SoftwareApplication",
+              "@type": "WebSite",
               name: "Padel Tracker",
               url: "https://padeltracker.pro",
-              applicationCategory: "SportsApplication",
-              operatingSystem: "Web",
-              offers: {
-                "@type": "Offer",
-                price: "0",
-                priceCurrency: "USD",
-              },
               description:
-                "Seguimiento de partidos de pádel en tiempo real con estadísticas detalladas de puntos, winners, errores y magias.",
+                "Plataforma de padel con tracking en vivo, estadisticas, blog y torneos.",
               inLanguage: ["es", "en"],
             }),
           }}
         />
         <AuthProvider>
-          <LocaleProvider>
-            <LanguageSelector />
-            {children}
-          </LocaleProvider>
+          <LocaleProvider>{children}</LocaleProvider>
         </AuthProvider>
       </body>
       <GoogleAnalytics gaId="G-G48Q2E7JE0" />

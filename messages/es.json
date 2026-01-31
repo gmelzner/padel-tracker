@@ -202,6 +202,37 @@
     "section8Text": "Para consultas sobre estos términos, podés contactarnos en:",
     "backToApp": "Volver a la app"
   },
+  "nav": {
+    "tracker": "Tracker",
+    "blog": "Blog",
+    "tournaments": "Torneos",
+    "signIn": "Iniciar sesion",
+    "profile": "Perfil"
+  },
+  "footer": {
+    "privacy": "Politica de Privacidad",
+    "terms": "Terminos y Condiciones",
+    "copyright": "2025 Padel Tracker. Todos los derechos reservados."
+  },
+  "landing": {
+    "heroTitle": "Segui tus partidos de padel en vivo",
+    "heroSubtitle": "Puntuacion en tiempo real, estadisticas detalladas y resultados para compartir en cada partido",
+    "heroCta": "Empezar a trackear",
+    "whatIsTitle": "Todo lo que necesitas para tus partidos de padel",
+    "feature1Title": "Puntuacion en vivo",
+    "feature1Desc": "Registra cada punto con winners, errores no forzados, errores forzados y golpes especiales (magias)",
+    "feature2Title": "Estadisticas detalladas",
+    "feature2Desc": "Stats por jugador y equipo, graficos de momentum, rachas, break points y distribucion de puntos",
+    "feature3Title": "Comparti resultados",
+    "feature3Desc": "Genera links compartibles con las estadisticas completas del partido para WhatsApp y redes sociales",
+    "feature4Title": "Historial de partidos",
+    "feature4Desc": "Inicia sesion para guardar tus partidos y seguir tu progreso con porcentajes de victoria y tendencias",
+    "trackerCtaTitle": "Listo para trackear tu proximo partido?",
+    "trackerCtaDesc": "Gratis, sin necesidad de registrarse. Solo configura los equipos y empeza a trackear.",
+    "trackerCtaButton": "Abrir Tracker",
+    "finalCtaTitle": "Tu padel, tus estadisticas",
+    "finalCtaButton": "Ir al Tracker"
+  },
   "profile": {
     "title": "Mi Perfil",
     "matchesPlayed": "Jugados",
