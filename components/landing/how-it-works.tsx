@@ -24,7 +24,7 @@ export function HowItWorks() {
   ];
 
   return (
-    <section className="bg-white py-16 md:py-20">
+    <section className="bg-slate-50 py-16 md:py-20">
       <div className="max-w-5xl mx-auto px-4">
         <h2 className="text-2xl md:text-3xl font-black text-slate-800 text-center">
           {t("howItWorksTitle")}
