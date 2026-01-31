@@ -272,5 +272,12 @@
     "signOutButton": "Sign out",
     "notLoggedIn": "Sign in to see your profile",
     "signInWithGoogle": "Sign in with Google"
+  },
+  "comingSoon": {
+    "title": "Coming Soon",
+    "blogDesc": "We're preparing articles about strategy, tips, news, and everything you need to know about padel.",
+    "tournamentsDesc": "Soon you'll be able to find tournaments near you, register, and follow the results.",
+    "notify": "We'll let you know when it's ready",
+    "backToTracker": "Go to Tracker"
   }
 }

@@ -272,5 +272,12 @@
     "signOutButton": "Cerrar sesión",
     "notLoggedIn": "Iniciá sesión para ver tu perfil",
     "signInWithGoogle": "Iniciar sesión con Google"
+  },
+  "comingSoon": {
+    "title": "Próximamente",
+    "blogDesc": "Estamos preparando artículos sobre estrategia, tips, noticias y todo lo que necesitás saber sobre pádel.",
+    "tournamentsDesc": "Muy pronto vas a poder encontrar torneos cerca tuyo, inscribirte y seguir los resultados.",
+    "notify": "Te avisamos cuando esté listo",
+    "backToTracker": "Ir al Tracker"
   }
 }
