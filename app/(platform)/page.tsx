@@ -6,7 +6,6 @@ import { Features } from "@/components/landing/features";
 import { TrackerPreview } from "@/components/landing/tracker-preview";
 import { UseCases } from "@/components/landing/use-cases";
 import { TrackerCta } from "@/components/landing/tracker-cta";
-import { FinalCta } from "@/components/landing/final-cta";
 import { createAdminSupabaseClient } from "@/lib/supabase-admin";
 
 export const revalidate = 3600;
@@ -66,7 +65,6 @@ export default async function LandingPage() {
       <TrackerPreview />
       <UseCases />
       <TrackerCta />
-      <FinalCta />
     </div>
   );
 }

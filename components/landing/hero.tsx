@@ -7,6 +7,12 @@ export function Hero() {
 
   return (
     <section className="bg-gradient-to-b from-slate-900 to-slate-800 text-white">
+      <style>{`
+        @keyframes cta-glow {
+          0%, 100% { box-shadow: 0 0 0 0 rgba(255,255,255,0.3); }
+          50% { box-shadow: 0 0 24px 6px rgba(255,255,255,0.12); }
+        }
+      `}</style>
       <div className="max-w-5xl mx-auto px-4 py-20 md:py-28 text-center">
         <h1 className="text-4xl md:text-5xl font-black tracking-tight leading-tight">
           {t("heroTitle")}
@@ -14,49 +20,14 @@ export function Hero() {
         <p className="mt-4 text-lg md:text-xl text-slate-300 max-w-2xl mx-auto">
           {t("heroSubtitle")}
         </p>
-        <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+        <div className="mt-10">
           <a
             href="/tracker"
-            className="inline-block h-14 px-8 rounded-2xl bg-white text-slate-900 font-bold text-lg leading-[3.5rem] active:scale-[0.98] transition-all"
+            className="inline-block h-14 px-10 rounded-2xl bg-white text-slate-900 font-bold text-lg leading-[3.5rem] hover:bg-slate-100 active:scale-[0.98] transition-all"
+            style={{ animation: "cta-glow 2.5s ease-in-out infinite" }}
           >
             {t("heroCta")}
           </a>
-        </div>
-
-        {/* Score preview */}
-        <div className="mt-12 max-w-sm mx-auto">
-          <div className="rounded-2xl bg-white/10 backdrop-blur-sm border border-white/10 p-6">
-            <div className="flex items-center justify-between text-sm text-slate-400 mb-3">
-              <span>SETS</span>
-              <span>GAMES</span>
-              <span>POINTS</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-blue-400">1</div>
-                <div className="text-xs text-slate-400 mt-1">Team 1</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-blue-400">5</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-blue-400">40</div>
-              </div>
-            </div>
-            <div className="h-px bg-white/10 my-3" />
-            <div className="flex items-center justify-between">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-orange-400">0</div>
-                <div className="text-xs text-slate-400 mt-1">Team 2</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-orange-400">4</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-orange-400">30</div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </section>

@@ -2,6 +2,13 @@
 
 import { useTranslations } from "next-intl";
 
+const players = [
+  { name: "Martín", w: 5, ue: 2, feg: 3, eff: 80 },
+  { name: "Lucas", w: 3, ue: 1, feg: 2, eff: 83 },
+  { name: "Fede", w: 2, ue: 4, feg: 1, eff: 43 },
+  { name: "Nico", w: 4, ue: 3, feg: 0, eff: 57 },
+];
+
 export function TrackerPreview() {
   const t = useTranslations("landing");
 
@@ -17,75 +24,113 @@ export function TrackerPreview() {
           </p>
         </div>
 
-        {/* Phone mockup */}
-        <div className="max-w-xs mx-auto">
-          <div className="rounded-[2rem] bg-slate-900 p-3 shadow-2xl shadow-slate-900/40">
-            <div className="rounded-[1.4rem] bg-slate-50 overflow-hidden">
-              {/* Status bar */}
-              <div className="bg-slate-100 px-4 py-2 flex items-center justify-between">
-                <span className="text-[10px] font-semibold text-slate-500">Padel Tracker</span>
-                <span className="text-[10px] text-slate-400">Set 2</span>
+        {/* Results card mockup */}
+        <div className="max-w-md mx-auto">
+          <div className="rounded-2xl bg-white border border-slate-200 shadow-lg shadow-slate-200/50 overflow-hidden">
+            {/* Score header */}
+            <div className="bg-slate-900 text-white px-5 py-4">
+              <div className="text-xs text-slate-400 font-medium mb-2">
+                Resultado
               </div>
-
-              {/* Scoreboard */}
-              <div className="px-4 pt-3 pb-4 bg-white">
-                {/* Team 1 */}
-                <div className="flex items-center justify-between py-2">
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-blue-500" />
-                    <span className="text-sm font-bold text-slate-800">Martin / Lucas</span>
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="font-bold text-blue-400">
+                    Martín / Lucas
                   </div>
-                  <div className="flex items-center gap-3 text-sm">
-                    <span className="w-5 text-center text-slate-400 font-medium">1</span>
-                    <span className="w-5 text-center font-bold text-blue-600">5</span>
-                    <span className="w-7 text-center font-black text-blue-600 text-lg">40</span>
+                  <div className="text-sm text-slate-400 mt-0.5">
+                    Fede / Nico
                   </div>
                 </div>
-                <div className="h-px bg-slate-100" />
-                {/* Team 2 */}
-                <div className="flex items-center justify-between py-2">
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-orange-500" />
-                    <span className="text-sm font-bold text-slate-800">Fede / Nico</span>
+                <div className="text-right">
+                  <div className="text-2xl font-black tracking-wide">
+                    6-4 / 7-5
                   </div>
-                  <div className="flex items-center gap-3 text-sm">
-                    <span className="w-5 text-center text-slate-400 font-medium">0</span>
-                    <span className="w-5 text-center font-bold text-orange-600">4</span>
-                    <span className="w-7 text-center font-black text-orange-600 text-lg">30</span>
-                  </div>
-                </div>
-                {/* Column labels */}
-                <div className="flex justify-end gap-3 mt-1">
-                  <span className="w-5 text-center text-[9px] text-slate-400">SETS</span>
-                  <span className="w-5 text-center text-[9px] text-slate-400">GAMES</span>
-                  <span className="w-7 text-center text-[9px] text-slate-400">PTS</span>
                 </div>
               </div>
+            </div>
 
-              {/* Point buttons mockup */}
-              <div className="px-4 py-3 space-y-2">
-                <div className="grid grid-cols-2 gap-2">
-                  <div className="h-11 rounded-xl bg-blue-500 flex items-center justify-center">
-                    <span className="text-white text-xs font-bold">Martin / Lucas</span>
-                  </div>
-                  <div className="h-11 rounded-xl bg-orange-500 flex items-center justify-center">
-                    <span className="text-white text-xs font-bold">Fede / Nico</span>
-                  </div>
-                </div>
-                {/* Action bar */}
-                <div className="flex items-center justify-between pt-1 pb-2">
-                  <div className="flex gap-2">
-                    <div className="h-8 px-3 rounded-lg bg-slate-100 flex items-center">
-                      <span className="text-[10px] text-slate-500 font-medium">Winner</span>
-                    </div>
-                    <div className="h-8 px-3 rounded-lg bg-slate-100 flex items-center">
-                      <span className="text-[10px] text-slate-500 font-medium">Error</span>
-                    </div>
-                    <div className="h-8 px-3 rounded-lg bg-slate-100 flex items-center">
-                      <span className="text-[10px] text-slate-500 font-medium">Magia</span>
-                    </div>
-                  </div>
-                </div>
+            {/* Player stats table */}
+            <div className="px-5 py-4">
+              <div className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">
+                Stats por jugador
+              </div>
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="text-xs text-slate-400">
+                    <th className="text-left font-medium pb-2">Jugador</th>
+                    <th className="text-center font-medium pb-2 w-10">W</th>
+                    <th className="text-center font-medium pb-2 w-10">ENF</th>
+                    <th className="text-center font-medium pb-2 w-10">EFG</th>
+                    <th className="text-right font-medium pb-2 w-14">Efect.</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {players.map((p, i) => (
+                    <tr
+                      key={i}
+                      className="border-t border-slate-100"
+                    >
+                      <td className="py-2 font-medium text-slate-800">
+                        <span className="flex items-center gap-1.5">
+                          <span
+                            className={`w-1.5 h-1.5 rounded-full ${i < 2 ? "bg-blue-500" : "bg-orange-500"}`}
+                          />
+                          {p.name}
+                        </span>
+                      </td>
+                      <td className="py-2 text-center text-slate-600">{p.w}</td>
+                      <td className="py-2 text-center text-slate-600">{p.ue}</td>
+                      <td className="py-2 text-center text-slate-600">{p.feg}</td>
+                      <td className="py-2 text-right font-bold">
+                        <span
+                          className={
+                            p.eff >= 70
+                              ? "text-emerald-600"
+                              : p.eff >= 50
+                                ? "text-amber-600"
+                                : "text-red-500"
+                          }
+                        >
+                          {p.eff}%
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Momentum mini chart */}
+            <div className="px-5 pb-4">
+              <div className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
+                Momentum
+              </div>
+              <div className="h-10 flex items-end gap-[2px]">
+                {[3, 5, 2, -1, -3, 4, 6, 3, -2, 1, 4, 7, 5, 2, -1, 3, 5, 8, 4, 1].map(
+                  (v, i) => (
+                    <div
+                      key={i}
+                      className="flex-1 rounded-sm"
+                      style={{
+                        height: `${Math.abs(v) * 10 + 10}%`,
+                        backgroundColor:
+                          v >= 0
+                            ? `rgba(59, 130, 246, ${0.3 + Math.abs(v) * 0.08})`
+                            : `rgba(249, 115, 22, ${0.3 + Math.abs(v) * 0.08})`,
+                        alignSelf: v >= 0 ? "flex-end" : "flex-start",
+                      }}
+                    />
+                  )
+                )}
+              </div>
+            </div>
+
+            {/* Share button */}
+            <div className="px-5 pb-5">
+              <div className="h-10 rounded-xl bg-slate-900 flex items-center justify-center">
+                <span className="text-white text-sm font-bold">
+                  Compartir
+                </span>
               </div>
             </div>
           </div>
