@@ -8,6 +8,7 @@ import {
   getMatchesOverTime,
   getSharedOverTime,
   getTopUsers,
+  getLastMatches,
   getCountInRange,
   getStartOfWeek,
   getStartOfLastWeek,
@@ -18,6 +19,7 @@ import { MetricsCards } from "@/components/admin/metrics-cards";
 import { ActivityChart } from "@/components/admin/activity-chart";
 import { TopUsersTable } from "@/components/admin/top-users-table";
 import { GrowthSummary } from "@/components/admin/growth-summary";
+import { LastMatches } from "@/components/admin/last-matches";
 
 // Revalidate every 5 minutes
 export const revalidate = 300;
@@ -50,6 +52,7 @@ export default async function AdminDashboard() {
     matchesOverTime,
     sharedOverTime,
     topUsers,
+    lastMatches,
     matchesThisWeek,
     matchesLastWeek,
     matchesThisMonth,
@@ -68,6 +71,7 @@ export default async function AdminDashboard() {
     getMatchesOverTime(),
     getSharedOverTime(),
     getTopUsers(),
+    getLastMatches(10),
     getCountInRange("matches", "played_at", weekStart),
     getCountInRange("matches", "played_at", lastWeekStart, weekStart),
     getCountInRange("matches", "played_at", monthStart),
@@ -146,6 +150,8 @@ export default async function AdminDashboard() {
       </div>
 
       <TopUsersTable users={topUsers} />
+
+      <LastMatches matches={lastMatches} />
     </div>
   );
 }

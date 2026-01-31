@@ -196,6 +196,26 @@ export async function getTopUsers(): Promise<TopUser[]> {
   }));
 }
 
+// --- Last matches (shared results with public links) ---
+
+export interface RecentMatch {
+  id: string;
+  player_names: string[];
+  score_line: string;
+  winning_team: number | null;
+  created_at: string;
+}
+
+export async function getLastMatches(limit = 10): Promise<RecentMatch[]> {
+  const { data } = await supabase
+    .from("shared_results")
+    .select("id, player_names, score_line, winning_team, created_at")
+    .order("created_at", { ascending: false })
+    .limit(limit);
+
+  return (data ?? []) as RecentMatch[];
+}
+
 // --- Date helpers ---
 
 export function getStartOfWeek(): string {
