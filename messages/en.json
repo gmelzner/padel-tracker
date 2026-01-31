@@ -246,7 +246,8 @@
     "previewTitle": "Everything on court, on your phone",
     "previewDesc": "Interface designed for courtside use: fast, intuitive, and distraction-free.",
     "trackerCtaTitle": "Ready to track your next match?",
-    "trackerCtaDesc": "Free, no registration required. Just set up your teams and start tracking.",
+    "trackerCtaFree": "Free",
+    "trackerCtaDesc": "no registration required. Just set up your teams and start tracking.",
     "trackerCtaButton": "Open Tracker",
     "finalCtaTitle": "Your padel, your stats",
     "finalCtaButton": "Go to Tracker"

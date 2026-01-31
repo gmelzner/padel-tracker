@@ -12,6 +12,9 @@ export function TrackerCta() {
           {t("trackerCtaTitle")}
         </h2>
         <p className="mt-3 text-slate-500 max-w-xl mx-auto">
+          <span className="inline-block bg-emerald-100 text-emerald-700 font-bold text-sm px-2.5 py-0.5 rounded-full mr-1.5 align-middle">
+            {t("trackerCtaFree")}
+          </span>
           {t("trackerCtaDesc")}
         </p>
         <div className="mt-8">
