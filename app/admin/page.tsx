@@ -14,12 +14,15 @@ import {
   getStartOfLastWeek,
   getStartOfMonth,
   getStartOfLastMonth,
+  getPendingTournaments,
+  getTotalTournaments,
 } from "@/lib/admin-queries";
 import { MetricsCards } from "@/components/admin/metrics-cards";
 import { ActivityChart } from "@/components/admin/activity-chart";
 import { TopUsersTable } from "@/components/admin/top-users-table";
 import { GrowthSummary } from "@/components/admin/growth-summary";
 import { LastMatches } from "@/components/admin/last-matches";
+import { PendingTournaments } from "@/components/admin/pending-tournaments";
 
 // Revalidate every 5 minutes
 export const revalidate = 300;
@@ -61,6 +64,8 @@ export default async function AdminDashboard() {
     usersLastWeek,
     usersThisMonth,
     usersLastMonth,
+    pendingTournaments,
+    totalTournaments,
   ] = await Promise.all([
     getTotalUsers(),
     getTotalMatches(),
@@ -80,6 +85,8 @@ export default async function AdminDashboard() {
     getCountInRange("profiles", "created_at", lastWeekStart, weekStart),
     getCountInRange("profiles", "created_at", monthStart),
     getCountInRange("profiles", "created_at", lastMonthStart, monthStart),
+    getPendingTournaments(),
+    getTotalTournaments(),
   ]);
 
   return (
@@ -101,8 +108,17 @@ export default async function AdminDashboard() {
             value: activeUsers7d,
             subtitle: `${frequentUsers} frequent (5+)`,
           },
+          {
+            label: "Tournaments",
+            value: totalTournaments,
+            subtitle: pendingTournaments.length > 0
+              ? `${pendingTournaments.length} pending`
+              : undefined,
+          },
         ]}
       />
+
+      <PendingTournaments tournaments={pendingTournaments} />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <GrowthSummary

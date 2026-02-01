@@ -241,3 +241,43 @@ export function getStartOfLastMonth(): string {
   const now = new Date();
   return new Date(now.getFullYear(), now.getMonth() - 1, 1).toISOString();
 }
+
+// --- Tournament admin queries ---
+
+import type { Tournament } from "@/lib/database.types";
+
+export async function getPendingTournaments(): Promise<Tournament[]> {
+  const { data } = await supabase
+    .from("tournaments")
+    .select("*")
+    .eq("approved", false)
+    .eq("status", "pending")
+    .order("created_at", { ascending: false });
+  return (data ?? []) as Tournament[];
+}
+
+export async function getTotalTournaments(): Promise<number> {
+  const { count } = await supabase
+    .from("tournaments")
+    .select("*", { count: "exact", head: true })
+    .eq("approved", true)
+    .eq("status", "published");
+  return count ?? 0;
+}
+
+export async function approveTournament(
+  id: string
+): Promise<{ error: string | null }> {
+  const { error } = await supabase
+    .from("tournaments")
+    .update({ approved: true, status: "published" })
+    .eq("id", id);
+  return { error: error?.message ?? null };
+}
+
+export async function rejectTournament(
+  id: string
+): Promise<{ error: string | null }> {
+  const { error } = await supabase.from("tournaments").delete().eq("id", id);
+  return { error: error?.message ?? null };
+}

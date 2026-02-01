@@ -80,5 +80,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
-  return [...staticPages, ...blogPages, ...resultPages];
+  // Published tournament pages
+  const { data: tournaments } = await supabase
+    .from("tournaments")
+    .select("id, updated_at")
+    .eq("approved", true)
+    .eq("status", "published")
+    .order("created_at", { ascending: false })
+    .limit(200);
+
+  const tournamentPages: MetadataRoute.Sitemap = (tournaments ?? []).map(
+    (t) => ({
+      url: `${baseUrl}/torneos/${t.id}`,
+      lastModified: new Date(t.updated_at),
+      changeFrequency: "weekly" as const,
+      priority: 0.7,
+    })
+  );
+
+  return [...staticPages, ...blogPages, ...tournamentPages, ...resultPages];
 }
