@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { createServerSupabaseClient } from "@/lib/supabase-server";
+import { getAllSlugs } from "@/lib/blog";
 
 // Regenerate sitemap every hour to include new shared results
 export const revalidate = 3600;
@@ -70,5 +71,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })
   );
 
-  return [...staticPages, ...resultPages];
+  // Blog post pages
+  const blogSlugs = getAllSlugs();
+  const blogPages: MetadataRoute.Sitemap = blogSlugs.map((slug) => ({
+    url: `${baseUrl}/blog/${slug}`,
+    lastModified: new Date(),
+    changeFrequency: "monthly" as const,
+    priority: 0.7,
+  }));
+
+  return [...staticPages, ...blogPages, ...resultPages];
 }

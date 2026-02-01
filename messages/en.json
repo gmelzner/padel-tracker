@@ -273,6 +273,19 @@
     "notLoggedIn": "Sign in to see your profile",
     "signInWithGoogle": "Sign in with Google"
   },
+  "blog": {
+    "allCategories": "All",
+    "noPosts": "No posts yet. Check back soon!",
+    "byAuthor": "By {author}",
+    "backToBlog": "Back to Blog",
+    "categories": {
+      "news": "News",
+      "tips": "Tips",
+      "professional": "Professional",
+      "guides": "Guides",
+      "gear": "Gear"
+    }
+  },
   "comingSoon": {
     "title": "Coming Soon",
     "blogDesc": "We're preparing articles about strategy, tips, news, and everything you need to know about padel.",

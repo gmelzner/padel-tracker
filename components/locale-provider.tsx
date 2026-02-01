@@ -29,6 +29,10 @@ export function useLocale() {
 
 const STORAGE_KEY = "padel-locale";
 
+function setLocaleCookie(locale: Locale) {
+  document.cookie = `padel-locale=${locale};path=/;max-age=31536000;samesite=lax`;
+}
+
 function isLocale(value: string | null | undefined): value is Locale {
   return value === "en" || value === "es";
 }
@@ -52,6 +56,7 @@ export function LocaleProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const stored = getStoredLocale();
     setLocaleState(stored);
+    setLocaleCookie(stored);
   }, []);
 
   // Sync locale from Supabase profile on login
@@ -69,6 +74,7 @@ export function LocaleProvider({ children }: { children: React.ReactNode }) {
         if (data?.preferred_locale && isLocale(data.preferred_locale)) {
           setLocaleState(data.preferred_locale);
           localStorage.setItem(STORAGE_KEY, data.preferred_locale);
+          setLocaleCookie(data.preferred_locale);
         }
       });
   }, [user]);
@@ -92,6 +98,7 @@ export function LocaleProvider({ children }: { children: React.ReactNode }) {
     (newLocale: Locale) => {
       setLocaleState(newLocale);
       localStorage.setItem(STORAGE_KEY, newLocale);
+      setLocaleCookie(newLocale);
 
       // Persist to Supabase profile if logged in
       if (user) {

@@ -273,6 +273,19 @@
     "notLoggedIn": "Iniciá sesión para ver tu perfil",
     "signInWithGoogle": "Iniciar sesión con Google"
   },
+  "blog": {
+    "allCategories": "Todos",
+    "noPosts": "Todavía no hay artículos. ¡Volvé pronto!",
+    "byAuthor": "Por {author}",
+    "backToBlog": "Volver al Blog",
+    "categories": {
+      "news": "Noticias",
+      "tips": "Tips",
+      "professional": "Profesional",
+      "guides": "Guías",
+      "gear": "Equipamiento"
+    }
+  },
   "comingSoon": {
     "title": "Próximamente",
     "blogDesc": "Estamos preparando artículos sobre estrategia, tips, noticias y todo lo que necesitás saber sobre pádel.",
