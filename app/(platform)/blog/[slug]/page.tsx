@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { compileMDX } from "next-mdx-remote/rsc";
+import remarkGfm from "remark-gfm";
 import { getPostBySlug, getAllSlugs } from "@/lib/blog";
 import { getServerLocale } from "@/lib/locale-server";
 import { blogMdxComponents } from "@/components/blog/mdx-components";
@@ -78,6 +79,7 @@ export default async function BlogPostPage({ params }: PageProps) {
   const { content } = await compileMDX({
     source: post.content,
     components: blogMdxComponents,
+    options: { mdxOptions: { remarkPlugins: [remarkGfm] } },
   });
 
   const jsonLd = {
