@@ -46,14 +46,17 @@ export const blogMdxComponents: MDXComponents = {
   ),
   hr: () => <hr className="border-slate-200 my-8" />,
   table: (props) => (
-    <div className="overflow-x-auto mb-4">
-      <table className="w-full text-sm text-slate-600 border-collapse" {...props} />
+    <div className="overflow-x-auto mb-6 -mx-4 px-4 sm:mx-0 sm:px-0">
+      <table className="w-full text-sm text-slate-600 border-collapse min-w-[400px]" {...props} />
     </div>
   ),
+  thead: (props) => <thead {...props} />,
+  tbody: (props) => <tbody {...props} />,
+  tr: (props) => <tr className="border-b border-slate-100" {...props} />,
   th: (props) => (
-    <th className="text-left font-bold text-slate-800 border-b border-slate-200 pb-2 pr-4" {...props} />
+    <th className="text-left font-semibold text-slate-800 bg-slate-50 px-3 py-2 first:rounded-tl-lg last:rounded-tr-lg whitespace-nowrap" {...props} />
   ),
   td: (props) => (
-    <td className="border-b border-slate-100 py-2 pr-4" {...props} />
+    <td className="px-3 py-2 whitespace-nowrap" {...props} />
   ),
 };
