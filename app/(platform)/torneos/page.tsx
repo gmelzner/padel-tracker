@@ -7,16 +7,16 @@ import type { Tournament } from "@/lib/database.types";
 export const revalidate = 300; // 5 minutes
 
 export const metadata: Metadata = {
-  title: "Torneos y Canchas",
+  title: "Torneos y Canchas de Padel",
   description:
-    "Find padel tournaments and open courts near you. Discover amateur and professional padel events in Buenos Aires.",
+    "Find padel tournaments and open courts in Argentina and Spain. Browse courts in Buenos Aires, Madrid, Barcelona, Córdoba, Rosario, and more.",
   alternates: {
     canonical: "https://padeltracker.pro/torneos",
   },
   openGraph: {
-    title: "Torneos y Canchas - Padel Tracker",
+    title: "Torneos y Canchas de Padel - Padel Tracker",
     description:
-      "Find padel tournaments and open courts near you. Discover amateur and professional padel events in Buenos Aires.",
+      "Find padel tournaments and open courts in Argentina and Spain. Browse courts in Buenos Aires, Madrid, Barcelona, Córdoba, Rosario, and more.",
     url: "https://padeltracker.pro/torneos",
     siteName: "Padel Tracker",
     type: "website",

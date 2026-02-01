@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { createAdminSupabaseClient } from "@/lib/supabase-admin";
 import { getServerLocale } from "@/lib/locale-server";
+import { getCountryForCity } from "@/lib/city-utils";
 import { TournamentDetail } from "@/components/tournaments/tournament-detail";
 import type { Tournament } from "@/lib/database.types";
 
@@ -95,7 +96,7 @@ export default async function TournamentDetailPage({ params }: PageProps) {
             address: {
               "@type": "PostalAddress",
               addressLocality: tournament.city,
-              addressCountry: "AR",
+              addressCountry: getCountryForCity(tournament.city),
             },
           },
           image: tournament.image_url ?? undefined,
@@ -118,7 +119,7 @@ export default async function TournamentDetailPage({ params }: PageProps) {
             "@type": "PostalAddress",
             streetAddress: tournament.address ?? undefined,
             addressLocality: tournament.city,
-            addressCountry: "AR",
+            addressCountry: getCountryForCity(tournament.city),
           },
           image: tournament.image_url ?? undefined,
           url: `https://padeltracker.pro/torneos/${tournament.id}`,
