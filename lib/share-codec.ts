@@ -8,6 +8,7 @@ import {
   computeTeamPointDistribution,
   computePlayerMagiaStats,
   computeTeamMagiaStats,
+  computeMomentum,
 } from "./analytics";
 
 /**
@@ -39,6 +40,8 @@ export interface SharedMatchData {
   mg?: number[][];
   /** Optional per-team magia totals: [[x3,x4,dej,dor,vib,sdp], [x3,x4,dej,dor,vib,sdp]] */
   mt?: number[][];
+  /** Optional momentum data: array of differentials (team1 - team2) at each point */
+  mo?: number[];
 }
 
 const MAGIA_ORDER: MagiaType[] = ["x3", "x4", "dejada", "dormilona"];
@@ -107,6 +110,12 @@ export function encodeMatchResults(state: MatchState): string {
     ];
   }
 
+  // Include momentum data for the chart
+  if (history.length > 0) {
+    const momentum = computeMomentum(history);
+    data.mo = momentum.map((m) => m.differential);
+  }
+
   const json = JSON.stringify(data);
   // Use base64url encoding (URL-safe)
   const base64 = btoa(unescape(encodeURIComponent(json)))
@@ -172,6 +181,7 @@ export interface DecodedMatchResults {
     total: number;
     byType: Record<MagiaType, number>;
   }[] | null;
+  momentum: { index: number; differential: number }[] | null;
 }
 
 export function decodeMatchResults(encoded: string): DecodedMatchResults | null {
@@ -276,6 +286,11 @@ export function decodeMatchResults(encoded: string): DecodedMatchResults | null 
       });
     }
 
+    // Decode momentum data
+    const momentum = data.mo
+      ? data.mo.map((diff, i) => ({ index: i, differential: diff }))
+      : null;
+
     return {
       players,
       completedSets,
@@ -302,6 +317,7 @@ export function decodeMatchResults(encoded: string): DecodedMatchResults | null 
       teamDistribution,
       magiaPlayerStats,
       magiaTeamStats,
+      momentum,
     };
   } catch {
     return null;

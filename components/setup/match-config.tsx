@@ -1,17 +1,19 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import type { DeuceMode } from "@/lib/types";
+import type { DeuceMode, Team } from "@/lib/types";
 
 interface MatchConfigProps {
   gamesPerSet: number;
   numberOfSets: number;
   deuceMode: DeuceMode;
   tiebreakEnabled: boolean;
+  servingTeam: Team;
   onGamesChange: (n: number) => void;
   onSetsChange: (n: number) => void;
   onDeuceModeChange: (m: DeuceMode) => void;
   onTiebreakChange: (b: boolean) => void;
+  onServingTeamChange: (t: Team) => void;
 }
 
 function OptionGroup({
@@ -53,10 +55,12 @@ export function MatchConfigForm({
   numberOfSets,
   deuceMode,
   tiebreakEnabled,
+  servingTeam,
   onGamesChange,
   onSetsChange,
   onDeuceModeChange,
   onTiebreakChange,
+  onServingTeamChange,
 }: MatchConfigProps) {
   const t = useTranslations();
   return (
@@ -66,7 +70,7 @@ export function MatchConfigForm({
       <OptionGroup
         label={t("config.gamesPerSet")}
         options={[
-          { label: "4", value: 4 },
+          { label: "5", value: 5 },
           { label: "6", value: 6 },
         ]}
         value={gamesPerSet}
@@ -87,6 +91,7 @@ export function MatchConfigForm({
         label={t("config.deuce")}
         options={[
           { label: t("config.goldenPoint"), value: "golden-point" },
+          { label: t("config.starPoint"), value: "star-point" },
           { label: t("config.advantage"), value: "advantage" },
         ]}
         value={deuceMode}
@@ -101,6 +106,16 @@ export function MatchConfigForm({
         ]}
         value={tiebreakEnabled ? "yes" : "no"}
         onChange={(v) => onTiebreakChange(v === "yes")}
+      />
+
+      <OptionGroup
+        label={t("config.whoServes")}
+        options={[
+          { label: t("config.team1"), value: 1 },
+          { label: t("config.team2"), value: 2 },
+        ]}
+        value={servingTeam}
+        onChange={(v) => onServingTeamChange(v as Team)}
       />
     </div>
   );

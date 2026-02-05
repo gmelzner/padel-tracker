@@ -5,6 +5,7 @@ import type { DecodedMatchResults } from "@/lib/share-codec";
 import { MAGIA_TYPE_LABELS } from "@/lib/constants";
 import type { MagiaType } from "@/lib/types";
 import { ClaimMatchPrompt } from "./claim-match-prompt";
+import { MomentumChart } from "./momentum-chart";
 
 interface SharedResultsDisplayProps {
   data: DecodedMatchResults;
@@ -27,6 +28,7 @@ export function SharedResultsDisplay({ data, sourceSharedId, embedded }: SharedR
     teamDistribution,
     magiaPlayerStats,
     magiaTeamStats,
+    momentum,
   } = data;
 
   const magiaTypes: MagiaType[] = ["x3", "x4", "dejada", "dormilona"];
@@ -88,6 +90,15 @@ export function SharedResultsDisplay({ data, sourceSharedId, embedded }: SharedR
             </div>
           ))}
         </div>
+
+        {/* Momentum chart */}
+        {momentum && momentum.length >= 2 && (
+          <MomentumChart
+            data={momentum}
+            team1Label={team1Label}
+            team2Label={team2Label}
+          />
+        )}
 
         {/* Player stats */}
         <div className="rounded-xl border border-slate-200 bg-white p-4 space-y-3">

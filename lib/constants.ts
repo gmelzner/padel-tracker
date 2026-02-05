@@ -26,5 +26,6 @@ export function getInitialScore(): ScoreSnapshot {
     completedSets: [],
     currentSetIndex: 0,
     servingTeam: 1,
+    deuceCount: 0,
   };
 }

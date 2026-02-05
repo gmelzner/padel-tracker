@@ -6,7 +6,7 @@ export function getInitialState(): MatchState {
   return {
     screen: "setup",
     config: {
-      gamesPerSet: 4,
+      gamesPerSet: 5,
       numberOfSets: 1,
       deuceMode: "golden-point",
       tiebreakEnabled: true,
@@ -29,13 +29,17 @@ export function matchReducer(
 ): MatchState {
   switch (action.type) {
     case "INITIALIZE_MATCH": {
-      const { players, config } = action.payload;
+      const { players, config, servingTeam } = action.payload;
+      const initialScore = getInitialScore();
+      if (servingTeam) {
+        initialScore.servingTeam = servingTeam;
+      }
       return {
         ...getInitialState(),
         screen: "tracking",
         config,
         players,
-        score: getInitialScore(),
+        score: initialScore,
       };
     }
 

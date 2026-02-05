@@ -83,6 +83,7 @@ export function ScoreEditor({ onClose }: ScoreEditorProps) {
       completedSets,
       currentSetIndex: totalCompleted,
       servingTeam,
+      deuceCount: 0,
     };
 
     dispatch({ type: "SET_SCORE", payload: { score: newScore } });

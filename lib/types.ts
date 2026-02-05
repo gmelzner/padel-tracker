@@ -4,7 +4,7 @@ export type Team = 1 | 2;
 
 export type Position = "drive" | "reves";
 
-export type DeuceMode = "advantage" | "golden-point";
+export type DeuceMode = "advantage" | "golden-point" | "star-point";
 
 export type PointType = "winner" | "unforced-error" | "forced-error";
 
@@ -40,6 +40,7 @@ export interface ScoreSnapshot {
   completedSets: CompletedSet[];
   currentSetIndex: number;
   servingTeam: Team;
+  deuceCount: number;
 }
 
 export interface PointRecord {
@@ -72,7 +73,7 @@ export interface MatchState {
 }
 
 export type MatchAction =
-  | { type: "INITIALIZE_MATCH"; payload: { players: Player[]; config: MatchConfig } }
+  | { type: "INITIALIZE_MATCH"; payload: { players: Player[]; config: MatchConfig; servingTeam?: Team } }
   | { type: "RECORD_POINT"; payload: { pointType: PointType; playerId: string } }
   | { type: "RECORD_QUICK_POINT"; payload: { team: Team } }
   | { type: "UNDO_POINT" }

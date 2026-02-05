@@ -63,6 +63,25 @@ function advanceRegularGame(
       return winGame(s, config, winnerTeam);
     }
 
+    if (config.deuceMode === "star-point") {
+      // Star Point: phases 1 & 2 play with advantage, phase 3 is golden point
+      if (s.deuceCount >= 2) {
+        // Phase 3 (Star Point): next point wins the game
+        return winGame(s, config, winnerTeam);
+      }
+      // Phases 1 & 2: advantage mode
+      if (s.advantage === winnerTeam) {
+        return winGame(s, config, winnerTeam);
+      } else if (s.advantage === otherTeam(winnerTeam)) {
+        s.advantage = null;
+        s.deuceCount += 1;
+        return { newScore: s, matchOver: false, winningTeam: null };
+      } else {
+        s.advantage = winnerTeam;
+        return { newScore: s, matchOver: false, winningTeam: null };
+      }
+    }
+
     // Advantage mode
     if (s.advantage === winnerTeam) {
       // Had advantage, wins the game
@@ -98,6 +117,7 @@ function winGame(
   // Reset points
   s.points = [0, 0];
   s.advantage = null;
+  s.deuceCount = 0;
 
   // Add game to winner
   s.games[wi] += 1;

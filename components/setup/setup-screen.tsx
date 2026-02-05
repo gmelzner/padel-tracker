@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import type { DeuceMode, Player } from "@/lib/types";
+import type { DeuceMode, Player, Team } from "@/lib/types";
 import { useMatch } from "@/lib/match-context";
 import { useAuth } from "@/components/auth-provider";
 import { MatchConfigForm } from "./match-config";
@@ -18,10 +18,11 @@ export function SetupScreen() {
   const t = useTranslations();
   const [team1, setTeam1] = useState<TeamDraft>({ drive: "", reves: "" });
   const [team2, setTeam2] = useState<TeamDraft>({ drive: "", reves: "" });
-  const [gamesPerSet, setGamesPerSet] = useState(4);
+  const [gamesPerSet, setGamesPerSet] = useState(5);
   const [numberOfSets, setNumberOfSets] = useState(1);
   const [deuceMode, setDeuceMode] = useState<DeuceMode>("golden-point");
   const [tiebreakEnabled, setTiebreakEnabled] = useState(true);
+  const [servingTeam, setServingTeam] = useState<Team>(1);
   const [error, setError] = useState<string | null>(null);
 
   function validate(): string | null {
@@ -53,6 +54,7 @@ export function SetupScreen() {
       payload: {
         players: matchPlayers,
         config: { gamesPerSet, numberOfSets, deuceMode, tiebreakEnabled },
+        servingTeam,
       },
     });
   }
@@ -154,10 +156,12 @@ export function SetupScreen() {
           numberOfSets={numberOfSets}
           deuceMode={deuceMode}
           tiebreakEnabled={tiebreakEnabled}
+          servingTeam={servingTeam}
           onGamesChange={setGamesPerSet}
           onSetsChange={setNumberOfSets}
           onDeuceModeChange={setDeuceMode}
           onTiebreakChange={setTiebreakEnabled}
+          onServingTeamChange={setServingTeam}
         />
 
         {error && (

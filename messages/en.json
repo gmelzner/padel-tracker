@@ -23,10 +23,14 @@
     "sets": "Sets",
     "deuce": "Deuce",
     "goldenPoint": "Golden Point",
+    "starPoint": "Star Point",
     "advantage": "Advantage",
     "tiebreak": "Tiebreak",
     "yes": "Yes",
-    "no": "No"
+    "no": "No",
+    "whoServes": "Who serves?",
+    "team1": "Team 1",
+    "team2": "Team 2"
   },
   "tracking": {
     "adjustScore": "Adjust score",
