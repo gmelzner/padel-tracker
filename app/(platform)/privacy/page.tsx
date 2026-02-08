@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description:
     "Politica de privacidad de Padel Tracker. Padel Tracker privacy policy.",
   alternates: {
-    canonical: "https://padeltracker.pro/privacy",
+    canonical: "https://www.padeltracker.pro/privacy",
   },
 };
 

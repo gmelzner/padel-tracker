@@ -15,13 +15,13 @@ export const metadata: Metadata = {
   description:
     "Real-time padel match tracking with detailed statistics. Score tracking, player stats, momentum charts, and shareable results. Free, no registration required.",
   alternates: {
-    canonical: "https://padeltracker.pro",
+    canonical: "https://www.padeltracker.pro",
   },
   openGraph: {
     title: "Padel Tracker — Track your padel matches live",
     description:
       "Real-time padel match tracking with detailed statistics, shareable results, and match history.",
-    url: "https://padeltracker.pro",
+    url: "https://www.padeltracker.pro",
     siteName: "Padel Tracker",
     type: "website",
     locale: "es_AR",

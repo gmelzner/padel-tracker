@@ -34,7 +34,7 @@ export async function generateMetadata({
   const description =
     (locale === "es" ? tournament.description_es : tournament.description_en) ??
     `${name} - ${tournament.city}`;
-  const url = `https://padeltracker.pro/torneos/${tournament.id}`;
+  const url = `https://www.padeltracker.pro/torneos/${tournament.id}`;
 
   return {
     title: name,
@@ -100,11 +100,11 @@ export default async function TournamentDetailPage({ params }: PageProps) {
             },
           },
           image: tournament.image_url ?? undefined,
-          url: `https://padeltracker.pro/torneos/${tournament.id}`,
+          url: `https://www.padeltracker.pro/torneos/${tournament.id}`,
           organizer: {
             "@type": "Organization",
             name: "Padel Tracker",
-            url: "https://padeltracker.pro",
+            url: "https://www.padeltracker.pro",
           },
         }
       : {
@@ -122,7 +122,7 @@ export default async function TournamentDetailPage({ params }: PageProps) {
             addressCountry: getCountryForCity(tournament.city),
           },
           image: tournament.image_url ?? undefined,
-          url: `https://padeltracker.pro/torneos/${tournament.id}`,
+          url: `https://www.padeltracker.pro/torneos/${tournament.id}`,
         };
 
   return (

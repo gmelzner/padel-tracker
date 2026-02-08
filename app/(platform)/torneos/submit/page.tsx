@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description:
     "Submit a padel tournament or open court to the Padel Tracker directory. Free and open to everyone.",
   alternates: {
-    canonical: "https://padeltracker.pro/torneos/submit",
+    canonical: "https://www.padeltracker.pro/torneos/submit",
   },
 };
 

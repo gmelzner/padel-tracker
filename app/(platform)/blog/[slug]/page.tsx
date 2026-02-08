@@ -28,7 +28,7 @@ export async function generateMetadata({
     return { title: "Post not found" };
   }
 
-  const url = `https://padeltracker.pro/blog/${post.slug}`;
+  const url = `https://www.padeltracker.pro/blog/${post.slug}`;
 
   return {
     title: post.title,
@@ -90,18 +90,18 @@ export default async function BlogPostPage({ params }: PageProps) {
     author: { "@type": "Person", name: post.author },
     datePublished: post.date,
     image: post.image
-      ? `https://padeltracker.pro${post.image}`
+      ? `https://www.padeltracker.pro${post.image}`
       : undefined,
-    url: `https://padeltracker.pro/blog/${post.slug}`,
+    url: `https://www.padeltracker.pro/blog/${post.slug}`,
     publisher: {
       "@type": "Organization",
       name: "Padel Tracker",
-      url: "https://padeltracker.pro",
+      url: "https://www.padeltracker.pro",
     },
     inLanguage: post.locale,
     mainEntityOfPage: {
       "@type": "WebPage",
-      "@id": `https://padeltracker.pro/blog/${post.slug}`,
+      "@id": `https://www.padeltracker.pro/blog/${post.slug}`,
     },
   };
 

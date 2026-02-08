@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description:
     "Track your padel match live. Record winners, unforced errors, forced errors, and special shots. Real-time score and detailed statistics.",
   alternates: {
-    canonical: "https://padeltracker.pro/tracker",
+    canonical: "https://www.padeltracker.pro/tracker",
   },
 };
 

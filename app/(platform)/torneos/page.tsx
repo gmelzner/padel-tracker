@@ -11,13 +11,13 @@ export const metadata: Metadata = {
   description:
     "Find padel tournaments and open courts in Argentina and Spain. Browse courts in Buenos Aires, Madrid, Barcelona, Córdoba, Rosario, and more.",
   alternates: {
-    canonical: "https://padeltracker.pro/torneos",
+    canonical: "https://www.padeltracker.pro/torneos",
   },
   openGraph: {
     title: "Torneos y Canchas de Padel - Padel Tracker",
     description:
       "Find padel tournaments and open courts in Argentina and Spain. Browse courts in Buenos Aires, Madrid, Barcelona, Córdoba, Rosario, and more.",
-    url: "https://padeltracker.pro/torneos",
+    url: "https://www.padeltracker.pro/torneos",
     siteName: "Padel Tracker",
     type: "website",
   },

@@ -46,7 +46,7 @@ export async function generateMetadata({
     openGraph: {
       title,
       description,
-      url: `https://padeltracker.pro/r/${id}`,
+      url: `https://www.padeltracker.pro/r/${id}`,
       siteName: "Padel Tracker",
       type: "website",
     },

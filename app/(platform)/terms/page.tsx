@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description:
     "Terminos y condiciones de uso de Padel Tracker. Padel Tracker terms and conditions of use.",
   alternates: {
-    canonical: "https://padeltracker.pro/terms",
+    canonical: "https://www.padeltracker.pro/terms",
   },
 };
 

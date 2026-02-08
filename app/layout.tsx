@@ -26,15 +26,15 @@ export const metadata: Metadata = {
     "padel app",
     "torneos padel",
   ],
-  metadataBase: new URL("https://padeltracker.pro"),
+  metadataBase: new URL("https://www.padeltracker.pro"),
   alternates: {
-    canonical: "https://padeltracker.pro",
+    canonical: "https://www.padeltracker.pro",
   },
   openGraph: {
     title: "Padel Tracker — La plataforma de padel",
     description:
       "Seguimiento de partidos en tiempo real, estadisticas detalladas, blog y torneos de padel.",
-    url: "https://padeltracker.pro",
+    url: "https://www.padeltracker.pro",
     siteName: "Padel Tracker",
     type: "website",
     locale: "es_AR",
@@ -62,8 +62,8 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
+  maximumScale: 5,
+  userScalable: true,
   themeColor: "#1e293b",
 };
 
@@ -82,7 +82,7 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "WebSite",
               name: "Padel Tracker",
-              url: "https://padeltracker.pro",
+              url: "https://www.padeltracker.pro",
               description:
                 "Plataforma de padel con tracking en vivo, estadisticas, blog y torneos.",
               inLanguage: ["es", "en"],

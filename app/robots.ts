@@ -9,6 +9,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ["/api/", "/auth/", "/profile", "/admin"],
       },
     ],
-    sitemap: "https://padeltracker.pro/sitemap.xml",
+    sitemap: "https://www.padeltracker.pro/sitemap.xml",
   };
 }

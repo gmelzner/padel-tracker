@@ -6,7 +6,7 @@ import { getAllSlugs } from "@/lib/blog";
 export const revalidate = 3600;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = "https://padeltracker.pro";
+  const baseUrl = "https://www.padeltracker.pro";
 
   // Static pages
   const staticPages: MetadataRoute.Sitemap = [

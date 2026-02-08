@@ -8,13 +8,13 @@ export const metadata: Metadata = {
   description:
     "Padel strategy, tips, news, and guides. Learn how to improve your game with data-driven insights.",
   alternates: {
-    canonical: "https://padeltracker.pro/blog",
+    canonical: "https://www.padeltracker.pro/blog",
   },
   openGraph: {
     title: "Blog - Padel Tracker",
     description:
       "Padel strategy, tips, news, and guides. Learn how to improve your game with data-driven insights.",
-    url: "https://padeltracker.pro/blog",
+    url: "https://www.padeltracker.pro/blog",
     siteName: "Padel Tracker",
     type: "website",
   },
