@@ -1,25 +1,27 @@
 import { createAdminSupabaseClient } from "@/lib/supabase-admin";
 
-const supabase = createAdminSupabaseClient();
+function getSupabase() {
+  return createAdminSupabaseClient();
+}
 
 // --- Counts ---
 
 export async function getTotalUsers(): Promise<number> {
-  const { count } = await supabase
+  const { count } = await getSupabase()
     .from("profiles")
     .select("*", { count: "exact", head: true });
   return count ?? 0;
 }
 
 export async function getTotalMatches(): Promise<number> {
-  const { count } = await supabase
+  const { count } = await getSupabase()
     .from("matches")
     .select("*", { count: "exact", head: true });
   return count ?? 0;
 }
 
 export async function getTotalShared(): Promise<number> {
-  const { count } = await supabase
+  const { count } = await getSupabase()
     .from("shared_results")
     .select("*", { count: "exact", head: true });
   return count ?? 0;
@@ -31,7 +33,7 @@ export async function getCountInRange(
   from: string,
   to?: string
 ): Promise<number> {
-  let query = supabase
+  let query = getSupabase()
     .from(table)
     .select("*", { count: "exact", head: true })
     .gte(dateColumn, from);
@@ -74,7 +76,7 @@ export async function getUsersOverTime(): Promise<DailyCount[]> {
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-  const { data } = await supabase
+  const { data } = await getSupabase()
     .from("profiles")
     .select("created_at")
     .gte("created_at", thirtyDaysAgo.toISOString())
@@ -87,7 +89,7 @@ export async function getMatchesOverTime(): Promise<DailyCount[]> {
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-  const { data } = await supabase
+  const { data } = await getSupabase()
     .from("matches")
     .select("played_at")
     .gte("played_at", thirtyDaysAgo.toISOString())
@@ -100,7 +102,7 @@ export async function getSharedOverTime(): Promise<DailyCount[]> {
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-  const { data } = await supabase
+  const { data } = await getSupabase()
     .from("shared_results")
     .select("created_at")
     .gte("created_at", thirtyDaysAgo.toISOString())
@@ -115,7 +117,7 @@ export async function getActiveUsers7d(): Promise<number> {
   const sevenDaysAgo = new Date();
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
-  const { data } = await supabase
+  const { data } = await getSupabase()
     .from("matches")
     .select("user_id")
     .gte("played_at", sevenDaysAgo.toISOString());
@@ -125,7 +127,7 @@ export async function getActiveUsers7d(): Promise<number> {
 }
 
 export async function getFrequentUsers(): Promise<number> {
-  const { data } = await supabase.from("matches").select("user_id");
+  const { data } = await getSupabase().from("matches").select("user_id");
 
   const counts: Record<string, number> = {};
   for (const row of data ?? []) {
@@ -146,7 +148,7 @@ export interface TopUser {
 
 export async function getTopUsers(): Promise<TopUser[]> {
   // Fetch all matches with user_id
-  const { data: matches } = await supabase
+  const { data: matches } = await getSupabase()
     .from("matches")
     .select("user_id, played_at");
 
@@ -171,6 +173,7 @@ export async function getTopUsers(): Promise<TopUser[]> {
 
   // Fetch profiles for top users
   const ids = topUserIds.map(([id]) => id);
+  const supabase = getSupabase();
   const { data: profiles } = await supabase
     .from("profiles")
     .select("id, display_name")
@@ -207,7 +210,7 @@ export interface RecentMatch {
 }
 
 export async function getLastMatches(limit = 10): Promise<RecentMatch[]> {
-  const { data } = await supabase
+  const { data } = await getSupabase()
     .from("shared_results")
     .select("id, player_names, score_line, winning_team, created_at")
     .order("created_at", { ascending: false })
@@ -247,7 +250,7 @@ export function getStartOfLastMonth(): string {
 import type { Tournament } from "@/lib/database.types";
 
 export async function getPendingTournaments(): Promise<Tournament[]> {
-  const { data } = await supabase
+  const { data } = await getSupabase()
     .from("tournaments")
     .select("*")
     .eq("approved", false)
@@ -257,7 +260,7 @@ export async function getPendingTournaments(): Promise<Tournament[]> {
 }
 
 export async function getTotalTournaments(): Promise<number> {
-  const { count } = await supabase
+  const { count } = await getSupabase()
     .from("tournaments")
     .select("*", { count: "exact", head: true })
     .eq("approved", true)
@@ -268,7 +271,7 @@ export async function getTotalTournaments(): Promise<number> {
 export async function approveTournament(
   id: string
 ): Promise<{ error: string | null }> {
-  const { error } = await supabase
+  const { error } = await getSupabase()
     .from("tournaments")
     .update({ approved: true, status: "published" })
     .eq("id", id);
@@ -278,6 +281,6 @@ export async function approveTournament(
 export async function rejectTournament(
   id: string
 ): Promise<{ error: string | null }> {
-  const { error } = await supabase.from("tournaments").delete().eq("id", id);
+  const { error } = await getSupabase().from("tournaments").delete().eq("id", id);
   return { error: error?.message ?? null };
 }
