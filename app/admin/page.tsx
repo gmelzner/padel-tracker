@@ -24,8 +24,8 @@ import { GrowthSummary } from "@/components/admin/growth-summary";
 import { LastMatches } from "@/components/admin/last-matches";
 import { PendingTournaments } from "@/components/admin/pending-tournaments";
 
-// Revalidate every 5 minutes
-export const revalidate = 300;
+// Force dynamic — admin needs auth + live Supabase data
+export const dynamic = "force-dynamic";
 
 function formatDailyData(
   rows: { date: string; count: number }[]
