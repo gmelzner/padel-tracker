@@ -42,6 +42,8 @@ export interface SharedMatchData {
   mt?: number[][];
   /** Optional momentum data: array of differentials (team1 - team2) at each point */
   mo?: number[];
+  /** Optional current set in progress: [games1, games2, setIndex] (when match ended early) */
+  cs?: number[];
 }
 
 const MAGIA_ORDER: MagiaType[] = ["x3", "x4", "dejada", "dormilona"];
@@ -108,6 +110,11 @@ export function encodeMatchResults(state: MatchState): string {
       MAGIA_ORDER.map((t) => tM1.byType[t]),
       MAGIA_ORDER.map((t) => tM2.byType[t]),
     ];
+  }
+
+  // Include current set in progress when match ended early
+  if (!winningTeam) {
+    data.cs = [score.games[0], score.games[1], score.currentSetIndex];
   }
 
   // Include momentum data for the chart
@@ -182,6 +189,7 @@ export interface DecodedMatchResults {
     byType: Record<MagiaType, number>;
   }[] | null;
   momentum: { index: number; differential: number }[] | null;
+  currentSet: { games: [number, number]; setIndex: number } | null;
 }
 
 export function decodeMatchResults(encoded: string): DecodedMatchResults | null {
@@ -291,6 +299,11 @@ export function decodeMatchResults(encoded: string): DecodedMatchResults | null 
       ? data.mo.map((diff, i) => ({ index: i, differential: diff }))
       : null;
 
+    // Decode current set in progress
+    const currentSet = data.cs
+      ? { games: [data.cs[0], data.cs[1]] as [number, number], setIndex: data.cs[2] }
+      : null;
+
     return {
       players,
       completedSets,
@@ -318,6 +331,7 @@ export function decodeMatchResults(encoded: string): DecodedMatchResults | null 
       magiaPlayerStats,
       magiaTeamStats,
       momentum,
+      currentSet,
     };
   } catch {
     return null;

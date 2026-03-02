@@ -29,6 +29,7 @@ export function SharedResultsDisplay({ data, sourceSharedId, embedded }: SharedR
     magiaPlayerStats,
     magiaTeamStats,
     momentum,
+    currentSet,
   } = data;
 
   const magiaTypes: MagiaType[] = ["x3", "x4", "dejada", "dormilona"];
@@ -89,6 +90,19 @@ export function SharedResultsDisplay({ data, sourceSharedId, embedded }: SharedR
               <div className="text-xl font-bold">{set.games[1]}</div>
             </div>
           ))}
+          {!winningTeam && currentSet && (
+            <div className="grid grid-cols-3 text-center">
+              <div className="text-xl font-bold text-slate-400">
+                {currentSet.games[0]}
+              </div>
+              <div className="text-slate-400 text-xs self-center">
+                {t("results.set")} {currentSet.setIndex + 1} {t("results.inProgress")}
+              </div>
+              <div className="text-xl font-bold text-slate-400">
+                {currentSet.games[1]}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Momentum chart */}
