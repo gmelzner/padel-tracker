@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@/components/auth-provider";
 import { useMatch, PENDING_SAVE_KEY } from "@/lib/match-context";
@@ -11,12 +11,43 @@ type FlowState = "idle" | "selectPlayer" | "saving" | "saved" | "error";
 
 export function SaveResultsPrompt() {
   const { user, loading, signInWithGoogle } = useAuth();
-  const { state } = useMatch();
+  const { state, pendingSave, clearPendingSave } = useMatch();
   const [dismissed, setDismissed] = useState(false);
   const [flow, setFlow] = useState<FlowState>("idle");
+  const [errorDetail, setErrorDetail] = useState<string | null>(null);
   const t = useTranslations();
 
+  // Auto-trigger save flow when returning from OAuth with pending save
+  useEffect(() => {
+    if (pendingSave && user && !loading && flow === "idle") {
+      setFlow("selectPlayer");
+      clearPendingSave();
+    }
+  }, [pendingSave, user, loading, flow, clearPendingSave]);
+
   if (loading || dismissed) return null;
+
+  async function handleSave(player: Player | null) {
+    if (!user?.id) {
+      console.error("[PadelTracker] Save failed: no authenticated user");
+      setErrorDetail("No authenticated user");
+      setFlow("error");
+      return;
+    }
+
+    setFlow("saving");
+    setErrorDetail(null);
+
+    const { error } = await saveMatch(state, user.id, player);
+
+    if (error) {
+      console.error("[PadelTracker] Match save failed:", error);
+      setErrorDetail(error);
+      setFlow("error");
+    } else {
+      setFlow("saved");
+    }
+  }
 
   // Not logged in — show login prompt
   if (!user) {
@@ -81,6 +112,9 @@ export function SaveResultsPrompt() {
     return (
       <div className="rounded-xl border border-red-200 bg-red-50 p-4 space-y-2">
         <p className="text-sm text-red-700">{t("auth.saveError")}</p>
+        {errorDetail && (
+          <p className="text-xs text-red-500 font-mono">{errorDetail}</p>
+        )}
         <button
           onClick={() => setFlow("selectPlayer")}
           className="text-xs font-semibold text-red-700 underline"
@@ -104,12 +138,6 @@ export function SaveResultsPrompt() {
   if (flow === "selectPlayer") {
     const team1Players = state.players.filter((p) => p.team === 1);
     const team2Players = state.players.filter((p) => p.team === 2);
-
-    async function handleSave(player: Player) {
-      setFlow("saving");
-      const { error } = await saveMatch(state, user!.id, player);
-      setFlow(error ? "error" : "saved");
-    }
 
     return (
       <div className="rounded-xl border border-slate-200 bg-white p-4 space-y-3">
@@ -137,11 +165,7 @@ export function SaveResultsPrompt() {
           ))}
         </div>
         <button
-          onClick={async () => {
-            setFlow("saving");
-            const { error } = await saveMatch(state, user!.id, null);
-            setFlow(error ? "error" : "saved");
-          }}
+          onClick={() => handleSave(null)}
           className="w-full h-12 rounded-xl border-2 border-dashed border-slate-300 text-slate-500 font-semibold text-sm active:scale-95 transition-all flex items-center justify-center gap-2"
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

@@ -54,6 +54,13 @@ export async function saveMatch(
     .single();
 
   if (error) {
+    console.error("[PadelTracker] saveMatch failed:", {
+      code: error.code,
+      message: error.message,
+      details: error.details,
+      hint: error.hint,
+      userId,
+    });
     return { data: null, error: error.message };
   }
   return { data: data as Match, error: null };

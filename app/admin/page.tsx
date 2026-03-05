@@ -101,8 +101,11 @@ export default async function AdminDashboard() {
       <MetricsCards
         cards={[
           { label: "Total Users", value: totalUsers },
-          { label: "Total Matches", value: totalMatches },
-          { label: "Shared Results", value: totalShared },
+          {
+            label: "Total Activity",
+            value: totalMatches + totalShared,
+            subtitle: `${totalMatches} saved · ${totalShared} shared`,
+          },
           {
             label: "Active (7d)",
             value: activeUsers7d,

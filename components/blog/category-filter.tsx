@@ -15,6 +15,7 @@ const categories: (BlogCategory | "all")[] = [
   "tips",
   "professional",
   "guides",
+  "gear",
 ];
 
 export function CategoryFilter({ posts }: CategoryFilterProps) {
