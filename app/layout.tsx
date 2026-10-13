@@ -29,9 +29,6 @@ export const metadata: Metadata = {
     "torneos padel",
   ],
   metadataBase: new URL("https://www.padeltracker.pro"),
-  alternates: {
-    canonical: "https://www.padeltracker.pro",
-  },
   openGraph: {
     title: "Padel Tracker — La plataforma de padel",
     description:
@@ -95,7 +92,7 @@ export default async function RootLayout({
           }}
         />
         <AuthProvider>
-          <LocaleProvider initialLocale={locale} initialMessages={messages}>
+          <LocaleProvider locale={locale} messages={messages}>
             {children}
           </LocaleProvider>
         </AuthProvider>

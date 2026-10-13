@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { useAuth } from "@/components/auth-provider";
 import { submitTournament } from "@/lib/tournament-service";
 import type { TournamentType, TournamentCategory } from "@/lib/database.types";
+import { LocaleLink } from "@/components/locale-link";
 
 export function SubmitForm() {
   const t = useTranslations("tournaments.submit");
@@ -54,12 +55,12 @@ export function SubmitForm() {
         </div>
         <h2 className="text-2xl font-bold text-slate-900 mb-2">{t("successTitle")}</h2>
         <p className="text-slate-500 mb-6">{t("successMessage")}</p>
-        <a
+        <LocaleLink
           href="/torneos"
           className="inline-block text-sm font-semibold text-blue-600 hover:text-blue-800"
         >
           &larr; {t("successBack")}
-        </a>
+        </LocaleLink>
       </div>
     );
   }

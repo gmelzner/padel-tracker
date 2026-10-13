@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { LocaleLink } from "@/components/locale-link";
 
 export function TrackerCta() {
   const t = useTranslations("landing");
@@ -18,12 +19,12 @@ export function TrackerCta() {
           {t("trackerCtaDesc")}
         </p>
         <div className="mt-8">
-          <a
+          <LocaleLink
             href="/tracker"
             className="inline-block h-14 px-10 rounded-2xl bg-slate-900 text-white font-bold text-lg leading-[3.5rem] active:scale-[0.98] transition-all"
           >
             {t("trackerCtaButton")}
-          </a>
+          </LocaleLink>
         </div>
       </div>
     </section>

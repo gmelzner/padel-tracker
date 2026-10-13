@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { useAuth } from "@/components/auth-provider";
 import { saveMatchFromShared } from "@/lib/match-service";
 import type { DecodedMatchResults } from "@/lib/share-codec";
+import { LocaleLink } from "@/components/locale-link";
 
 type ClaimFlowState = "idle" | "selectPlayer" | "saving" | "saved" | "alreadyClaimed" | "error";
 
@@ -59,9 +60,9 @@ export function ClaimMatchPrompt({ data, sourceSharedId }: ClaimMatchPromptProps
           <div className="flex-1 min-w-0">
             <p className="text-sm font-semibold text-emerald-800">{t("auth.saved")}</p>
           </div>
-          <a href="/profile" className="text-xs font-semibold text-emerald-700 underline">
+          <LocaleLink href="/profile" className="text-xs font-semibold text-emerald-700 underline">
             {t("auth.viewProfile")}
-          </a>
+          </LocaleLink>
         </div>
       </div>
     );
@@ -78,9 +79,9 @@ export function ClaimMatchPrompt({ data, sourceSharedId }: ClaimMatchPromptProps
           <div className="flex-1 min-w-0">
             <p className="text-sm font-semibold text-amber-800">{t("auth.alreadyClaimed")}</p>
           </div>
-          <a href="/profile" className="text-xs font-semibold text-amber-700 underline">
+          <LocaleLink href="/profile" className="text-xs font-semibold text-amber-700 underline">
             {t("auth.viewProfile")}
-          </a>
+          </LocaleLink>
         </div>
       </div>
     );

@@ -7,6 +7,7 @@ import {
   type DecodedMatchResults,
 } from "@/lib/share-codec";
 import { SharedResultsDisplay } from "@/components/results/shared-results-display";
+import { LocaleLink } from "@/components/locale-link";
 
 export default function SharedResultsPage() {
   const [data, setData] = useState<DecodedMatchResults | null>(null);
@@ -35,12 +36,12 @@ export default function SharedResultsPage() {
             {t("sharedResults.notFound")}
           </h1>
           <p className="text-slate-500">{t("sharedResults.invalidLink")}</p>
-          <a
+          <LocaleLink
             href="/tracker"
             className="inline-block mt-4 px-6 py-3 rounded-xl bg-slate-900 text-white font-semibold"
           >
             {t("sharedResults.goToApp")}
-          </a>
+          </LocaleLink>
         </div>
       </div>
     );

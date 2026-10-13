@@ -367,5 +367,36 @@
       "errorRequired": "Please fill in all required fields",
       "errorContact": "At least one contact method is required (phone, email, or WhatsApp)"
     }
+  },
+  "trackerGuide": {
+    "title": "How the padel scoreboard works",
+    "intro": "Padel Tracker is a free online padel scoreboard. Enter the four names, pick the format and record every point from your phone: the score updates on its own and, when the match ends, you get the full match statistics.",
+    "formatsTitle": "Scoring formats",
+    "formatsIntro": "Before you start you choose how many games make a set, how many sets are played, whether there is a tiebreak and what happens when a game reaches 40-40:",
+    "goldenPoint": "Golden Point: at 40-40 a single point decides the game.",
+    "starPoint": "Star Point: up to two deuces with regular advantage and, if a third is reached, a single deciding point.",
+    "advantage": "Advantage: the classic deuce, you need two points in a row to close the game.",
+    "starPointLink": "Read how the Star Point works",
+    "statsTitle": "Which statistics it records",
+    "statsBody": "For every point you mark who won it and how: winner, unforced error, forced error or a special shot. From that the app works out the effectiveness of each player and each pair, streaks, breaks and a momentum chart showing how the match swung.",
+    "faqTitle": "Frequently asked questions",
+    "faq": [
+      {
+        "q": "Is it free? Do I need to sign up?",
+        "a": "It is free and works without signing up. Signing in with Google is optional and only used to save your match history."
+      },
+      {
+        "q": "Do I need to install anything?",
+        "a": "No. It runs in your phone browser, and the screen stays on while you are recording a match."
+      },
+      {
+        "q": "What if I record a point wrong?",
+        "a": "You can undo the last point or edit the score by hand at any time during the match."
+      },
+      {
+        "q": "How do I share the result?",
+        "a": "When the match ends you generate a link with the result and all the statistics, ready to send on WhatsApp or social media."
+      }
+    ]
   }
 }

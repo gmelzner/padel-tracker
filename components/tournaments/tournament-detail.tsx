@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import type { Tournament } from "@/lib/database.types";
 import type { Locale } from "@/lib/i18n";
+import { LocaleLink } from "@/components/locale-link";
 
 interface TournamentDetailProps {
   tournament: Tournament;
@@ -31,12 +32,12 @@ export function TournamentDetail({ tournament, locale }: TournamentDetailProps) 
 
   return (
     <div>
-      <a
+      <LocaleLink
         href="/torneos"
         className="text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors"
       >
         &larr; {t("backToList")}
-      </a>
+      </LocaleLink>
 
       {tournament.image_url && (
         <img

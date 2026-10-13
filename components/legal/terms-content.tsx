@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import Link from "next/link";
+import { LocaleLink } from "@/components/locale-link";
 
 export function TermsContent() {
   const t = useTranslations("terms");
@@ -62,12 +62,12 @@ export function TermsContent() {
         </section>
 
         <div className="pt-4 border-t border-slate-200">
-          <Link
+          <LocaleLink
             href="/"
             className="text-sm text-blue-600 underline"
           >
             {t("backToApp")}
-          </Link>
+          </LocaleLink>
         </div>
       </div>
     </div>

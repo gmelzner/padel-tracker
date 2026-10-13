@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import type { BlogPostMeta } from "@/lib/blog";
+import { LocaleLink } from "@/components/locale-link";
 
 interface PostCardProps {
   post: BlogPostMeta;
@@ -11,7 +12,7 @@ export function PostCard({ post }: PostCardProps) {
   const t = useTranslations("blog");
 
   return (
-    <a href={`/blog/${post.slug}`} className="group block">
+    <LocaleLink href={`/blog/${post.slug}`} className="group block">
       <article className="bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-lg transition-shadow h-full">
         {post.image && (
           <div className="aspect-[16/9] overflow-hidden">
@@ -42,6 +43,6 @@ export function PostCard({ post }: PostCardProps) {
           </p>
         </div>
       </article>
-    </a>
+    </LocaleLink>
   );
 }

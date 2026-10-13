@@ -10,6 +10,7 @@ import {
   COUNTRY_LABELS,
 } from "@/lib/city-utils";
 import { TournamentCard } from "./tournament-card";
+import { LocaleLink } from "@/components/locale-link";
 
 interface TournamentListProps {
   tournaments: Tournament[];
@@ -92,12 +93,12 @@ export function TournamentList({ tournaments, locale }: TournamentListProps) {
             className="w-full rounded-full border border-slate-200 pl-10 pr-4 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none focus:border-slate-400 focus:ring-1 focus:ring-slate-400 transition-colors"
           />
         </div>
-        <a
+        <LocaleLink
           href="/torneos/submit"
           className="whitespace-nowrap text-sm font-semibold text-blue-600 hover:text-blue-800 transition-colors"
         >
           + {t("submitCta")}
-        </a>
+        </LocaleLink>
       </div>
 
       {/* Type filter pills */}
@@ -167,12 +168,12 @@ export function TournamentList({ tournaments, locale }: TournamentListProps) {
       {filtered.length === 0 ? (
         <div className="text-center py-16">
           <p className="text-slate-500">{t("noResults")}</p>
-          <a
+          <LocaleLink
             href="/torneos/submit"
             className="inline-block mt-4 text-sm font-semibold text-blue-600 hover:text-blue-800"
           >
             {t("submitCta")}
-          </a>
+          </LocaleLink>
         </div>
       ) : (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

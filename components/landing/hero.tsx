@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { LocaleLink } from "@/components/locale-link";
 
 export function Hero() {
   const t = useTranslations("landing");
@@ -21,13 +22,13 @@ export function Hero() {
           {t("heroSubtitle")}
         </p>
         <div className="mt-10">
-          <a
+          <LocaleLink
             href="/tracker"
             className="inline-block h-14 px-10 rounded-2xl bg-white text-slate-900 font-bold text-lg leading-[3.5rem] hover:bg-slate-100 active:scale-[0.98] transition-all"
             style={{ animation: "cta-glow 2.5s ease-in-out infinite" }}
           >
             {t("heroCta")}
-          </a>
+          </LocaleLink>
         </div>
       </div>
     </section>

@@ -367,5 +367,36 @@
       "errorRequired": "Completá todos los campos obligatorios",
       "errorContact": "Se necesita al menos un método de contacto (teléfono, email o WhatsApp)"
     }
+  },
+  "trackerGuide": {
+    "title": "Cómo funciona el marcador de pádel",
+    "intro": "Padel Tracker es un marcador de pádel online y gratuito. Cargás los cuatro nombres, elegís el formato y anotás cada punto desde el celular: el marcador se actualiza solo y, al terminar, tenés las estadísticas completas del partido.",
+    "formatsTitle": "Formatos de puntuación",
+    "formatsIntro": "Antes de empezar elegís cuántos games tiene el set, cuántos sets se juegan, si hay tiebreak y qué pasa cuando el game llega a 40-40:",
+    "goldenPoint": "Punto de oro: en 40-40 se juega un único punto que define el game.",
+    "starPoint": "Star Point: hasta dos deuces con ventaja normal y, si se llega al tercero, un único punto decisivo.",
+    "advantage": "Ventaja: el deuce clásico, hay que ganar dos puntos seguidos para cerrar el game.",
+    "starPointLink": "Leé cómo funciona el Star Point",
+    "statsTitle": "Qué estadísticas registra",
+    "statsBody": "En cada punto marcás quién lo ganó y cómo: winner, error no forzado, error forzado o un golpe especial. Con eso la app calcula la efectividad de cada jugador y de cada pareja, las rachas, los quiebres y un gráfico de momentum que muestra cómo se fue moviendo el partido.",
+    "faqTitle": "Preguntas frecuentes",
+    "faq": [
+      {
+        "q": "¿Es gratis? ¿Tengo que registrarme?",
+        "a": "Es gratis y se usa sin registrarse. Iniciar sesión con Google es opcional y sirve solo para guardar el historial de tus partidos."
+      },
+      {
+        "q": "¿Hay que instalar algo?",
+        "a": "No. Funciona en el navegador del celular, y mientras anotás un partido la pantalla se mantiene encendida."
+      },
+      {
+        "q": "¿Qué pasa si anoto mal un punto?",
+        "a": "Podés deshacer el último punto o editar el marcador a mano en cualquier momento del partido."
+      },
+      {
+        "q": "¿Cómo comparto el resultado?",
+        "a": "Al terminar el partido generás un link con el resultado y todas las estadísticas, listo para mandar por WhatsApp o redes."
+      }
+    ]
   }
 }

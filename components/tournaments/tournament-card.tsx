@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import type { Tournament } from "@/lib/database.types";
 import type { Locale } from "@/lib/i18n";
+import { LocaleLink } from "@/components/locale-link";
 
 interface TournamentCardProps {
   tournament: Tournament;
@@ -20,7 +21,7 @@ export function TournamentCard({ tournament, locale }: TournamentCardProps) {
     );
 
   return (
-    <a href={`/torneos/${tournament.id}`} className="group block">
+    <LocaleLink href={`/torneos/${tournament.id}`} className="group block">
       <article className="bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-lg transition-shadow h-full">
         {tournament.image_url && (
           <div className="aspect-[16/9] overflow-hidden">
@@ -107,6 +108,6 @@ export function TournamentCard({ tournament, locale }: TournamentCardProps) {
           </div>
         </div>
       </article>
-    </a>
+    </LocaleLink>
   );
 }

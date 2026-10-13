@@ -8,6 +8,7 @@ import type { Match } from "@/lib/database.types";
 import { StatsSummary } from "./stats-summary";
 import { MatchCard } from "./match-card";
 import { MatchDetailView } from "./match-detail-view";
+import { LocaleLink } from "@/components/locale-link";
 
 export function ProfileScreen() {
   const { user, loading, signInWithGoogle, signOut } = useAuth();
@@ -48,9 +49,9 @@ export function ProfileScreen() {
             {t("profile.signInWithGoogle")}
           </button>
           <div>
-            <a href="/tracker" className="text-sm text-slate-400 underline">
+            <LocaleLink href="/tracker" className="text-sm text-slate-400 underline">
               {t("profile.goBack")}
-            </a>
+            </LocaleLink>
           </div>
         </div>
       </div>
@@ -121,12 +122,12 @@ export function ProfileScreen() {
 
         {/* Actions */}
         <div className="space-y-2 pt-2">
-          <a
+          <LocaleLink
             href="/tracker"
             className="block w-full h-14 rounded-2xl bg-slate-900 text-white font-bold text-lg text-center leading-[3.5rem] active:scale-[0.98] transition-all"
           >
             {t("profile.newMatch")}
-          </a>
+          </LocaleLink>
           <button
             onClick={() => signOut()}
             className="w-full text-sm text-slate-400 font-medium py-2"

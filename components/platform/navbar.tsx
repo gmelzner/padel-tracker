@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@/components/auth-provider";
 import { useLocale } from "@/components/locale-provider";
+import { LocaleLink } from "@/components/locale-link";
 
 export function Navbar() {
   const t = useTranslations("nav");
@@ -21,22 +22,22 @@ export function Navbar() {
     <nav className="bg-white border-b border-slate-200 sticky top-0 z-50">
       <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
         {/* Logo */}
-        <a href="/" className="flex items-center gap-2">
+        <LocaleLink href="/" className="flex items-center gap-2">
           <span className="text-lg font-black text-slate-800 tracking-tight">
             Padel Tracker
           </span>
-        </a>
+        </LocaleLink>
 
         {/* Desktop nav */}
         <div className="hidden md:flex items-center gap-6">
           {links.map((link) => (
-            <a
+            <LocaleLink
               key={link.href}
               href={link.href}
               className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors"
             >
               {link.label}
-            </a>
+            </LocaleLink>
           ))}
 
           {/* Language toggle */}
@@ -65,7 +66,7 @@ export function Navbar() {
 
           {/* Auth */}
           {user ? (
-            <a
+            <LocaleLink
               href="/profile"
               className="flex items-center gap-1.5"
             >
@@ -80,7 +81,7 @@ export function Navbar() {
                   {(user.name ?? user.email ?? "?")[0].toUpperCase()}
                 </div>
               )}
-            </a>
+            </LocaleLink>
           ) : (
             <button
               onClick={() => signInWithGoogle()}
@@ -126,14 +127,14 @@ export function Navbar() {
       {menuOpen && (
         <div className="md:hidden border-t border-slate-100 bg-white px-4 pb-4 pt-2 space-y-1">
           {links.map((link) => (
-            <a
+            <LocaleLink
               key={link.href}
               href={link.href}
               className="block py-2 text-sm font-medium text-slate-600"
               onClick={() => setMenuOpen(false)}
             >
               {link.label}
-            </a>
+            </LocaleLink>
           ))}
           <div className="flex items-center gap-3 py-2">
             <div className="flex bg-slate-100 rounded-full p-0.5 text-xs font-semibold">

@@ -6,6 +6,8 @@ import type { DeuceMode, Player, Team } from "@/lib/types";
 import { useMatch } from "@/lib/match-context";
 import { useAuth } from "@/components/auth-provider";
 import { MatchConfigForm } from "./match-config";
+import { TrackerGuide } from "./tracker-guide";
+import { LocaleLink } from "@/components/locale-link";
 
 interface TeamDraft {
   drive: string;
@@ -70,7 +72,7 @@ export function SetupScreen() {
             {t("setup.subtitle")}
           </p>
           {user && (
-            <a
+            <LocaleLink
               href="/profile"
               className="absolute top-8 right-0 flex items-center gap-1.5"
             >
@@ -85,7 +87,7 @@ export function SetupScreen() {
                   {(user.name ?? user.email ?? "?")[0].toUpperCase()}
                 </div>
               )}
-            </a>
+            </LocaleLink>
           )}
         </div>
 
@@ -196,6 +198,8 @@ export function SetupScreen() {
             </p>
           </div>
         )}
+
+        <TrackerGuide />
       </div>
     </div>
   );

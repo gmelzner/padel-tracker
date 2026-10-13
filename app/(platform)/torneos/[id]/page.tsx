@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getPublishedTournament } from "@/lib/tournament-queries";
 import { getServerLocale } from "@/lib/locale-server";
+import { localizedAlternates, absoluteUrl } from "@/lib/seo";
 import { getCountryForCity } from "@/lib/city-utils";
 import { TournamentDetail } from "@/components/tournaments/tournament-detail";
 import type { Tournament } from "@/lib/database.types";
@@ -27,12 +28,13 @@ export async function generateMetadata({
   const description =
     (locale === "es" ? tournament.description_es : tournament.description_en) ??
     `${name} - ${tournament.city}`;
-  const url = `https://www.padeltracker.pro/torneos/${tournament.id}`;
+  const path = `/torneos/${tournament.id}`;
+  const url = absoluteUrl(locale, path);
 
   return {
     title: name,
     description,
-    alternates: { canonical: url },
+    alternates: localizedAlternates(locale, path),
     openGraph: {
       title: `${name} - Padel Tracker`,
       description,

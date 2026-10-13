@@ -1,8 +1,8 @@
-import { cookies } from "next/headers";
-import { type Locale, defaultLocale, isLocale } from "@/lib/i18n";
+import { headers } from "next/headers";
+import { type Locale, LOCALE_HEADER, defaultLocale, isLocale } from "@/lib/i18n";
 
+/** Locale of the URL being rendered, as resolved by the proxy. */
 export async function getServerLocale(): Promise<Locale> {
-  const cookieStore = await cookies();
-  const value = cookieStore.get("padel-locale")?.value;
+  const value = (await headers()).get(LOCALE_HEADER);
   return isLocale(value) ? value : defaultLocale;
 }

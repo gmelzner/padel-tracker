@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { LocaleLink } from "@/components/locale-link";
 
 interface Props {
   icon: "blog" | "tournaments";
@@ -38,12 +39,12 @@ export function ComingSoon({ icon, descKey }: Props) {
         </p>
 
         {/* CTA */}
-        <a
+        <LocaleLink
           href="/tracker"
           className="inline-block h-12 px-8 rounded-xl bg-slate-900 text-white font-bold text-sm leading-[3rem] hover:bg-slate-800 active:scale-[0.98] transition-all"
         >
           {t("backToTracker")}
-        </a>
+        </LocaleLink>
       </div>
     </section>
   );

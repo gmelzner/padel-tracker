@@ -1,14 +1,25 @@
 import type { Metadata } from "next";
 import { SubmitForm } from "@/components/tournaments/submit-form";
+import { getServerLocale } from "@/lib/locale-server";
+import { localizedAlternates } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Publicar Torneo",
-  description:
-    "Submit a padel tournament or open court to the Padel Tracker directory. Free and open to everyone.",
-  alternates: {
-    canonical: "https://www.padeltracker.pro/torneos/submit",
+const META = {
+  en: {
+    title: "Submit a Tournament",
+    description:
+      "Submit a padel tournament or open court to the Padel Tracker directory. Free and open to everyone.",
+  },
+  es: {
+    title: "Publicar torneo",
+    description:
+      "Sumá un torneo o una cancha abierta de pádel al directorio de Padel Tracker. Gratis y abierto a todos.",
   },
 };
+
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getServerLocale();
+  return { ...META[locale], alternates: localizedAlternates(locale, "/torneos/submit") };
+}
 
 export default function SubmitTournamentPage() {
   return (

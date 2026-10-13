@@ -6,6 +6,7 @@ import { MAGIA_TYPE_LABELS } from "@/lib/constants";
 import type { MagiaType } from "@/lib/types";
 import { ClaimMatchPrompt } from "./claim-match-prompt";
 import { MomentumChart } from "./momentum-chart";
+import { LocaleLink } from "@/components/locale-link";
 
 interface SharedResultsDisplayProps {
   data: DecodedMatchResults;
@@ -490,12 +491,12 @@ export function SharedResultsDisplay({ data, sourceSharedId, embedded }: SharedR
         <ClaimMatchPrompt data={data} sourceSharedId={sourceSharedId} />
 
         {/* CTA */}
-        <a
+        <LocaleLink
           href="/"
           className="block w-full h-14 rounded-2xl bg-slate-900 text-white font-bold text-lg text-center leading-[3.5rem] active:scale-[0.98] transition-all"
         >
           {t("results.createMyMatch")}
-        </a>
+        </LocaleLink>
       </div>
     </div>
   );

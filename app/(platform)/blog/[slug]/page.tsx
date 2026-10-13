@@ -1,11 +1,14 @@
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import type { Metadata } from "next";
 import { compileMDX } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
-import { getPostBySlug, getAllSlugs } from "@/lib/blog";
+import { getPostBySlug, getAllSlugs, type BlogPostMeta } from "@/lib/blog";
+import { type Locale, defaultLocale, localizePath } from "@/lib/i18n";
+import { SITE_URL, openGraphLocale } from "@/lib/seo";
 import { getServerLocale } from "@/lib/locale-server";
 import { blogMdxComponents } from "@/components/blog/mdx-components";
 import { PostHeader } from "@/components/blog/post-header";
+import { LocaleLink } from "@/components/locale-link";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -15,20 +18,45 @@ export function generateStaticParams() {
   return getAllSlugs().map((slug) => ({ slug }));
 }
 
+/**
+ * A post lives at one URL: /blog/<slug> in English, /es/blog/<slug> in Spanish.
+ * When the slug belongs to the other language, say where the reader should go.
+ */
+function resolvePost(slug: string, locale: Locale) {
+  const post = getPostBySlug(slug, locale);
+  if (post) return { post, redirectTo: null };
+
+  const other = getPostBySlug(slug, locale === "en" ? "es" : "en");
+  if (!other) return { post: null, redirectTo: null };
+
+  // Unprefixed URL of a Spanish post (the pre-/es address): send it home
+  if (locale === defaultLocale) {
+    return { post: other, redirectTo: postPath(other) };
+  }
+  // /es/<english slug>: prefer its translation. Without one, show it here
+  // rather than bounce between this URL and the reader's language redirect.
+  const translation = other.alternateSlug && getPostBySlug(other.alternateSlug, locale);
+  return { post: other, redirectTo: translation ? postPath(translation) : null };
+}
+
+function postPath(post: BlogPostMeta): string {
+  return localizePath(post.locale, `/blog/${post.slug}`);
+}
+
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const locale = await getServerLocale();
-  const post =
-    getPostBySlug(slug, locale) ??
-    getPostBySlug(slug, locale === "en" ? "es" : "en");
+  const { post } = resolvePost(slug, await getServerLocale());
 
   if (!post) {
     return { title: "Post not found" };
   }
 
-  const url = `https://www.padeltracker.pro/blog/${post.slug}`;
+  const url = `${SITE_URL}${postPath(post)}`;
+  const translation =
+    post.alternateSlug &&
+    getPostBySlug(post.alternateSlug, post.locale === "en" ? "es" : "en");
 
   return {
     title: post.title,
@@ -36,10 +64,10 @@ export async function generateMetadata({
     authors: [{ name: post.author }],
     alternates: {
       canonical: url,
-      languages: post.alternateSlug
+      languages: translation
         ? {
-            en: `/blog/${locale === "en" ? post.slug : post.alternateSlug}`,
-            es: `/blog/${locale === "es" ? post.slug : post.alternateSlug}`,
+            [post.locale]: url,
+            [translation.locale]: `${SITE_URL}${postPath(translation)}`,
           }
         : undefined,
     },
@@ -51,7 +79,7 @@ export async function generateMetadata({
       type: "article",
       publishedTime: post.date,
       authors: [post.author],
-      locale: post.locale === "es" ? "es_AR" : "en_US",
+      locale: openGraphLocale(post.locale),
       images: post.image ? [{ url: post.image }] : undefined,
     },
     twitter: {
@@ -65,16 +93,16 @@ export async function generateMetadata({
 
 export default async function BlogPostPage({ params }: PageProps) {
   const { slug } = await params;
-  const locale = await getServerLocale();
+  const { post, redirectTo } = resolvePost(slug, await getServerLocale());
 
-  // Try user's locale first, then fall back to the other
-  let post = getPostBySlug(slug, locale);
-  if (!post) {
-    post = getPostBySlug(slug, locale === "en" ? "es" : "en");
-  }
   if (!post) {
     notFound();
   }
+  if (redirectTo) {
+    permanentRedirect(redirectTo);
+  }
+
+  const url = `${SITE_URL}${postPath(post)}`;
 
   const { content } = await compileMDX({
     source: post.content,
@@ -90,18 +118,18 @@ export default async function BlogPostPage({ params }: PageProps) {
     author: { "@type": "Person", name: post.author },
     datePublished: post.date,
     image: post.image
-      ? `https://www.padeltracker.pro${post.image}`
+      ? `${SITE_URL}${post.image}`
       : undefined,
-    url: `https://www.padeltracker.pro/blog/${post.slug}`,
+    url,
     publisher: {
       "@type": "Organization",
       name: "Padel Tracker",
-      url: "https://www.padeltracker.pro",
+      url: SITE_URL,
     },
     inLanguage: post.locale,
     mainEntityOfPage: {
       "@type": "WebPage",
-      "@id": `https://www.padeltracker.pro/blog/${post.slug}`,
+      "@id": url,
     },
   };
 
@@ -121,12 +149,12 @@ export default async function BlogPostPage({ params }: PageProps) {
       )}
       <div>{content}</div>
       <div className="mt-12 pt-8 border-t border-slate-200">
-        <a
+        <LocaleLink
           href="/blog"
           className="text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors"
         >
           &larr; Blog
-        </a>
+        </LocaleLink>
       </div>
     </article>
   );

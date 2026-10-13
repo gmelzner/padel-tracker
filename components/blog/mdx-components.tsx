@@ -1,4 +1,5 @@
 import type { MDXComponents } from "mdx/types";
+import { LocaleLink } from "@/components/locale-link";
 
 export const blogMdxComponents: MDXComponents = {
   h1: (props) => (
@@ -20,14 +21,23 @@ export const blogMdxComponents: MDXComponents = {
     <ol className="list-decimal list-inside text-slate-600 mb-4 space-y-1" {...props} />
   ),
   li: (props) => <li className="leading-relaxed" {...props} />,
-  a: (props) => (
-    <a
-      className="text-blue-600 hover:text-blue-800 underline underline-offset-2"
-      target={props.href?.startsWith("http") ? "_blank" : undefined}
-      rel={props.href?.startsWith("http") ? "noopener noreferrer" : undefined}
-      {...props}
-    />
-  ),
+  // Internal links stay in the post's language; external ones open in a new tab
+  a: ({ href, ...props }) =>
+    href?.startsWith("/") ? (
+      <LocaleLink
+        className="text-blue-600 hover:text-blue-800 underline underline-offset-2"
+        href={href}
+        {...props}
+      />
+    ) : (
+      <a
+        className="text-blue-600 hover:text-blue-800 underline underline-offset-2"
+        target={href?.startsWith("http") ? "_blank" : undefined}
+        rel={href?.startsWith("http") ? "noopener noreferrer" : undefined}
+        href={href}
+        {...props}
+      />
+    ),
   blockquote: (props) => (
     <blockquote
       className="border-l-4 border-slate-300 pl-4 italic text-slate-500 my-6"

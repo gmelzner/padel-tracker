@@ -1,24 +1,39 @@
 import type { Metadata } from "next";
 import { getAllPosts } from "@/lib/blog";
 import { getServerLocale } from "@/lib/locale-server";
+import { localizedAlternates, absoluteUrl, openGraphLocale } from "@/lib/seo";
 import { CategoryFilter } from "@/components/blog/category-filter";
 
-export const metadata: Metadata = {
-  title: "Blog",
-  description:
-    "Padel strategy, tips, news, and guides. Learn how to improve your game with data-driven insights.",
-  alternates: {
-    canonical: "https://www.padeltracker.pro/blog",
-  },
-  openGraph: {
-    title: "Blog - Padel Tracker",
+const META = {
+  en: {
+    title: "Blog",
     description:
       "Padel strategy, tips, news, and guides. Learn how to improve your game with data-driven insights.",
-    url: "https://www.padeltracker.pro/blog",
-    siteName: "Padel Tracker",
-    type: "website",
+  },
+  es: {
+    title: "Blog",
+    description:
+      "Estrategia, consejos, novedades y guías de pádel. Aprendé a mejorar tu juego con datos reales.",
   },
 };
+
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getServerLocale();
+  const { title, description } = META[locale];
+  return {
+    title,
+    description,
+    alternates: localizedAlternates(locale, "/blog"),
+    openGraph: {
+      title: `${title} - Padel Tracker`,
+      description,
+      url: absoluteUrl(locale, "/blog"),
+      siteName: "Padel Tracker",
+      type: "website",
+      locale: openGraphLocale(locale),
+    },
+  };
+}
 
 export default async function BlogPage() {
   const locale = await getServerLocale();

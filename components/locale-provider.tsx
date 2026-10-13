@@ -1,15 +1,15 @@
 "use client";
 
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  useCallback,
-  useRef,
-} from "react";
+import { createContext, useContext, useEffect, useCallback, useRef } from "react";
 import { NextIntlClientProvider } from "next-intl";
-import { type Locale, defaultLocale, getMessages, isLocale } from "@/lib/i18n";
+import {
+  type Locale,
+  LOCALE_COOKIE,
+  defaultLocale,
+  isLocale,
+  localizePath,
+  splitLocale,
+} from "@/lib/i18n";
 import { useAuth } from "@/components/auth-provider";
 
 interface LocaleContextValue {
@@ -26,83 +26,31 @@ export function useLocale() {
   return useContext(LocaleContext);
 }
 
-const STORAGE_KEY = "padel-locale";
+// Set when the visitor picks a language with the selector on this device
+const CHOICE_KEY = "padel-locale";
 // Server and browser must format dates in the same zone to hydrate cleanly
 const TIME_ZONE = "America/Argentina/Buenos_Aires";
 
-function setLocaleCookie(locale: Locale) {
-  document.cookie = `padel-locale=${locale};path=/;max-age=31536000;samesite=lax`;
+function rememberLocale(locale: Locale) {
+  document.cookie = `${LOCALE_COOKIE}=${locale};path=/;max-age=31536000;samesite=lax`;
 }
 
 interface LocaleProviderProps {
-  /** Locale and messages the server rendered with, so the HTML ships with its text. */
-  initialLocale: Locale;
-  initialMessages: Record<string, unknown>;
+  /** Locale of the URL and its messages, resolved on the server. */
+  locale: Locale;
+  messages: Record<string, unknown>;
   children: React.ReactNode;
 }
 
-export function LocaleProvider({
-  initialLocale,
-  initialMessages,
-  children,
-}: LocaleProviderProps) {
+export function LocaleProvider({ locale, messages, children }: LocaleProviderProps) {
   const { user } = useAuth();
-  const [locale, setLocaleState] = useState<Locale>(initialLocale);
-  // Messages always travel with the locale they belong to
-  const [loaded, setLoaded] = useState({
-    locale: initialLocale,
-    messages: initialMessages,
-  });
   const profileSynced = useRef(false);
 
-  // A locale saved in this browser wins over the one the server guessed
-  useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    const preferred = isLocale(stored) ? stored : initialLocale;
-    setLocaleState(preferred);
-    setLocaleCookie(preferred);
-  }, [initialLocale]);
-
-  // Sync locale from the user's profile on login
-  useEffect(() => {
-    if (!user || profileSynced.current) return;
-    profileSynced.current = true;
-
-    fetch("/api/profile/locale")
-      .then((response) => (response.ok ? response.json() : null))
-      .then((data) => {
-        if (data?.preferred_locale && isLocale(data.preferred_locale)) {
-          setLocaleState(data.preferred_locale);
-          localStorage.setItem(STORAGE_KEY, data.preferred_locale);
-          setLocaleCookie(data.preferred_locale);
-        }
-      })
-      .catch(() => {});
-  }, [user]);
-
-  // Reset sync flag on logout
-  useEffect(() => {
-    if (!user) profileSynced.current = false;
-  }, [user]);
-
-  // Load messages when the locale changes from the one already loaded
-  useEffect(() => {
-    if (locale === loaded.locale) return;
-    getMessages(locale).then((messages) => setLoaded({ locale, messages }));
-  }, [locale, loaded.locale]);
-
-  // Update html lang attribute
-  useEffect(() => {
-    document.documentElement.lang = locale;
-  }, [locale]);
-
+  // Switching language means going to the same page in the other language
   const setLocale = useCallback(
     (newLocale: Locale) => {
-      setLocaleState(newLocale);
-      localStorage.setItem(STORAGE_KEY, newLocale);
-      setLocaleCookie(newLocale);
+      rememberLocale(newLocale);
 
-      // Persist to the user's profile if logged in
       if (user) {
         fetch("/api/profile/locale", {
           method: "PUT",
@@ -110,17 +58,57 @@ export function LocaleProvider({
           body: JSON.stringify({ preferred_locale: newLocale }),
         }).catch(() => {});
       }
+
+      if (newLocale === locale) return;
+      // Pages declare their translation in hreflang; blog posts change slug between languages
+      const alternate = document.querySelector<HTMLLinkElement>(
+        `link[rel="alternate"][hreflang="${newLocale}"]`
+      );
+      const { path } = splitLocale(window.location.pathname);
+      window.location.assign(
+        alternate?.href ??
+          localizePath(newLocale, path) + window.location.search + window.location.hash
+      );
     },
-    [user]
+    [locale, user]
+  );
+
+  // Remember the language of the page being visited
+  useEffect(() => {
+    rememberLocale(locale);
+  }, [locale]);
+
+  // On login, a visitor who never chose a language here gets the one in their profile
+  useEffect(() => {
+    if (!user) {
+      profileSynced.current = false;
+      return;
+    }
+    if (profileSynced.current) return;
+    profileSynced.current = true;
+    if (localStorage.getItem(CHOICE_KEY)) return;
+
+    fetch("/api/profile/locale")
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data) => {
+        if (isLocale(data?.preferred_locale) && data.preferred_locale !== locale) {
+          setLocale(data.preferred_locale);
+        }
+      })
+      .catch(() => {});
+  }, [user, locale, setLocale]);
+
+  const chooseLocale = useCallback(
+    (newLocale: Locale) => {
+      localStorage.setItem(CHOICE_KEY, newLocale);
+      setLocale(newLocale);
+    },
+    [setLocale]
   );
 
   return (
-    <LocaleContext.Provider value={{ locale, setLocale }}>
-      <NextIntlClientProvider
-        locale={loaded.locale}
-        messages={loaded.messages}
-        timeZone={TIME_ZONE}
-      >
+    <LocaleContext.Provider value={{ locale, setLocale: chooseLocale }}>
+      <NextIntlClientProvider locale={locale} messages={messages} timeZone={TIME_ZONE}>
         {children}
       </NextIntlClientProvider>
     </LocaleContext.Provider>

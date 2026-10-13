@@ -6,6 +6,7 @@ import { useAuth } from "@/components/auth-provider";
 import { useMatch, PENDING_SAVE_KEY } from "@/lib/match-context";
 import { saveMatch } from "@/lib/match-service";
 import type { Player } from "@/lib/types";
+import { LocaleLink } from "@/components/locale-link";
 
 type FlowState = "idle" | "selectPlayer" | "saving" | "saved" | "error";
 
@@ -96,12 +97,12 @@ export function SaveResultsPrompt() {
               {t("auth.saved")}
             </p>
           </div>
-          <a
+          <LocaleLink
             href="/profile"
             className="text-xs font-semibold text-emerald-700 underline"
           >
             {t("auth.viewProfile")}
-          </a>
+          </LocaleLink>
         </div>
       </div>
     );
