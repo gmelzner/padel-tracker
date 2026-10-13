@@ -16,6 +16,8 @@ import {
   getStartOfLastMonth,
 } from "@/lib/admin-queries";
 import { getPendingTournaments, getTotalTournaments } from "@/lib/tournament-queries";
+import { redirect } from "next/navigation";
+import { getAdminUser } from "@/lib/admin";
 import { MetricsCards } from "@/components/admin/metrics-cards";
 import { ActivityChart } from "@/components/admin/activity-chart";
 import { TopUsersTable } from "@/components/admin/top-users-table";
@@ -39,6 +41,10 @@ function formatDailyData(
 }
 
 export default async function AdminDashboard() {
+  if (!(await getAdminUser())) {
+    redirect("/");
+  }
+
   const weekStart = getStartOfWeek();
   const lastWeekStart = getStartOfLastWeek();
   const monthStart = getStartOfMonth();

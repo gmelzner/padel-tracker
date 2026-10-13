@@ -1,15 +1,14 @@
 import { redirect } from "next/navigation";
-import { getSessionUser } from "@/lib/auth";
-import { isAdmin } from "@/lib/admin";
+import { getAdminUser } from "@/lib/admin";
 
 export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const user = await getSessionUser();
+  const user = await getAdminUser();
 
-  if (!user || !isAdmin(user.email)) {
+  if (!user) {
     redirect("/");
   }
 

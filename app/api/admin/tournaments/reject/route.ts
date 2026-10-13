@@ -1,12 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSessionUser } from "@/lib/auth";
-import { isAdmin } from "@/lib/admin";
+import { getAdminUser } from "@/lib/admin";
 import { rejectTournament } from "@/lib/tournament-queries";
 import { isUuid } from "@/lib/db";
 
 export async function POST(req: NextRequest) {
-  const user = await getSessionUser();
-  if (!user || !isAdmin(user.email)) {
+  if (!(await getAdminUser())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
