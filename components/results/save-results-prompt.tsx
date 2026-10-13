@@ -38,7 +38,7 @@ export function SaveResultsPrompt() {
     setFlow("saving");
     setErrorDetail(null);
 
-    const { error } = await saveMatch(state, user.id, player);
+    const { error } = await saveMatch(state, player);
 
     if (error) {
       console.error("[PadelTracker] Match save failed:", error);
@@ -84,9 +84,9 @@ export function SaveResultsPrompt() {
     return (
       <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 space-y-2">
         <div className="flex items-center gap-3">
-          {user.user_metadata?.avatar_url && (
+          {user.avatarUrl && (
             <img
-              src={user.user_metadata.avatar_url}
+              src={user.avatarUrl}
               alt=""
               className="w-8 h-8 rounded-full"
             />
@@ -187,9 +187,9 @@ export function SaveResultsPrompt() {
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-4 space-y-3">
       <div className="flex items-center gap-3">
-        {user.user_metadata?.avatar_url && (
+        {user.avatarUrl && (
           <img
-            src={user.user_metadata.avatar_url}
+            src={user.avatarUrl}
             alt=""
             className="w-8 h-8 rounded-full"
           />
@@ -197,7 +197,7 @@ export function SaveResultsPrompt() {
         <div className="flex-1 min-w-0">
           <p className="text-sm font-medium text-slate-800 truncate">
             {t("auth.signedInAs", {
-              name: user.user_metadata?.full_name ?? user.email ?? "",
+              name: user.name ?? user.email ?? "",
             })}
           </p>
         </div>

@@ -94,7 +94,6 @@ export function SubmitForm() {
       contact_email: contactEmail.trim() || undefined,
       contact_whatsapp: contactWhatsapp.trim() || undefined,
       external_url: externalUrl.trim() || undefined,
-      submitted_by: user.id,
     });
 
     setSubmitting(false);

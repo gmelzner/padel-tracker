@@ -69,15 +69,15 @@ export function Navbar() {
               href="/profile"
               className="flex items-center gap-1.5"
             >
-              {user.user_metadata?.avatar_url ? (
+              {user.avatarUrl ? (
                 <img
-                  src={user.user_metadata.avatar_url}
+                  src={user.avatarUrl}
                   alt=""
                   className="w-8 h-8 rounded-full border border-slate-200"
                 />
               ) : (
                 <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-xs font-bold text-slate-500">
-                  {(user.user_metadata?.full_name ?? user.email ?? "?")[0].toUpperCase()}
+                  {(user.name ?? user.email ?? "?")[0].toUpperCase()}
                 </div>
               )}
             </a>

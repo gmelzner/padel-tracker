@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { getServerUser } from "@/lib/supabase-server-auth";
+import { getSessionUser } from "@/lib/auth";
 import { isAdmin } from "@/lib/admin";
 
 export default async function AdminLayout({
@@ -7,7 +7,7 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const user = await getServerUser();
+  const user = await getSessionUser();
 
   if (!user || !isAdmin(user.email)) {
     redirect("/");

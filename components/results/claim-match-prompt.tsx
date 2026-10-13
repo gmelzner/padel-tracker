@@ -53,8 +53,8 @@ export function ClaimMatchPrompt({ data, sourceSharedId }: ClaimMatchPromptProps
     return (
       <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 space-y-2">
         <div className="flex items-center gap-3">
-          {user.user_metadata?.avatar_url && (
-            <img src={user.user_metadata.avatar_url} alt="" className="w-8 h-8 rounded-full" />
+          {user.avatarUrl && (
+            <img src={user.avatarUrl} alt="" className="w-8 h-8 rounded-full" />
           )}
           <div className="flex-1 min-w-0">
             <p className="text-sm font-semibold text-emerald-800">{t("auth.saved")}</p>
@@ -72,8 +72,8 @@ export function ClaimMatchPrompt({ data, sourceSharedId }: ClaimMatchPromptProps
     return (
       <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 space-y-2">
         <div className="flex items-center gap-3">
-          {user.user_metadata?.avatar_url && (
-            <img src={user.user_metadata.avatar_url} alt="" className="w-8 h-8 rounded-full" />
+          {user.avatarUrl && (
+            <img src={user.avatarUrl} alt="" className="w-8 h-8 rounded-full" />
           )}
           <div className="flex-1 min-w-0">
             <p className="text-sm font-semibold text-amber-800">{t("auth.alreadyClaimed")}</p>
@@ -117,7 +117,7 @@ export function ClaimMatchPrompt({ data, sourceSharedId }: ClaimMatchPromptProps
 
     async function handleClaim(player: { name: string; team: 1 | 2 } | null) {
       setFlow("saving");
-      const { error } = await saveMatchFromShared(data, user!.id, player, sourceSharedId);
+      const { error } = await saveMatchFromShared(data, player, sourceSharedId);
       if (!error) {
         setFlow("saved");
       } else if (error === "ALREADY_CLAIMED") {
@@ -175,13 +175,13 @@ export function ClaimMatchPrompt({ data, sourceSharedId }: ClaimMatchPromptProps
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-4 space-y-3">
       <div className="flex items-center gap-3">
-        {user.user_metadata?.avatar_url && (
-          <img src={user.user_metadata.avatar_url} alt="" className="w-8 h-8 rounded-full" />
+        {user.avatarUrl && (
+          <img src={user.avatarUrl} alt="" className="w-8 h-8 rounded-full" />
         )}
         <div className="flex-1 min-w-0">
           <p className="text-sm font-medium text-slate-800 truncate">
             {t("auth.signedInAs", {
-              name: user.user_metadata?.full_name ?? user.email ?? "",
+              name: user.name ?? user.email ?? "",
             })}
           </p>
         </div>

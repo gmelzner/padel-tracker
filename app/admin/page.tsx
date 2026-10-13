@@ -14,9 +14,8 @@ import {
   getStartOfLastWeek,
   getStartOfMonth,
   getStartOfLastMonth,
-  getPendingTournaments,
-  getTotalTournaments,
 } from "@/lib/admin-queries";
+import { getPendingTournaments, getTotalTournaments } from "@/lib/tournament-queries";
 import { MetricsCards } from "@/components/admin/metrics-cards";
 import { ActivityChart } from "@/components/admin/activity-chart";
 import { TopUsersTable } from "@/components/admin/top-users-table";
@@ -24,7 +23,7 @@ import { GrowthSummary } from "@/components/admin/growth-summary";
 import { LastMatches } from "@/components/admin/last-matches";
 import { PendingTournaments } from "@/components/admin/pending-tournaments";
 
-// Force dynamic — admin needs auth + live Supabase data
+// Force dynamic — admin needs auth + live data
 export const dynamic = "force-dynamic";
 
 function formatDailyData(
@@ -81,10 +80,10 @@ export default async function AdminDashboard() {
     getCountInRange("matches", "played_at", lastWeekStart, weekStart),
     getCountInRange("matches", "played_at", monthStart),
     getCountInRange("matches", "played_at", lastMonthStart, monthStart),
-    getCountInRange("profiles", "created_at", weekStart),
-    getCountInRange("profiles", "created_at", lastWeekStart, weekStart),
-    getCountInRange("profiles", "created_at", monthStart),
-    getCountInRange("profiles", "created_at", lastMonthStart, monthStart),
+    getCountInRange("users", "created_at", weekStart),
+    getCountInRange("users", "created_at", lastWeekStart, weekStart),
+    getCountInRange("users", "created_at", monthStart),
+    getCountInRange("users", "created_at", lastMonthStart, monthStart),
     getPendingTournaments(),
     getTotalTournaments(),
   ]);

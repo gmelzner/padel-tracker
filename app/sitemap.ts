@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
-import { createServerSupabaseClient } from "@/lib/supabase-server";
+import { getRecentSharedResults } from "@/lib/shared-result-queries";
+import { getRecentPublishedTournaments } from "@/lib/tournament-queries";
 import { getAllSlugs } from "@/lib/blog";
 
 // Regenerate sitemap every hour to include new shared results
@@ -55,14 +56,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   // Dynamic shared results pages
-  const supabase = createServerSupabaseClient();
-  const { data: sharedResults } = await supabase
-    .from("shared_results")
-    .select("id, created_at")
-    .order("created_at", { ascending: false })
-    .limit(500);
+  // The sitemap must still render if the database is unreachable
+  const [sharedResults, tournaments] = await Promise.all([
+    getRecentSharedResults(500).catch(() => []),
+    getRecentPublishedTournaments(200).catch(() => []),
+  ]);
 
-  const resultPages: MetadataRoute.Sitemap = (sharedResults ?? []).map(
+  const resultPages: MetadataRoute.Sitemap = sharedResults.map(
     (result) => ({
       url: `${baseUrl}/r/${result.id}`,
       lastModified: new Date(result.created_at),
@@ -81,15 +81,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   // Published tournament pages
-  const { data: tournaments } = await supabase
-    .from("tournaments")
-    .select("id, updated_at")
-    .eq("approved", true)
-    .eq("status", "published")
-    .order("created_at", { ascending: false })
-    .limit(200);
-
-  const tournamentPages: MetadataRoute.Sitemap = (tournaments ?? []).map(
+  const tournamentPages: MetadataRoute.Sitemap = tournaments.map(
     (t) => ({
       url: `${baseUrl}/torneos/${t.id}`,
       lastModified: new Date(t.updated_at),

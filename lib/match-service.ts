@@ -1,11 +1,9 @@
-import { createClient } from "./supabase";
 import type { Match, MatchInsert } from "./database.types";
 import type { MatchState, Player } from "./types";
 import type { DecodedMatchResults } from "./share-codec";
 
 export function buildMatchInsert(
   state: MatchState,
-  userId: string,
   selectedPlayer: Player | null
 ): MatchInsert {
   const team1Players = state.players
@@ -16,7 +14,6 @@ export function buildMatchInsert(
     .map((p) => p.name);
 
   return {
-    user_id: userId,
     team1_players: team1Players,
     team2_players: team2Players,
     winning_team: state.winningTeam,
@@ -39,41 +36,39 @@ export function buildMatchInsert(
   };
 }
 
-export async function saveMatch(
-  state: MatchState,
-  userId: string,
-  selectedPlayer: Player | null
+async function postMatch(
+  insert: MatchInsert
 ): Promise<{ data: Match | null; error: string | null }> {
-  const supabase = createClient();
-  const insert = buildMatchInsert(state, userId, selectedPlayer);
-
-  const { data, error } = await supabase
-    .from("matches")
-    .insert(insert)
-    .select()
-    .single();
-
-  if (error) {
-    console.error("[PadelTracker] saveMatch failed:", {
-      code: error.code,
-      message: error.message,
-      details: error.details,
-      hint: error.hint,
-      userId,
+  try {
+    const response = await fetch("/api/matches", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(insert),
     });
-    return { data: null, error: error.message };
+    const body = await response.json().catch(() => null);
+    if (!response.ok) {
+      const error = body?.error ?? `Error ${response.status}`;
+      console.error("[PadelTracker] saveMatch failed:", error);
+      return { data: null, error };
+    }
+    return { data: body.data as Match, error: null };
+  } catch (err) {
+    return { data: null, error: err instanceof Error ? err.message : "Network error" };
   }
-  return { data: data as Match, error: null };
 }
 
-export async function saveMatchFromShared(
+export function saveMatch(
+  state: MatchState,
+  selectedPlayer: Player | null
+): Promise<{ data: Match | null; error: string | null }> {
+  return postMatch(buildMatchInsert(state, selectedPlayer));
+}
+
+export function saveMatchFromShared(
   decoded: DecodedMatchResults,
-  userId: string,
   selectedPlayer: { name: string; team: 1 | 2 } | null,
   sourceSharedId?: string
 ): Promise<{ data: Match | null; error: string | null }> {
-  const supabase = createClient();
-
   const team1Players = decoded.players
     .filter((p) => p.team === 1)
     .map((p) => p.name);
@@ -86,8 +81,8 @@ export async function saveMatchFromShared(
     0
   );
 
-  const insert: MatchInsert = {
-    user_id: userId,
+  // The server answers "ALREADY_CLAIMED" when this user saved this result before
+  return postMatch({
     team1_players: team1Players,
     team2_players: team2Players,
     winning_team: decoded.winningTeam,
@@ -101,49 +96,33 @@ export async function saveMatchFromShared(
     total_points: totalPoints,
     match_data: decoded as unknown as Record<string, unknown>,
     ...(sourceSharedId ? { source_shared_id: sourceSharedId } : {}),
-  };
-
-  const { data, error } = await supabase
-    .from("matches")
-    .insert(insert)
-    .select()
-    .single();
-
-  if (error) {
-    if (error.code === "23505") {
-      return { data: null, error: "ALREADY_CLAIMED" };
-    }
-    return { data: null, error: error.message };
-  }
-  return { data: data as Match, error: null };
+  });
 }
 
-export async function getUserMatches(
-  userId: string
-): Promise<{ data: Match[]; error: string | null }> {
-  const supabase = createClient();
-
-  const { data, error } = await supabase
-    .from("matches")
-    .select("*")
-    .eq("user_id", userId)
-    .order("played_at", { ascending: false });
-
-  if (error) {
-    return { data: [], error: error.message };
+export async function getUserMatches(): Promise<{ data: Match[]; error: string | null }> {
+  try {
+    const response = await fetch("/api/matches");
+    const body = await response.json().catch(() => null);
+    if (!response.ok) {
+      return { data: [], error: body?.error ?? `Error ${response.status}` };
+    }
+    return { data: (body.data ?? []) as Match[], error: null };
+  } catch (err) {
+    return { data: [], error: err instanceof Error ? err.message : "Network error" };
   }
-  return { data: (data ?? []) as Match[], error: null };
 }
 
 export async function deleteMatch(
   matchId: string
 ): Promise<{ error: string | null }> {
-  const supabase = createClient();
-
-  const { error } = await supabase.from("matches").delete().eq("id", matchId);
-
-  if (error) {
-    return { error: error.message };
+  try {
+    const response = await fetch(`/api/matches/${matchId}`, { method: "DELETE" });
+    if (!response.ok) {
+      const body = await response.json().catch(() => null);
+      return { error: body?.error ?? `Error ${response.status}` };
+    }
+    return { error: null };
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Network error" };
   }
-  return { error: null };
 }

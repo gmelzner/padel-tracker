@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { createServerSupabaseClient } from "@/lib/supabase-server";
+import { getSharedResult } from "@/lib/shared-result-queries";
 import { decodeMatchResults } from "@/lib/share-codec";
 import { SharedResultsView } from "./shared-results-view";
 
@@ -12,13 +12,7 @@ export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { id } = await params;
-  const supabase = createServerSupabaseClient();
-
-  const { data } = await supabase
-    .from("shared_results")
-    .select("player_names, score_line, winning_team")
-    .eq("id", id)
-    .single();
+  const data = await getSharedResult(id);
 
   if (!data) {
     return { title: "Result not found - Padel Tracker" };
@@ -60,13 +54,7 @@ export async function generateMetadata({
 
 export default async function SharedResultPage({ params }: PageProps) {
   const { id } = await params;
-  const supabase = createServerSupabaseClient();
-
-  const { data } = await supabase
-    .from("shared_results")
-    .select("encoded_data")
-    .eq("id", id)
-    .single();
+  const data = await getSharedResult(id);
 
   if (!data) {
     notFound();

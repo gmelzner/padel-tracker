@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { createAdminSupabaseClient } from "@/lib/supabase-admin";
+import { getPublishedTournament } from "@/lib/tournament-queries";
 import { getServerLocale } from "@/lib/locale-server";
 import { getCountryForCity } from "@/lib/city-utils";
 import { TournamentDetail } from "@/components/tournaments/tournament-detail";
@@ -16,14 +16,7 @@ export async function generateMetadata({
   const { id } = await params;
   const locale = await getServerLocale();
 
-  const supabase = createAdminSupabaseClient();
-  const { data } = await supabase
-    .from("tournaments")
-    .select("*")
-    .eq("id", id)
-    .eq("approved", true)
-    .eq("status", "published")
-    .single();
+  const data = await getPublishedTournament(id);
 
   if (!data) {
     return { title: "Tournament not found" };
@@ -62,14 +55,7 @@ export default async function TournamentDetailPage({ params }: PageProps) {
   const { id } = await params;
   const locale = await getServerLocale();
 
-  const supabase = createAdminSupabaseClient();
-  const { data } = await supabase
-    .from("tournaments")
-    .select("*")
-    .eq("id", id)
-    .eq("approved", true)
-    .eq("status", "published")
-    .single();
+  const data = await getPublishedTournament(id);
 
   if (!data) {
     notFound();

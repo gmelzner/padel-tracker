@@ -19,7 +19,7 @@ export function ProfileScreen() {
   useEffect(() => {
     if (!user) return;
     setLoadingMatches(true);
-    getUserMatches(user.id).then(({ data }) => {
+    getUserMatches().then(({ data }) => {
       setMatches(data);
       setLoadingMatches(false);
     });
@@ -57,7 +57,7 @@ export function ProfileScreen() {
     );
   }
 
-  const displayName = user.user_metadata?.full_name ?? user.email ?? "";
+  const displayName = user.name ?? user.email ?? "";
 
   async function handleDelete(matchId: string) {
     const { error } = await deleteMatch(matchId);
@@ -80,9 +80,9 @@ export function ProfileScreen() {
       <div className="max-w-lg mx-auto space-y-4">
         {/* Header */}
         <div className="flex items-center gap-3 pt-4">
-          {user.user_metadata?.avatar_url && (
+          {user.avatarUrl && (
             <img
-              src={user.user_metadata.avatar_url}
+              src={user.avatarUrl}
               alt=""
               className="w-12 h-12 rounded-full"
             />

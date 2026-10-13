@@ -9,9 +9,8 @@ import {
   useRef,
 } from "react";
 import { NextIntlClientProvider } from "next-intl";
-import { type Locale, defaultLocale, getMessages } from "@/lib/i18n";
+import { type Locale, defaultLocale, getMessages, isLocale } from "@/lib/i18n";
 import { useAuth } from "@/components/auth-provider";
-import { createClient } from "@/lib/supabase";
 
 interface LocaleContextValue {
   locale: Locale;
@@ -31,10 +30,6 @@ const STORAGE_KEY = "padel-locale";
 
 function setLocaleCookie(locale: Locale) {
   document.cookie = `padel-locale=${locale};path=/;max-age=31536000;samesite=lax`;
-}
-
-function isLocale(value: string | null | undefined): value is Locale {
-  return value === "en" || value === "es";
 }
 
 function getStoredLocale(): Locale {
@@ -59,24 +54,21 @@ export function LocaleProvider({ children }: { children: React.ReactNode }) {
     setLocaleCookie(stored);
   }, []);
 
-  // Sync locale from Supabase profile on login
+  // Sync locale from the user's profile on login
   useEffect(() => {
     if (!user || profileSynced.current) return;
     profileSynced.current = true;
 
-    const supabase = createClient();
-    supabase
-      .from("profiles")
-      .select("preferred_locale")
-      .eq("id", user.id)
-      .single()
-      .then(({ data }) => {
+    fetch("/api/profile/locale")
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data) => {
         if (data?.preferred_locale && isLocale(data.preferred_locale)) {
           setLocaleState(data.preferred_locale);
           localStorage.setItem(STORAGE_KEY, data.preferred_locale);
           setLocaleCookie(data.preferred_locale);
         }
-      });
+      })
+      .catch(() => {});
   }, [user]);
 
   // Reset sync flag on logout
@@ -100,14 +92,13 @@ export function LocaleProvider({ children }: { children: React.ReactNode }) {
       localStorage.setItem(STORAGE_KEY, newLocale);
       setLocaleCookie(newLocale);
 
-      // Persist to Supabase profile if logged in
+      // Persist to the user's profile if logged in
       if (user) {
-        const supabase = createClient();
-        supabase
-          .from("profiles")
-          .update({ preferred_locale: newLocale })
-          .eq("id", user.id)
-          .then(() => {});
+        fetch("/api/profile/locale", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ preferred_locale: newLocale }),
+        }).catch(() => {});
       }
     },
     [user]

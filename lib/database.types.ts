@@ -28,7 +28,6 @@ export interface Match {
 }
 
 export interface MatchInsert {
-  user_id: string;
   played_at?: string;
   team1_players: string[];
   team2_players: string[];
@@ -110,5 +109,4 @@ export interface TournamentInsert {
   contact_whatsapp?: string;
   external_url?: string;
   image_url?: string;
-  submitted_by: string;
 }

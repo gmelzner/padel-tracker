@@ -11,7 +11,7 @@ export function generateResultsUrl(state: MatchState): string {
   return `${origin}/r#${encoded}`;
 }
 
-// New async URL — saves to Supabase, returns short URL
+// New async URL — saves on the server, returns short URL
 export async function createShareUrl(state: MatchState): Promise<string> {
   const encoded = encodeMatchResults(state);
   const origin =

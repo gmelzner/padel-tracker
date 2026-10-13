@@ -74,15 +74,15 @@ export function SetupScreen() {
               href="/profile"
               className="absolute top-8 right-0 flex items-center gap-1.5"
             >
-              {user.user_metadata?.avatar_url ? (
+              {user.avatarUrl ? (
                 <img
-                  src={user.user_metadata.avatar_url}
+                  src={user.avatarUrl}
                   alt=""
                   className="w-10 h-10 rounded-full border-2 border-slate-200"
                 />
               ) : (
                 <div className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-sm font-bold text-slate-500">
-                  {(user.user_metadata?.full_name ?? user.email ?? "?")[0].toUpperCase()}
+                  {(user.name ?? user.email ?? "?")[0].toUpperCase()}
                 </div>
               )}
             </a>

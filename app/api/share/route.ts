@@ -1,12 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
 import { nanoid } from "nanoid";
-import { createServerSupabaseClient } from "@/lib/supabase-server";
+import { createSharedResult, hasSharedResultCapacity } from "@/lib/shared-result-queries";
 import { decodeMatchResults } from "@/lib/share-codec";
+
+// An encoded match is a few KB
+const MAXIMUM_ENCODED_BYTES = 100_000;
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { encodedData } = body;
+
+    if (typeof encodedData === "string" && encodedData.length > MAXIMUM_ENCODED_BYTES) {
+      return NextResponse.json({ error: "Result too large" }, { status: 413 });
+    }
+    if (!(await hasSharedResultCapacity())) {
+      return NextResponse.json({ error: "Too many results, try again later" }, { status: 429 });
+    }
 
     if (!encodedData || typeof encodedData !== "string") {
       return NextResponse.json(
@@ -35,9 +45,7 @@ export async function POST(request: NextRequest) {
       .join(" / ");
 
     const id = nanoid(8);
-    const supabase = createServerSupabaseClient();
-
-    const { error } = await supabase.from("shared_results").insert({
+    await createSharedResult({
       id,
       encoded_data: encodedData,
       player_names: playerNames,
@@ -45,32 +53,9 @@ export async function POST(request: NextRequest) {
       winning_team: decoded.winningTeam,
     });
 
-    if (error) {
-      // Handle nanoid collision — retry once
-      if (error.code === "23505") {
-        const retryId = nanoid(8);
-        const { error: retryError } = await supabase
-          .from("shared_results")
-          .insert({
-            id: retryId,
-            encoded_data: encodedData,
-            player_names: playerNames,
-            score_line: scoreLine,
-            winning_team: decoded.winningTeam,
-          });
-        if (retryError) {
-          return NextResponse.json(
-            { error: "Failed to save" },
-            { status: 500 }
-          );
-        }
-        return NextResponse.json({ id: retryId });
-      }
-      return NextResponse.json({ error: "Failed to save" }, { status: 500 });
-    }
-
     return NextResponse.json({ id });
-  } catch {
-    return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+  } catch (error) {
+    console.error("[PadelTracker] share failed:", error);
+    return NextResponse.json({ error: "Failed to save" }, { status: 500 });
   }
 }
