@@ -22,6 +22,7 @@ export const metadata: Metadata = {
     description:
       "Real-time padel match tracking with detailed statistics, shareable results, and match history.",
     url: "https://www.padeltracker.pro",
+    images: ["/opengraph-image"],
     siteName: "Padel Tracker",
     type: "website",
     locale: "es_AR",

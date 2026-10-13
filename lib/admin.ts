@@ -1,7 +1,7 @@
-const ADMIN_EMAILS = [
-  "gusmelzner@gmail.com",
-  "rodrigo@producenegro.com.ar",
-];
+const ADMIN_EMAILS = (process.env.ADMIN_EMAILS ?? "")
+  .split(",")
+  .map((email) => email.trim().toLowerCase())
+  .filter(Boolean);
 
 export function isAdmin(email: string | undefined | null): boolean {
   if (!email) return false;

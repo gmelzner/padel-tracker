@@ -30,30 +30,31 @@ const icons = [
   </svg>,
 ];
 
+// Below this the real numbers are too small to work as social proof
+const MINIMUM_MATCHES_TO_SHOW = 100;
+
 export function SocialProof({ totalMatches, totalShared, totalUsers }: Props) {
   const t = useTranslations("landing");
 
-  const displayMatches = Math.max(totalMatches * 10, 10);
-  const displayShared = Math.max(totalShared * 10, 10);
-  const displayUsers = Math.max(totalUsers * 10, 10);
+  if (totalMatches < MINIMUM_MATCHES_TO_SHOW) return null;
 
   const stats = [
     {
-      value: displayMatches,
+      value: totalMatches,
       label: t("socialProofMatches"),
       accent: "text-blue-600",
       iconBg: "bg-blue-50",
       iconColor: "text-blue-500",
     },
     {
-      value: displayShared,
+      value: totalShared,
       label: t("socialProofResults"),
       accent: "text-violet-600",
       iconBg: "bg-violet-50",
       iconColor: "text-violet-500",
     },
     {
-      value: displayUsers,
+      value: totalUsers,
       label: t("socialProofUsers"),
       accent: "text-emerald-600",
       iconBg: "bg-emerald-50",
@@ -94,7 +95,7 @@ export function SocialProof({ totalMatches, totalShared, totalUsers }: Props) {
                 {icons[i]}
               </div>
               <div className={`text-3xl md:text-4xl font-black ${stat.accent}`}>
-                {formatNumber(stat.value)}+
+                {formatNumber(stat.value)}
               </div>
               <div className="text-xs md:text-sm text-slate-500 mt-1.5 font-medium">
                 {stat.label}
