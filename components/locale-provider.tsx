@@ -27,32 +27,41 @@ export function useLocale() {
 }
 
 const STORAGE_KEY = "padel-locale";
+// Server and browser must format dates in the same zone to hydrate cleanly
+const TIME_ZONE = "America/Argentina/Buenos_Aires";
 
 function setLocaleCookie(locale: Locale) {
   document.cookie = `padel-locale=${locale};path=/;max-age=31536000;samesite=lax`;
 }
 
-function getStoredLocale(): Locale {
-  if (typeof window === "undefined") return defaultLocale;
-  const stored = localStorage.getItem(STORAGE_KEY);
-  if (isLocale(stored)) return stored;
-  return defaultLocale;
+interface LocaleProviderProps {
+  /** Locale and messages the server rendered with, so the HTML ships with its text. */
+  initialLocale: Locale;
+  initialMessages: Record<string, unknown>;
+  children: React.ReactNode;
 }
 
-export function LocaleProvider({ children }: { children: React.ReactNode }) {
+export function LocaleProvider({
+  initialLocale,
+  initialMessages,
+  children,
+}: LocaleProviderProps) {
   const { user } = useAuth();
-  const [locale, setLocaleState] = useState<Locale>(defaultLocale);
-  const [messages, setMessages] = useState<Record<string, unknown> | null>(
-    null
-  );
+  const [locale, setLocaleState] = useState<Locale>(initialLocale);
+  // Messages always travel with the locale they belong to
+  const [loaded, setLoaded] = useState({
+    locale: initialLocale,
+    messages: initialMessages,
+  });
   const profileSynced = useRef(false);
 
-  // Load initial locale from localStorage
+  // A locale saved in this browser wins over the one the server guessed
   useEffect(() => {
-    const stored = getStoredLocale();
-    setLocaleState(stored);
-    setLocaleCookie(stored);
-  }, []);
+    const stored = localStorage.getItem(STORAGE_KEY);
+    const preferred = isLocale(stored) ? stored : initialLocale;
+    setLocaleState(preferred);
+    setLocaleCookie(preferred);
+  }, [initialLocale]);
 
   // Sync locale from the user's profile on login
   useEffect(() => {
@@ -76,10 +85,11 @@ export function LocaleProvider({ children }: { children: React.ReactNode }) {
     if (!user) profileSynced.current = false;
   }, [user]);
 
-  // Load messages whenever locale changes
+  // Load messages when the locale changes from the one already loaded
   useEffect(() => {
-    getMessages(locale).then(setMessages);
-  }, [locale]);
+    if (locale === loaded.locale) return;
+    getMessages(locale).then((messages) => setLoaded({ locale, messages }));
+  }, [locale, loaded.locale]);
 
   // Update html lang attribute
   useEffect(() => {
@@ -104,11 +114,13 @@ export function LocaleProvider({ children }: { children: React.ReactNode }) {
     [user]
   );
 
-  if (!messages) return null;
-
   return (
     <LocaleContext.Provider value={{ locale, setLocale }}>
-      <NextIntlClientProvider locale={locale} messages={messages}>
+      <NextIntlClientProvider
+        locale={loaded.locale}
+        messages={loaded.messages}
+        timeZone={TIME_ZONE}
+      >
         {children}
       </NextIntlClientProvider>
     </LocaleContext.Provider>

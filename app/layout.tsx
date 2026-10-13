@@ -3,6 +3,8 @@ import { GoogleAnalytics } from "@next/third-parties/google";
 import "./globals.css";
 import { LocaleProvider } from "@/components/locale-provider";
 import { AuthProvider } from "@/components/auth-provider";
+import { getServerLocale } from "@/lib/locale-server";
+import { getMessages } from "@/lib/i18n";
 
 export const metadata: Metadata = {
   title: {
@@ -67,13 +69,16 @@ export const viewport: Viewport = {
   themeColor: "#1e293b",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const locale = await getServerLocale();
+  const messages = await getMessages(locale);
+
   return (
-    <html lang="en">
+    <html lang={locale}>
       <body className="bg-slate-50 text-slate-900 min-h-dvh">
         <script
           type="application/ld+json"
@@ -90,7 +95,9 @@ export default function RootLayout({
           }}
         />
         <AuthProvider>
-          <LocaleProvider>{children}</LocaleProvider>
+          <LocaleProvider initialLocale={locale} initialMessages={messages}>
+            {children}
+          </LocaleProvider>
         </AuthProvider>
       </body>
       <GoogleAnalytics gaId="G-G48Q2E7JE0" />
