@@ -14,6 +14,11 @@ const STAR_POINT_POST = {
   es: "/blog/star-point-nueva-regla-padel",
 };
 
+const SCORING_POST = {
+  en: "/blog/how-padel-scoring-works",
+  es: "/blog/como-se-cuentan-los-puntos-en-padel",
+};
+
 /** Explains the scoreboard below the setup form: what it does, formats, FAQ. */
 export function TrackerGuide() {
   const t = useTranslations("trackerGuide");
@@ -50,12 +55,24 @@ export function TrackerGuide() {
           <li>{t("starPoint")}</li>
           <li>{t("advantage")}</li>
         </ul>
-        <LocaleLink
-          href={STAR_POINT_POST[locale]}
-          className="inline-block text-blue-600 underline underline-offset-2"
-        >
-          {t("starPointLink")}
-        </LocaleLink>
+        <ul className="space-y-1">
+          <li>
+            <LocaleLink
+              href={STAR_POINT_POST[locale]}
+              className="text-blue-600 underline underline-offset-2"
+            >
+              {t("starPointLink")}
+            </LocaleLink>
+          </li>
+          <li>
+            <LocaleLink
+              href={SCORING_POST[locale]}
+              className="text-blue-600 underline underline-offset-2"
+            >
+              {t("scoringLink")}
+            </LocaleLink>
+          </li>
+        </ul>
       </div>
 
       <div className="space-y-2">
